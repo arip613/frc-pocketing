@@ -17,7 +17,9 @@ import math
 from pathlib import Path
 
 import numpy as np
+from shapely import wkt
 from shapely.geometry import Polygon
+from shapely.ops import unary_union
 
 from frcpocket.cadio import arcSegmentLengthMm, maxThicknessMm, minThicknessMm
 from frcpocket.extract import cacheVersion, cachePathFor
@@ -174,9 +176,94 @@ def toPlane(points, origin, xAxis, yAxis):
     return [((p - origin) @ xAxis, (p - origin) @ yAxis) for p in points]
 
 
+def thinBodyPlate(geometry, faces, solidIndex):
+    """Plate from one thin body, read as its footprint seen face-on.
+
+    Multi-level plates (partial-depth pockets, bosses, recesses) split the underside
+    into faces at several depths, so no single face pair matches. Instead the planar
+    faces parallel to the largest one are unioned in its plane: the footprint's outer
+    edge is the outline and its holes are the through-cuts. Returns None unless the
+    whole body lies within a plate thickness of that plane.
+    """
+    planes = [(face, geometry.plane(face)) for face in faces]
+    planes = [(face, frame) for face, frame in planes if frame is not None]
+    if not planes:
+        return None
+    loopsOf = {face.id: [geometry.loopPoints(geometry.loops[loopId]) for loopId in face.loops] for face, _ in planes}
+    def faceArea(item):
+        face, (origin, normal) = item
+        helper = np.array([0, 0, 1.0]) if abs(normal[2]) < 0.9 else np.array([1.0, 0, 0])
+        xAxis = np.cross(normal, helper); xAxis /= np.linalg.norm(xAxis)
+        loops = [Polygon(toPlane(points, origin, xAxis, np.cross(normal, xAxis))) for points, _, _ in loopsOf[face.id] if len(points) >= 3]
+        return max((loop.area for loop in loops if loop.is_valid), default=0.0)
+    top, (topOrigin, topNormal) = max(planes, key=faceArea)
+    vertices = [geometry.vertexMm(v) for v in geometry.faceVertices(faces)]
+    heights = [(point - topOrigin) @ topNormal for point in vertices]
+    if not heights:
+        return None
+    thickness = max(heights) - min(heights)
+    if not (minThicknessMm <= thickness <= maxThicknessMm):
+        return None
+    normal = topNormal if abs(min(heights)) > abs(max(heights)) else -topNormal
+    origin = topOrigin + topNormal * min(heights) if normal is topNormal else topOrigin + topNormal * max(heights)
+    helper = np.array([0, 0, 1.0]) if abs(normal[2]) < 0.9 else np.array([1.0, 0, 0])
+    xAxis = np.cross(normal, helper); xAxis /= np.linalg.norm(xAxis)
+    yAxis = np.cross(normal, xAxis)
+    pieces, nLines, arcRadii = [], {}, {}
+    for face, (_, faceNormal) in planes:
+        if abs(faceNormal @ normal) < parallelDot:
+            continue
+        loops = [loop for loop in loopsOf[face.id] if len(loop[0]) >= 3]
+        polygons = [Polygon(toPlane(points, origin, xAxis, yAxis)).buffer(0) for points, _, _ in loops]
+        if not polygons:
+            continue
+        outerIndex = int(np.argmax([polygon.area for polygon in polygons]))
+        region = polygons[outerIndex]
+        for index, polygon in enumerate(polygons):
+            if index != outerIndex:
+                region = region.difference(polygon)
+        pieces.append(region)
+        for (points, lines, radii), polygon in zip(loops, polygons):
+            key = polygon.representative_point().wkt
+            nLines[key], arcRadii[key] = lines, radii
+    if not pieces:
+        return None
+    footprint = unary_union(pieces).buffer(0.01).buffer(-0.01)
+    if footprint.geom_type != "Polygon":
+        footprint = max(footprint.geoms, key=lambda part: part.area)
+    if footprint.area < minFaceAreaMm2:
+        return None
+
+    def record(ring, lines, radii):
+        return {"coords": [[x / mmPerInch, y / mmPerInch] for x, y in list(ring.coords)[:-1]],
+                "nLines": lines, "arcRadii": [radius / mmPerInch for radius in radii]}
+
+    # Line and arc counts for through-cuts come from the face loop that traced the same hole.
+    def metadata(ring):
+        hole = Polygon(ring)
+        for key in nLines:
+            if hole.buffer(0.05).contains(wkt.loads(key)):
+                return nLines[key], arcRadii[key]
+        return max(0, len(ring.coords) // 2 - 1), []
+    through = [record(interior, *metadata(interior)) for interior in footprint.interiors]
+    return {"solidIndex": solidIndex, "thicknessIn": thickness / mmPerInch, "hasRaisedFeatures": len(set(np.round(heights, 1))) > 2,
+            "outline": record(footprint.exterior, 0, [])["coords"], "through": through, "faceLoops": []}
+
+
 def platesFromModel(model):
     geometry = BodyGeometry(model)
     plates = []
+    # Separate thin bodies (one part each) are read face-on first.
+    handled = set()
+    for body in model.bodies:
+        if body.kind.value != "solid":
+            continue
+        faces = [face for regionId in body.regions if geometry.regions[regionId].kind.value == "solid"
+                 for face in geometry.regionFaces(geometry.regions[regionId])]
+        plate = thinBodyPlate(geometry, faces, len(plates)) if faces else None
+        if plate is not None:
+            plates.append(plate)
+            handled.update(face.id for face in faces)
     # SolidWorks assembly exports can fuse several parts into one solid, so plates are
     # found as face pairs rather than whole bodies: a large planar face with an
     # anti-parallel planar face a plate thickness away whose outline matches it.
@@ -189,6 +276,8 @@ def platesFromModel(model):
             if region.kind.value != "solid":
                 continue
             for face in geometry.regionFaces(region):
+                if face.id in handled:
+                    continue
                 frame = geometry.plane(face)
                 if frame is None:
                     continue
