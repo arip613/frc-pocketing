@@ -70,6 +70,9 @@ def driveFiles(client, fileId, apiKey, depth=0, prefix=""):
         return []
     meta = meta.json()
     if meta["mimeType"] != driveFolderType:
+        if not meta["name"].lower().endswith(cadExtensions + (".zip",)):
+            print(f"  skipping {meta['name']} (not STEP/DXF; e.g. Parasolid .x_t can't be read)", flush=True)
+            return []
         return [(f"{driveApi}/{fileId}?alt=media&supportsAllDrives=true&key={apiKey}", prefix + meta["name"])]
     if depth >= 3:
         return []
