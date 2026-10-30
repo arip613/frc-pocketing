@@ -40,7 +40,7 @@ from frcpocket.layout import candidateGraph, defaultGraph, makeLayout, removedFr
 from frcpocket.plate import PocketParams, loadPlateFromStep, plateFromRecord
 from frcpocket.projection import projectRealDesign
 from frcpocket.scorer import AestheticScorer
-from frcpocket.splits import goldIds, isHoldout, loadRecords
+from frcpocket.splits import goldIds, isHoldout, loadRecords, userTasteIds, userTasteWeight
 
 torch.set_num_threads(4)
 # Looks come first (the user's priority), structure and mass removal second. The floor
@@ -139,7 +139,8 @@ def imitationExamples(goldTrain):
         chosen = set(projection.layout.ribs)
         keep = torch.tensor([float(edge in chosen) for edge in graph.edges])
         widths = torch.tensor(projection.widthClass, dtype=torch.long)
-        examples.append(Example(encodeGraph(plate, params, graph), keep, widths, weight=imitationWeight))
+        weight = imitationWeight * (userTasteWeight if record["id"] in userTasteIds else 1.0)
+        examples.append(Example(encodeGraph(plate, params, graph), keep, widths, weight=weight))
     return examples
 
 

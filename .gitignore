@@ -15,3 +15,6 @@ models/generator_round*.pt
 models_run*_backup/
 .pytest_cache/
 .DS_Store
+
+# Agent worktrees
+.claude/worktrees/

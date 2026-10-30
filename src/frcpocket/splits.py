@@ -35,6 +35,11 @@ goldAddedPath = Path("data/curation/goldAdded.json")
 if goldAddedPath.exists():
     goldPlateIds |= {entry["id"] for entry in json.loads(goldAddedPath.read_text())}
 
+# The user's own taste: their example screenshots and the three CAD plates they liked.
+# Weighted above the other gold so scraped vendor plates don't pull the style away.
+userTasteIds = userImageGold | {"f1da8bbfec_90", "0d9cbb6d3b_0", "76fd2d183d_0"}
+userTasteWeight = 3.0
+
 holdoutFiles = {
     "76fd2d183d", "f02eefd773",  # CAD gold: by source-file prefix of the plate id
     "userImg_example5", "userImg_example8",  # user examples without a near-twin in the set

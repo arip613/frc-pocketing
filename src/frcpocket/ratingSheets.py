@@ -251,14 +251,43 @@ def ingest(roundName, rater):
     print(f"added {added} graded designs to {ratingsPath}")
 
 
+userGradesPath = Path("data/curation/userGrades.json")
+
+
+def userGradedEntries():
+    """The user's grades (from the Plate Curator page) as sheet-candidate entries.
+
+    Stored compactly as {"<round>__<sheet>__<candidate>": grade}; geometry comes from
+    each round's candidates.jsonl, which keeps sheetRatings.jsonl under GitHub's file limit.
+    """
+    if not userGradesPath.exists():
+        return []
+    grades = json.loads(userGradesPath.read_text())
+    entries = []
+    for roundName in sorted({key.split("__")[0] for key in grades}):
+        for line in (sheetRoot / roundName / "candidates.jsonl").read_text().splitlines():
+            entry = json.loads(line)
+            grade = grades.get(f"{roundName}__{entry['sheet']}__{entry['candidate']}")
+            if grade is not None:
+                entry.update({"kind": "sheetCandidate", "round": roundName, "rater": "user", "grade": float(grade)})
+                entries.append(entry)
+    return entries
+
+
 def loadSheetRatings(path=ratingsPath):
     """plateKey -> (plate, [(params, pockets, ribs, grade, entry)]) from every graded round."""
     byPlate = {}
     if not Path(path).exists():
         return byPlate
-    for line in Path(path).read_text().splitlines():
-        entry = json.loads(line)
+    entries = [json.loads(line) for line in Path(path).read_text().splitlines()]
+    entries += userGradedEntries()
+    # Where the user graded a design, their grade replaces Claude's.
+    userGraded = {(e["round"], e["sheet"], e["candidate"]) for e in entries
+                  if e.get("kind") == "sheetCandidate" and e.get("rater") == "user"}
+    for entry in entries:
         if entry.get("kind") != "sheetCandidate":
+            continue
+        if entry.get("rater") != "user" and (entry["round"], entry["sheet"], entry["candidate"]) in userGraded:
             continue
         if entry["plateKey"] not in byPlate:
             plate = Plate(outline=Polygon(entry["outline"]), features=[Polygon(hole) for hole in entry["holes"]],

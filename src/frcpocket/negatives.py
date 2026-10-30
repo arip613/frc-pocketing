@@ -64,6 +64,8 @@ def asymmetrize(plate, params, layout, rng):
 
 def saltAndPepper(plate, params, rng, count):
     region = pocketRegion(plate, params)
+    if region.is_empty:
+        return finishPockets(plate, params, [])  # small plate: walls and boss rings leave nothing to pocket
     minx, miny, maxx, maxy = region.bounds
     holes = []
     for _ in range(count * 4):
@@ -79,6 +81,8 @@ def saltAndPepper(plate, params, rng, count):
 
 def gridWindows(plate, params, rng):
     region = pocketRegion(plate, params)
+    if region.is_empty:
+        return finishPockets(plate, params, [])
     minx, miny, maxx, maxy = region.bounds
     columns, rows = rng.integers(2, 5), rng.integers(1, 4)
     cellWidth, cellHeight = (maxx - minx) / columns, (maxy - miny) / rows
