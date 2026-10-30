@@ -29,6 +29,11 @@ goldPlateIds = {
 # geometry extracted by imageExtract.py).
 userImageGold = {f"userImg_example{n}" for n in range(1, 9)}
 goldPlateIds |= userImageGold
+# Gold picked by eye from the second scrape's contact sheets (WCP, REV, Thrifty Bot, SDS
+# vendor CAD and team repos); see data/curation/goldAdded.json for sheet numbers.
+goldAddedPath = Path("data/curation/goldAdded.json")
+if goldAddedPath.exists():
+    goldPlateIds |= {entry["id"] for entry in json.loads(goldAddedPath.read_text())}
 
 holdoutFiles = {
     "76fd2d183d", "f02eefd773",  # CAD gold: by source-file prefix of the plate id
