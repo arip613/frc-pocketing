@@ -52,6 +52,9 @@ sliverFraction = 1.0  # slivers up to this many typical gold pockets in area get
 stripElongation = 3.0
 stripWidthFraction = 0.65
 stripBoundShare = 0.6  # share of the outline that runs along the wall or a boss, not a rib
+# Strips and slivers at least this wide are cut anyway: the user wants the material along
+# walls and cutouts pocketed whenever a cutter fits cleanly (3/8 in = 3x a 1/8 in end mill).
+keepWidthIn = 0.375
 
 
 @dataclass
@@ -406,7 +409,7 @@ def fillJunkPockets(plate, params, layout):
 
     referenceArea = designFeatures.referencePocketArea(scale) * params.pocketSizeFactor
     kept = [pocket for pocket, radius in zip(layout.pockets, radii)
-            if pocket.area >= crumb and not isSliver(pocket) and not isStrip(pocket, radius)]
+            if pocket.area >= crumb and (2 * radius >= keepWidthIn or not (isSliver(pocket) or isStrip(pocket, radius)))]
     if len(kept) == len(layout.pockets):
         return layout
     return Layout(graph=layout.graph, ribs=layout.ribs, pockets=kept, name=layout.name, ribWidths=layout.ribWidths)

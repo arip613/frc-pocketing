@@ -71,6 +71,10 @@ class Pocketer:
             result["sound"] = (not known) or isSound(result["stiffnessKept"], result["stressIncrease"])
         return sorted(chosen, key=lambda result: (not result["sound"], -result["utility"]))
 
+    @staticmethod
+    def sound(result):
+        return result["stiffnessKept"] is None or isSound(result["stiffnessKept"], result["stressIncrease"])
+
     def isSoundDesign(self, plate, params, pockets):
         """The structural floor (coarse FEA, as in ranking); unknown (FEA failed) counts as sound."""
         meshSize = fea.defaultMeshSize(plate, params) * coarseMeshFactor
@@ -92,12 +96,20 @@ class Pocketer:
                 out.append(result)
                 continue
             rescored = self.judge.rank(plate, params, [outcome.layout], feaCount=1)
-            originalSound = result["stiffnessKept"] is None or isSound(result["stiffnessKept"], result["stressIncrease"])
-            if rescored and rescored[0]["stiffnessKept"] is not None and originalSound and not isSound(
-                    rescored[0]["stiffnessKept"], rescored[0]["stressIncrease"]):
-                outcome = polishPass.polishLayout(
-                    plate, params, original, structuralCheck=lambda pockets: self.isSoundDesign(plate, params, pockets))
-                rescored = self.judge.rank(plate, params, [outcome.layout], feaCount=1) if outcome.changed else []
+            if rescored and not self.sound(rescored[0]):
+                # Too weak: redo it with the floor checked after every step, and without the
+                # blob step (the one that removes material); keep the best sound result.
+                retries = [(outcome, rescored)]
+                for kwargs in ({"structuralCheck": lambda pockets: self.isSoundDesign(plate, params, pockets)},
+                               {"skip": ("blobs",)}):
+                    retry = polishPass.polishLayout(plate, params, original, **kwargs)
+                    if retry.changed:
+                        retries.append((retry, self.judge.rank(plate, params, [retry.layout], feaCount=1)))
+                sound = [(o, r) for o, r in retries if r and self.sound(r[0])]
+                if sound:
+                    outcome, rescored = max(sound, key=lambda item: item[1][0]["utility"])
+                elif self.sound(result):
+                    rescored = []  # every polished version is weak and the original isn't: keep it
             if not rescored:
                 result["polish"] = outcome.log + ["kept unpolished"]
                 out.append(result)

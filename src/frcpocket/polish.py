@@ -43,7 +43,7 @@ minPieceFactor = 0.3  # no link leaves a piece below this many typical pockets
 splitPieceFactor = 0.45  # and no split or X a piece below this many
 crossMinFactor = 3.0  # X-bracing only in pockets at least this many typical pockets big
 crossMaxElongation = 2.2  # and only in squarish / triangular ones
-blobMinFactor = 0.3  # solid regions at least this many typical pockets big count as blobs
+blobMinFactor = 0.15  # solid regions at least this many typical pockets big count as blobs
 linkMaxGapFactor = 2.2  # facing bosses are linked when their gap is under this many typical pocket widths
 linkMinCornerDegrees = 25.0  # ... and the pieces it leaves have no wedge corner sharper than this
 linkPocketShare = 0.6  # ... and at least this share of the gap runs through pockets
@@ -346,17 +346,16 @@ class Polisher:
     def blobs(self, design, layout):
         """Solid regions inside the wall that no pocket comes near.
 
-        The inner region minus every pocket grown by about a rib and a soft corner, and
-        minus every boss ring (plus the same corner margin), opened so that only regions a
-        pocket could fill remain. A tangle of ribs with no pockets between them counts."""
+        The inner region minus every pocket grown by the rib and every boss ring, opened by
+        half the minimum pocket width so that only regions a pocket could fill remain (thick
+        ribs and soft corners fall away in the opening). A tangle of ribs with no pockets
+        between them counts, and so do thin bands left along a wall or cutout by a rib that
+        runs beside it."""
         params = self.params
-        margin = 0.5 * params.maxFilletIn
-        widest = max([self.width(design, rib) for rib in design.ribs] or [params.ribIn])
-        reach = min(widest, 2 * params.ribIn) + margin
-        taken = [pocket.buffer(reach, quad_segs=8) for pocket in layout.pockets]
-        taken += [feature.buffer(params.ringFor(feature) + margin, quad_segs=8) for feature in self.plate.features]
+        taken = [pocket.buffer(params.ribIn, quad_segs=8) for pocket in layout.pockets]
+        taken += [feature.buffer(params.ringFor(feature), quad_segs=8) for feature in self.plate.features]
         free = self.inner.difference(unary_union(taken)) if taken else self.inner
-        radius = max(0.5 * params.minPocketWidth, margin)
+        radius = 0.5 * params.minPocketWidth
         opened = free.buffer(-radius, quad_segs=8).buffer(radius, quad_segs=8)
         return [region for region in polygons(opened) if region.area >= blobMinFactor * self.typical]
 
@@ -719,7 +718,7 @@ class Polisher:
 
     # ---------- driver ----------------------------------------------------------------
 
-    def run(self, layout):
+    def run(self, layout, skip=()):
         design = Design(layout.graph, layout.ribs, layout.ribWidths)
         built, ok = self.build(design)
         if not ok:
@@ -735,6 +734,8 @@ class Polisher:
                  # Symmetrizing can drop ribs and re-open big pockets; split those (in orbits).
                  ("split", self.splitLarge)]
         for name, step in steps:
+            if name in skip:
+                continue
             newDesign, newLayout, note = step(design, built)
             if not note:
                 continue
@@ -754,12 +755,13 @@ class Polisher:
         return PolishResult(layout=polished, log=log, changed=True)
 
 
-def polishLayout(plate, params, layout, structuralCheck=None):
+def polishLayout(plate, params, layout, structuralCheck=None, skip=()):
     """Polish one ML design. structuralCheck(pockets) -> bool, when given, is the structural
-    floor each step must keep (e.g. FEA soundness); the validator is always applied."""
+    floor each step must keep (e.g. FEA soundness); the validator is always applied.
+    skip names steps to leave out (e.g. ("blobs",))."""
     if not layout.ribs or not layout.pockets:
         return PolishResult(layout=layout, log=["skipped: no ribs"], changed=False)
-    return Polisher(plate, params, layout, structuralCheck).run(layout)
+    return Polisher(plate, params, layout, structuralCheck).run(layout, skip=skip)
 
 
 # ---------- small geometry helpers ------------------------------------------------------
