@@ -167,6 +167,23 @@ def rewrap(part):
     print(f"rewrapped {out}")
 
 
+def combine(parts):
+    """One page with the designs of several parts (shuffled together); it picks up progress
+    the separate part pages saved in the same browser."""
+    import re
+    datas = [json.loads(re.search(r"const DATA = (\{.*?\});\n", (outDir / f"plate-rater-part{k}.html").read_text(),
+                                  re.S).group(1)) for k in parts]
+    items = [item for data in datas for item in data["items"]]
+    name = "".join(str(k) for k in parts)
+    digest = hashlib.sha1("".join(item["i"] for item in items).encode()).hexdigest()[:6]
+    data = json.dumps({"version": f"{name}-{digest}", "migrate": [d["version"] for d in datas], "items": items},
+                      separators=(",", ":"))
+    label = " + ".join(str(k) for k in parts)
+    out = outDir / f"plate-rater-parts{name}.html"
+    out.write_text(templatePath.read_text().replace("/*__DATA__*/null", data).replace("__PART__", label))
+    print(f"{len(items)} designs, {out} {out.stat().st_size / 1e6:.1f} MB")
+
+
 def ingest(paths):
     known = set()
     for path in outDir.glob("items_part*.jsonl"):
@@ -189,7 +206,7 @@ def ingest(paths):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("action", choices=["build", "rewrap", "ingest"])
+    parser.add_argument("action", choices=["build", "rewrap", "combine", "ingest"])
     parser.add_argument("files", nargs="*")
     parser.add_argument("--count", type=int, default=1000)
     parser.add_argument("--part", type=int, default=1)
@@ -199,6 +216,8 @@ def main():
         build(args.count, args.part, tuple(filter(None, args.rounds.split(","))))
     elif args.action == "rewrap":
         rewrap(args.part)
+    elif args.action == "combine":
+        combine([int(k) for k in args.files])
     else:
         ingest(args.files)
 

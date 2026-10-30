@@ -168,7 +168,25 @@ function shuffledOrder() {
   return order;
 }
 
-let state = load() || { rater: Math.random().toString(36).slice(2, 10), order: shuffledOrder(), pos: 0, ratings: {}, history: [] };
+// A combined page picks up ratings saved by the separate part pages in this browser.
+function migrated() {
+  const ratings = {};
+  let rater = null;
+  for (const version of DATA.migrate || []) {
+    try {
+      const old = JSON.parse(localStorage.getItem("plateRater.v" + version));
+      if (old && old.ratings) { Object.assign(ratings, old.ratings); rater = rater || old.rater; }
+    } catch (_) { /* nothing saved */ }
+  }
+  if (!Object.keys(ratings).length) return null;
+  const done = DATA.items.map((item, k) => k).filter((k) => DATA.items[k].i in ratings);
+  const rest = shuffledOrder().filter((k) => !(DATA.items[k].i in ratings));
+  return { rater: rater || Math.random().toString(36).slice(2, 10), order: done.concat(rest), pos: done.length,
+           ratings: Object.fromEntries(Object.entries(ratings).filter(([id]) => DATA.items.some((item) => item.i === id))),
+           history: [] };
+}
+
+let state = load() || migrated() || { rater: Math.random().toString(36).slice(2, 10), order: shuffledOrder(), pos: 0, ratings: {}, history: [] };
 if (!state.rater) state.rater = Math.random().toString(36).slice(2, 10);
 let shownAt = 0;
 
