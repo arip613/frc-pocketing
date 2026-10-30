@@ -15,6 +15,7 @@ which the scorer reads like the user's own grades (see ratingSheets.loadSheetRat
 """
 
 import argparse
+import hashlib
 import json
 import random
 from datetime import datetime, timezone
@@ -28,6 +29,15 @@ outDir = Path("data/curation/expert")
 sheetRoot = Path("data/curation/sheets")
 ratingsPath = Path("data/curation/expertRatings.jsonl")
 templatePath = Path(__file__).parent / "webui" / "expertRater.html"
+scorerPath = "models/marathon/r0/aestheticScorer.pt"
+# Slop filter: nobody should spend time on these.
+maxSpanIn = 30.0  # bigger is a drawing-sheet trace or a belly pan, not a plate
+minPockets = 3
+minRemoved = 0.15  # share of the plate's material removed
+crumbAreaIn2 = 0.05  # pockets this small are trace scraps (text, arrows) or crumbs
+maxCrumbShare = 0.3
+minGrade = 2.5  # generated designs already graded below this are dropped
+dropScoreShare = 0.3  # and the scorer's bottom share of the ungraded ones
 
 
 def compact(loop, tolerance):
@@ -36,6 +46,45 @@ def compact(loop, tolerance):
     if tolerance > 0 and polygon.is_valid:
         polygon = polygon.simplify(tolerance, preserve_topology=True)
     return [round(value, 3) for point in list(polygon.exterior.coords)[:-1] for value in point]
+
+
+def isSlop(item):
+    outline = Polygon(item["outline"])
+    minX, minY, maxX, maxY = outline.bounds
+    if max(maxX - minX, maxY - minY) > maxSpanIn or len(item["pockets"]) < minPockets:
+        return True
+    pockets = [Polygon(loop) for loop in item["pockets"]]
+    material = outline.area - sum(Polygon(loop).area for loop in item["holes"])
+    if material <= 0 or sum(p.area for p in pockets) / material < minRemoved:
+        return True
+    return sum(p.area < crumbAreaIn2 for p in pockets) / len(pockets) > maxCrumbShare
+
+
+def qualityCut(items):
+    """Drop slop, generated designs already graded poorly, and the scorer's worst ungraded ones."""
+    from frcpocket.plate import Plate, PocketParams
+    from frcpocket.ratingSheets import loadSheetRatings
+    from frcpocket.scorer import AestheticScorer
+
+    grades = {}
+    for _, entries in loadSheetRatings().values():
+        for *_, grade, entry in entries:
+            grades[f"sheet:{entry['round']}:{entry['sheet']}:{entry['candidate']}"] = grade
+    kept = [item for item in items if not isSlop(item)]
+    kept = [item for item in kept if grades.get(item["id"], 5) >= minGrade]
+    scorer = AestheticScorer(scorerPath)
+    ungraded = [item for item in kept if item["kind"] == "generated" and item["id"] not in grades]
+    scores = {}
+    for item in ungraded:
+        plate = Plate(outline=Polygon(item["outline"]), features=[Polygon(loop) for loop in item["holes"]],
+                      thicknessIn=item.get("thicknessIn") or 0.25)
+        params = PocketParams(**item["params"]) if item.get("params") else PocketParams()
+        scores[item["id"]] = float(scorer.score(plate, params, [[Polygon(loop) for loop in item["pockets"]]])[0])
+    if scores:
+        cutoff = sorted(scores.values())[int(dropScoreShare * len(scores))]
+        kept = [item for item in kept if scores.get(item["id"], 1.0) >= cutoff]
+    print(f"quality cut: {len(items)} -> {len(kept)}")
+    return kept
 
 
 def collectItems(target):
@@ -57,6 +106,7 @@ def collectItems(target):
         items.append({"id": f"real:{record['id']}", "kind": "real", "plateId": record["id"],
                       "thicknessIn": record.get("thicknessIn"), "params": None, "outline": record["outline"],
                       "holes": record["holes"], "pockets": record["pockets"]})
+    items = qualityCut(items)
     rng = random.Random(7)
     generated = [item for item in items if item["kind"] == "generated"]
     real = [item for item in items if item["kind"] == "real"]
@@ -92,7 +142,9 @@ def build(target, part):
                      "o": compact(item["outline"], tolerance),
                      "f": [compact(loop, tolerance * 0.5) for loop in item["holes"]],
                      "p": [compact(loop, tolerance) for loop in item["pockets"]]})
-    data = json.dumps({"version": str(part), "items": page}, separators=(",", ":"))
+    # The page keys saved progress by version, so a changed design set starts fresh.
+    digest = hashlib.sha1("".join(item["id"] for item in items).encode()).hexdigest()[:6]
+    data = json.dumps({"version": f"{part}-{digest}", "items": page}, separators=(",", ":"))
     html = templatePath.read_text().replace("/*__DATA__*/null", data).replace("__PART__", str(part))
     out = outDir / f"plate-rater-part{part}.html"
     out.write_text(html)
