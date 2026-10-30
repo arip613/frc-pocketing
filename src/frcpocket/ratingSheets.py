@@ -265,8 +265,9 @@ def ingest(roundName, rater):
             grade = grades.get(entry["sheet"], {}).get(str(entry["candidate"]))
             if grade is None or (roundName, entry["sheet"], entry["candidate"], rater) in seen:
                 continue
-            entry.update({"kind": "sheetCandidate", "round": roundName, "rater": rater, "grade": float(grade)})
-            handle.write(json.dumps(entry) + "\n")
+            # Just the reference and the grade: the geometry stays in the round's candidates.jsonl.
+            handle.write(json.dumps({"kind": "sheetCandidate", "round": roundName, "sheet": entry["sheet"],
+                                     "candidate": entry["candidate"], "rater": rater, "grade": float(grade)}) + "\n")
             added += 1
     print(f"added {added} graded designs to {ratingsPath}")
 
@@ -331,12 +332,35 @@ def expertGradedEntries(path=Path("data/curation/expertRatings.jsonl")):
     return entries
 
 
+def expandReferences(entries):
+    """Fill in geometry for compact grade entries (round, sheet, candidate) from each round's
+    candidates.jsonl."""
+    byRound = {}
+    out = []
+    for entry in entries:
+        if "outline" not in entry and entry.get("kind") == "sheetCandidate":
+            roundName = entry["round"]
+            if roundName not in byRound:
+                byRound[roundName] = {(c["sheet"], c["candidate"]): c for c in
+                                      map(json.loads, (sheetRoot / roundName / "candidates.jsonl").read_text().splitlines())}
+            entry = {**byRound[roundName][(entry["sheet"], entry["candidate"])], **entry}
+        out.append(entry)
+    return out
+
+
+def compactRatings(path=ratingsPath):
+    """Rewrite a ratings file that still carries full geometry as compact references."""
+    keep = ("kind", "round", "sheet", "candidate", "rater", "grade")
+    lines = [json.dumps({key: entry[key] for key in keep}) for entry in map(json.loads, Path(path).read_text().splitlines())]
+    Path(path).write_text("".join(line + "\n" for line in lines))
+
+
 def loadSheetRatings(path=ratingsPath):
     """plateKey -> (plate, [(params, pockets, ribs, grade, entry)]) from every graded round."""
     byPlate = {}
     if not Path(path).exists():
         return byPlate
-    entries = [json.loads(line) for line in Path(path).read_text().splitlines()]
+    entries = expandReferences([json.loads(line) for line in Path(path).read_text().splitlines()])
     entries += userGradedEntries() + expertGradedEntries()
     # One grade per design: the user's beats the experts', which beats Claude's.
     rank = {"user": 2, "experts": 1}
