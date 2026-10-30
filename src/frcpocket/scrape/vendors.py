@@ -51,9 +51,10 @@ def main():
     parser.add_argument("lists", nargs="+")
     parser.add_argument("--out", default="data/raw/vendors")
     parser.add_argument("--log", default="data/raw/vendors/sources.jsonl")
+    parser.add_argument("--interval", type=float, default=1.0, help="seconds between requests to one host")
     args = parser.parse_args()
 
-    client = PoliteSession(args.log, minInterval=1.0)
+    client = PoliteSession(args.log, minInterval=args.interval)
     links = [link for path in args.lists if Path(path).exists() for link in json.loads(Path(path).read_text())]
     seenUrls = set()
     nFiles = nSkipped = 0
