@@ -53,6 +53,7 @@ minMeetDegrees = 30.0  # a new rib meets any rib, or the wall, at least this wid
 minMeetAtHoleDegrees = 20.0  # ribs leave a boss rim, so they may fan out more tightly there
 maxRounds = 12  # per step
 hugShare = 0.6  # a rib hugs a wall or cutout when this share of it runs too close to pocket the gap
+hugTries = 4  # fully check only the few drops that gain the most pocket
 
 
 @dataclass
@@ -118,6 +119,7 @@ class Polisher:
         self.centre = plate.outline.centroid
         self.angle = geom2d.principalAngle(plate.outline)
         self.cache = {}
+        self.rawCache = {}
         self.strictExport = True  # off only when the input design itself needed gap trimming
         self.orbitCache = {}
         self.linesCache = {}
@@ -134,14 +136,23 @@ class Polisher:
         return tuple(sorted(tuple(sorted((at(i), at(j)))) + (round(design.ribWidths.get((i, j), self.params.ribIn), 5),)
                             for i, j in design.ribs))
 
-    def build(self, design):
-        """Layout and validity, the same way the generator finishes a design."""
+    def rawLayout(self, design):
+        """The finished layout without validating it (cheap; for ranking trial moves)."""
         from frcpocket.generator import fillJunkPockets
 
         key = self.key(design)
-        if key not in self.cache:
+        if key in self.cache:
+            return self.cache[key][0]
+        if key not in self.rawCache:
             layout = makeLayout(self.plate, self.params, design.graph, design.ribs, name="ml", ribWidths=design.ribWidths)
-            layout = fillJunkPockets(self.plate, self.params, layout)
+            self.rawCache[key] = fillJunkPockets(self.plate, self.params, layout)
+        return self.rawCache[key]
+
+    def build(self, design):
+        """Layout and validity, the same way the generator finishes a design."""
+        key = self.key(design)
+        if key not in self.cache:
+            layout = self.rawLayout(design)
             ok = bool(layout.pockets) and validator.validateLayout(self.plate, self.params, layout.pockets).passed
             ok = ok and (not self.strictExport or self.exportMatches(design, layout))
             self.cache[key] = (layout, ok)
@@ -752,6 +763,7 @@ class Polisher:
             worstBefore = max([self.overCap(pocket) for pocket in layout.pockets] or [0.0])
             best = None
             seen = set()
+            trials = []
             for rib in candidates:
                 orbit = self.orbit(segments[rib])
                 group = tuple(sorted(other for other in design.ribs
@@ -762,6 +774,11 @@ class Polisher:
                 trial = design.copy()
                 for other in group:
                     trial.removeRib(other)
+                # rank by the pocket gained before paying for validation
+                gainGuess = sum(pocket.area for pocket in self.rawLayout(trial).pockets) - pocketed
+                if gainGuess >= params.minPocketArea:
+                    trials.append((gainGuess, group, trial))
+            for _, group, trial in sorted(trials, key=lambda item: -item[0])[:hugTries]:
                 built, ok = self.build(trial)
                 if not ok:
                     continue
@@ -798,7 +815,7 @@ class Polisher:
         built, ok = self.build(design)
         if not ok:
             # An input that needed 2D gap trimming can't be held to the stricter check.
-            self.strictExport, self.cache = False, {}
+            self.strictExport, self.cache, self.rawCache = False, {}, {}
             built, ok = self.build(design)
         if not ok:
             # The pass only edits designs that already pass; anything else is left alone.

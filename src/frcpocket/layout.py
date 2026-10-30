@@ -276,8 +276,26 @@ def finishRegions(regions, params):
     return enforcePocketGaps(pockets, params)
 
 
+_inscribedCache = {}
+
+
 def inscribedRadius(region, iterations=6):
-    """Radius of the largest disk inside region (binary search on inward offsets)."""
+    """Radius of the largest disk inside region (binary search on inward offsets).
+
+    Cached by geometry: polish rebuilds a design hundreds of times and most pockets come
+    back unchanged."""
+    key = (region.wkb, iterations)
+    cached = _inscribedCache.get(key)
+    if cached is not None:
+        return cached
+    if len(_inscribedCache) > 50000:
+        _inscribedCache.clear()
+    radius = _inscribedRadius(region, iterations)
+    _inscribedCache[key] = radius
+    return radius
+
+
+def _inscribedRadius(region, iterations):
     low, high = 0.0, math.sqrt(region.area / math.pi)
     for _ in range(iterations):
         middle = (low + high) / 2
