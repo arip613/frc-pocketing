@@ -167,7 +167,7 @@ def rewrap(part):
     print(f"rewrapped {out}")
 
 
-def combine(parts):
+def combine(parts, fresh=False, outName=None):
     """One page with the designs of several parts (shuffled together); it picks up progress
     the separate part pages saved in the same browser."""
     import re
@@ -180,10 +180,13 @@ def combine(parts):
     earlier = [m.group(1) for path in outDir.glob("plate-rater-parts*.html")
                if (m := re.search(r'"version":"([^"]+)"', path.read_text()[:2_000_000]))]
     migrate = [d["version"] for d in datas] + [v for v in earlier if v != f"{name}-{digest}"]
+    version = f"{name}-{digest}"
+    if fresh:  # its own save slot, and nothing carried over from earlier pages
+        version, migrate = f"{name}-{digest}-{datetime.now(timezone.utc):%Y%m%d%H%M}", []
     # Parts in the order given, most useful first; the page shuffles within each.
-    data = json.dumps({"version": f"{name}-{digest}", "migrate": migrate, "sections": [len(d["items"]) for d in datas],
+    data = json.dumps({"version": version, "migrate": migrate, "sections": [len(d["items"]) for d in datas],
                        "items": items}, separators=(",", ":"))
-    out = outDir / f"plate-rater-parts{name}.html"
+    out = outDir / (outName or f"plate-rater-parts{name}.html")
     page = templatePath.read_text().replace(", part __PART__", "").replace(' <span class="muted">· part __PART__</span>', "")
     out.write_text(page.replace("/*__DATA__*/null", data))
     print(f"{len(items)} designs, {out} {out.stat().st_size / 1e6:.1f} MB")
@@ -215,6 +218,8 @@ def main():
     parser.add_argument("files", nargs="*")
     parser.add_argument("--count", type=int, default=1000)
     parser.add_argument("--part", type=int, default=1)
+    parser.add_argument("--fresh", action="store_true", help="combine: new save slot, nothing carried over")
+    parser.add_argument("--out", default=None, help="combine: output file name")
     parser.add_argument("--rounds", default="", help="only generated designs from these sheet rounds, e.g. m1")
     args = parser.parse_args()
     if args.action == "build":
@@ -222,7 +227,7 @@ def main():
     elif args.action == "rewrap":
         rewrap(args.part)
     elif args.action == "combine":
-        combine([int(k) for k in args.files])
+        combine([int(k) for k in args.files], fresh=args.fresh, outName=args.out)
     else:
         ingest(args.files)
 
