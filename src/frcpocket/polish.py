@@ -353,6 +353,10 @@ class Polisher:
             need = max(need, elongationOf(pocket) / splitElongation)
         return need
 
+    def slots(self, layout):
+        """Pockets longer than the gold limit (thin wedges and slots)."""
+        return sum(1 for pocket in layout.pockets if elongationOf(pocket) > splitElongation)
+
     def crumbs(self, layout):
         return sum(1 for pocket in layout.pockets if pocket.area < self.minPiece)
 
@@ -373,6 +377,8 @@ class Polisher:
         if self.crumbs(built) > self.crumbs(previous[1]):
             return False
         if not self.keepsPockets(previous[1], built):
+            return False
+        if self.slots(built) > self.slots(previous[1]):
             return False
         if self.blobArea(design, built) > self.blobArea(*previous) + 0.25 * self.typical:
             return False
@@ -422,7 +428,7 @@ class Polisher:
         best = None
         for name, option in options:
             built, ok = self.build(option)
-            if not ok or self.crumbs(built) > self.crumbs(layout):
+            if not ok or self.crumbs(built) > self.crumbs(layout) or self.slots(built) > self.slots(layout):
                 continue
             shortfall = self.symmetryShortfall(built.pockets)
             if shortfall < before - 0.01 and (best is None or shortfall < best[0]):
@@ -704,7 +710,9 @@ class Polisher:
             return PolishResult(layout=layout, log=["skipped: input design not valid as rebuilt"], changed=False)
         log = []
         steps = [("symmetry", self.symmetrize), ("links", self.linkBosses), ("blobs", self.fillBlobs),
-                 ("split", self.splitLarge), ("symmetry", self.symmetrize)]
+                 ("split", self.splitLarge), ("symmetry", self.symmetrize),
+                 # Symmetrizing can drop ribs and re-open big pockets; split those (in orbits).
+                 ("split", self.splitLarge)]
         for name, step in steps:
             newDesign, newLayout, note = step(design, built)
             if not note:
