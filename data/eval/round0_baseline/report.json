@@ -1,0 +1,716 @@
+{
+ "rows": [
+  {
+   "plate": "rectangleBoltPattern",
+   "kind": "test",
+   "holdout": true,
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 20,
+    "removedFraction": 0.4590925124412491,
+    "stiffnessKept": 0.30310024482625764,
+    "stressIncrease": 3.275552868898202,
+    "specificStiffness": 0.5603550547880635,
+    "maxDisplacementIn": 0.0011597373284812076,
+    "peakStressPsi": 1461.0665610464218,
+    "aestheticScore": null
+   },
+   "stepExport": true,
+   "seconds": 0.0284879207611084
+  },
+  {
+   "plate": "gusset",
+   "kind": "test",
+   "holdout": true,
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 12,
+    "removedFraction": 0.480540157211026,
+    "stiffnessKept": 0.12855335631267725,
+    "stressIncrease": 5.25087416737609,
+    "specificStiffness": 0.24747506106049647,
+    "maxDisplacementIn": 0.007740697335789709,
+    "peakStressPsi": 5763.160500267239,
+    "aestheticScore": null
+   },
+   "stepExport": true,
+   "seconds": 0.015291213989257812
+  },
+  {
+   "plate": "bearingPlate",
+   "kind": "test",
+   "holdout": true,
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 20,
+    "removedFraction": 0.39979670261161987,
+    "stiffnessKept": 0.31226677445928036,
+    "stressIncrease": 2.728930118420341,
+    "specificStiffness": 0.5202683421067886,
+    "maxDisplacementIn": 0.00016193631392222155,
+    "peakStressPsi": 1105.4786411630912,
+    "aestheticScore": null
+   },
+   "stepExport": true,
+   "seconds": 0.02808690071105957
+  },
+  {
+   "plate": "irregularArm",
+   "kind": "test",
+   "holdout": true,
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 22,
+    "removedFraction": 0.4954526218878071,
+    "stiffnessKept": 0.3476875854524374,
+    "stressIncrease": 2.305955611378361,
+    "specificStiffness": 0.6891079025191651,
+    "maxDisplacementIn": 0.00091138249886789,
+    "peakStressPsi": 1941.4425585926829,
+    "aestheticScore": null
+   },
+   "stepExport": true,
+   "seconds": 0.022160053253173828
+  },
+  {
+   "plate": "0a8b1ade56_0",
+   "kind": "real",
+   "repo": "FIRST1939/2024CAD",
+   "holdout": true,
+   "params": {
+    "wallIn": 0.38170999999998984,
+    "ribIn": 0.98,
+    "cornerRadiusIn": 0.1224929904937744,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.2449859809875488
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 3,
+    "removedFraction": 0.6692627462527452,
+    "stiffnessKept": 0.023203928491457314,
+    "stressIncrease": 11.897469577517805,
+    "specificStiffness": 0.07015819424197511,
+    "maxDisplacementIn": 0.07572474229303208,
+    "peakStressPsi": 8212.53475956533,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 6,
+    "removedFraction": 0.55514136112162,
+    "stiffnessKept": 0.07349595137845798,
+    "stressIncrease": 5.441476142882476,
+    "specificStiffness": 0.16521192341855603,
+    "maxDisplacementIn": 0.022866560259512145,
+    "peakStressPsi": 3756.1190365398043,
+    "aestheticScore": null
+   },
+   "seconds": 0.047471046447753906
+  },
+  {
+   "plate": "8c00539321_7",
+   "kind": "real",
+   "repo": "FRC-5877/2016-Robot-CAD",
+   "holdout": true,
+   "params": {
+    "wallIn": 0.12017034952457843,
+    "ribIn": 0.13719999999999727,
+    "cornerRadiusIn": 0.1609365331723764,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.3218730663447528
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 6,
+    "removedFraction": 0.7863837167466425,
+    "stiffnessKept": 0.7834618764612725,
+    "stressIncrease": 1.6818693947313166,
+    "specificStiffness": 3.6676130888957346,
+    "maxDisplacementIn": 3.8724504453961104e-05,
+    "peakStressPsi": 543.1320891306846,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 16,
+    "removedFraction": 0.5066215505500135,
+    "stiffnessKept": 0.9470052466529829,
+    "stressIncrease": 1.252071473556898,
+    "specificStiffness": 1.9194296948087113,
+    "maxDisplacementIn": 2.7178523854575745e-05,
+    "peakStressPsi": 401.9692187435148,
+    "aestheticScore": null
+   },
+   "seconds": 0.0160977840423584
+  },
+  {
+   "plate": "2d57a227b9_0",
+   "kind": "real",
+   "repo": "JSchallert/Archangel-FRC-2016",
+   "holdout": false,
+   "params": {
+    "wallIn": 0.07728168466098229,
+    "ribIn": 0.7491488011946523,
+    "cornerRadiusIn": 0.03125,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.0625
+   },
+   "real": {
+    "valid": false,
+    "failedRules": [
+     "4 corner radius"
+    ],
+    "pocketCount": 3,
+    "removedFraction": 0.19590199945196585,
+    "stiffnessKept": 0.8112629706526573,
+    "stressIncrease": 1.1271841989915117,
+    "specificStiffness": 1.0089105682388713,
+    "maxDisplacementIn": 0.00030229499997360077,
+    "peakStressPsi": 3440.8429034473174,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 0,
+    "removedFraction": 0.0,
+    "stiffnessKept": 1.0,
+    "stressIncrease": 1.0,
+    "specificStiffness": 1.0,
+    "maxDisplacementIn": 0.00030175954443737016,
+    "peakStressPsi": 3199.760509423478,
+    "aestheticScore": null
+   },
+   "seconds": 0.0031638145446777344
+  },
+  {
+   "plate": "f917254f76_0",
+   "kind": "real",
+   "repo": "RedHotChiliBots/FRC4453_COTS",
+   "holdout": false,
+   "params": {
+    "wallIn": 0.06882293524553418,
+    "ribIn": 0.09992278705309829,
+    "cornerRadiusIn": 0.03125,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.0625
+   },
+   "real": {
+    "valid": false,
+    "failedRules": [
+     "4 corner radius"
+    ],
+    "pocketCount": 7,
+    "removedFraction": 0.6934532556604921,
+    "stiffnessKept": 0.027103046768252394,
+    "stressIncrease": 11.29512212466341,
+    "specificStiffness": 0.08841407474951068,
+    "maxDisplacementIn": 0.004248814813227588,
+    "peakStressPsi": 6015.259997454484,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 28,
+    "removedFraction": 0.6550832145556272,
+    "stiffnessKept": 0.22001151100415797,
+    "stressIncrease": 3.3682474745139834,
+    "specificStiffness": 0.6378683795301717,
+    "maxDisplacementIn": 0.0002661570542517674,
+    "peakStressPsi": 1858.6652555638702,
+    "aestheticScore": null
+   },
+   "seconds": 0.03395891189575195
+  },
+  {
+   "plate": "709accf60f_4",
+   "kind": "real",
+   "repo": "RedHotChiliBots/FRC4453_COTS",
+   "holdout": false,
+   "params": {
+    "wallIn": 0.06881305265570305,
+    "ribIn": 0.09796008483005739,
+    "cornerRadiusIn": 0.06109298706054682,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.12218597412109364
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 7,
+    "removedFraction": 0.7987475293722408,
+    "stiffnessKept": 0.028644443776368423,
+    "stressIncrease": 12.661798872284551,
+    "specificStiffness": 0.1423308925700087,
+    "maxDisplacementIn": 0.002358662258278542,
+    "peakStressPsi": 5473.206765214144,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 31,
+    "removedFraction": 0.7431683103978649,
+    "stiffnessKept": 0.2296654278212343,
+    "stressIncrease": 4.122573594214293,
+    "specificStiffness": 0.8942254290232456,
+    "maxDisplacementIn": 0.0002970326590675366,
+    "peakStressPsi": 1800.8695330418946,
+    "aestheticScore": null
+   },
+   "seconds": 0.03792405128479004
+  },
+  {
+   "plate": "76fd2d183d_0",
+   "kind": "real",
+   "repo": "Spectrum3847/Spectrum-CAD-Library",
+   "holdout": false,
+   "params": {
+    "wallIn": 0.08502952387659929,
+    "ribIn": 0.24499999997371608,
+    "cornerRadiusIn": 0.046216310119628914,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.09243262023925783
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 10,
+    "removedFraction": 0.3889951973628603,
+    "stiffnessKept": 0.3034384223401691,
+    "stressIncrease": 2.636974121226708,
+    "specificStiffness": 0.4966219922175857,
+    "maxDisplacementIn": 0.000333533718949786,
+    "peakStressPsi": 2382.261373033633,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 22,
+    "removedFraction": 0.3836957050649214,
+    "stiffnessKept": 0.2958942803775514,
+    "stressIncrease": 3.087695581947047,
+    "specificStiffness": 0.4801106901400401,
+    "maxDisplacementIn": 0.0005064862991562935,
+    "peakStressPsi": 2989.071580941809,
+    "aestheticScore": null
+   },
+   "seconds": 0.019942283630371094
+  },
+  {
+   "plate": "76fd2d183d_1",
+   "kind": "real",
+   "repo": "Spectrum3847/Spectrum-CAD-Library",
+   "holdout": false,
+   "params": {
+    "wallIn": 0.08502952387659919,
+    "ribIn": 0.24499999997371652,
+    "cornerRadiusIn": 0.046216310119628914,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.09243262023925783
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 8,
+    "removedFraction": 0.3966684820944237,
+    "stiffnessKept": 0.2401899480385199,
+    "stressIncrease": 2.8496601153328824,
+    "specificStiffness": 0.3981060841514177,
+    "maxDisplacementIn": 0.0005925154790705792,
+    "peakStressPsi": 3994.7852866527846,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 21,
+    "removedFraction": 0.3460331742680939,
+    "stiffnessKept": 0.29091843588205407,
+    "stressIncrease": 3.198333460512714,
+    "specificStiffness": 0.4448519778605959,
+    "maxDisplacementIn": 0.0005230610102374541,
+    "peakStressPsi": 3371.2176771808063,
+    "aestheticScore": null
+   },
+   "seconds": 0.015368938446044922
+  },
+  {
+   "plate": "2d546bad45_21",
+   "kind": "real",
+   "repo": "MetroHomeschoolRobotics/FRC-2024-CAD-no-LFS",
+   "holdout": false,
+   "params": {
+    "wallIn": 0.07773148614422072,
+    "ribIn": 0.14699999999999933,
+    "cornerRadiusIn": 0.1224929904937742,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.2449859809875484
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 6,
+    "removedFraction": 0.5233205808550723,
+    "stiffnessKept": 0.3918245825602052,
+    "stressIncrease": 2.22631437912308,
+    "specificStiffness": 0.8219876227571646,
+    "maxDisplacementIn": 0.0010535102819755361,
+    "peakStressPsi": 5492.195896766664,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 10,
+    "removedFraction": 0.48312991794264,
+    "stiffnessKept": 0.39604496411561857,
+    "stressIncrease": 2.211136033045945,
+    "specificStiffness": 0.7662369672069107,
+    "maxDisplacementIn": 0.0011201779124020525,
+    "peakStressPsi": 5454.75174654859,
+    "aestheticScore": null
+   },
+   "seconds": 0.011487007141113281
+  },
+  {
+   "plate": "18afc8e7d3_0",
+   "kind": "real",
+   "repo": "Spectrum3847/Spectrum-CAD-Library",
+   "holdout": false,
+   "params": {
+    "wallIn": 0.16855999999999982,
+    "ribIn": 0.3674999999999974,
+    "cornerRadiusIn": 0.12242990493774243,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.24485980987548486
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 10,
+    "removedFraction": 0.21758663474674703,
+    "stiffnessKept": 0.9973471430501037,
+    "stressIncrease": 1.0618815925171061,
+    "specificStiffness": 1.274706168557436,
+    "maxDisplacementIn": 6.755379668095148e-05,
+    "peakStressPsi": 446.7715598507261,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 41,
+    "removedFraction": 0.2194573969831469,
+    "stiffnessKept": 0.34129160762458793,
+    "stressIncrease": 2.14704950219437,
+    "specificStiffness": 0.43724917295413657,
+    "maxDisplacementIn": 0.0002547765132666899,
+    "peakStressPsi": 916.7404677473681,
+    "aestheticScore": null
+   },
+   "seconds": 0.054746150970458984
+  },
+  {
+   "plate": "18afc8e7d3_12",
+   "kind": "real",
+   "repo": "Spectrum3847/Spectrum-CAD-Library",
+   "holdout": true,
+   "params": {
+    "wallIn": 0.26721557555381087,
+    "ribIn": 0.48999999999999866,
+    "cornerRadiusIn": 0.12249299049377392,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.24498598098754784
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 5,
+    "removedFraction": 0.25007745197068654,
+    "stiffnessKept": 0.5984383809501267,
+    "stressIncrease": 1.6847669028134054,
+    "specificStiffness": 0.798000250189483,
+    "maxDisplacementIn": 0.013931918424345935,
+    "peakStressPsi": 6230.049817809722,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 10,
+    "removedFraction": 0.14753456110679197,
+    "stiffnessKept": 0.7681861054384812,
+    "stressIncrease": 1.391104331140276,
+    "specificStiffness": 0.9011346036923793,
+    "maxDisplacementIn": 0.011236967787181463,
+    "peakStressPsi": 4789.635239131653,
+    "aestheticScore": null
+   },
+   "seconds": 0.008352041244506836
+  },
+  {
+   "plate": "18afc8e7d3_52",
+   "kind": "real",
+   "repo": "Spectrum3847/Spectrum-CAD-Library",
+   "holdout": true,
+   "params": {
+    "wallIn": 0.23716000000000004,
+    "ribIn": 0.3675000000000002,
+    "cornerRadiusIn": 0.12242990493774136,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.24485980987548273
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 8,
+    "removedFraction": 0.19148501042597138,
+    "stiffnessKept": 0.9869373568587876,
+    "stressIncrease": 1.1746293950406927,
+    "specificStiffness": 1.2206791087185185,
+    "maxDisplacementIn": 3.976079504828459e-05,
+    "peakStressPsi": 295.7454818682794,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 33,
+    "removedFraction": 0.17375011075661004,
+    "stiffnessKept": 0.6193027551947854,
+    "stressIncrease": 1.5819893487867134,
+    "specificStiffness": 0.7495344486664811,
+    "maxDisplacementIn": 7.314414429696129e-05,
+    "peakStressPsi": 402.9089797697213,
+    "aestheticScore": null
+   },
+   "seconds": 0.03051304817199707
+  },
+  {
+   "plate": "f1da8bbfec_90",
+   "kind": "real",
+   "repo": "Spectrum3847/Spectrum-CAD-Library",
+   "holdout": false,
+   "params": {
+    "wallIn": 0.0656855708041507,
+    "ribIn": 0.24499999999999889,
+    "cornerRadiusIn": 0.03125,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.0625
+   },
+   "real": {
+    "valid": false,
+    "failedRules": [
+     "4 corner radius"
+    ],
+    "pocketCount": 18,
+    "removedFraction": 0.4839121772548077,
+    "stiffnessKept": 0.14321883049322184,
+    "stressIncrease": 4.459285319948652,
+    "specificStiffness": 0.27750864132272535,
+    "maxDisplacementIn": 0.0011171706098226,
+    "peakStressPsi": 3694.503466073127,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 45,
+    "removedFraction": 0.39430668184027223,
+    "stiffnessKept": 0.3014980382203301,
+    "stressIncrease": 2.7766007777711255,
+    "specificStiffness": 0.4977734262223145,
+    "maxDisplacementIn": 0.0005516795779209728,
+    "peakStressPsi": 2397.5803465816316,
+    "aestheticScore": null
+   },
+   "seconds": 0.04339909553527832
+  },
+  {
+   "plate": "f02eefd773_0",
+   "kind": "real",
+   "repo": "TeamCerbotics4400/Team-4400-FRC-2023-CAD",
+   "holdout": false,
+   "params": {
+    "wallIn": 0.0875140734357377,
+    "ribIn": 0.24499999999999983,
+    "cornerRadiusIn": 0.11551151497200444,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.2310230299440089
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 4,
+    "removedFraction": 0.4010510346544489,
+    "stiffnessKept": 0.3502061320243571,
+    "stressIncrease": 2.7315963083696695,
+    "specificStiffness": 0.5847011219433579,
+    "maxDisplacementIn": 0.00023569286448030846,
+    "peakStressPsi": 1482.8439844876148,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 10,
+    "removedFraction": 0.1665891715922936,
+    "stiffnessKept": 0.6619063644495962,
+    "stressIncrease": 1.6576942572708306,
+    "specificStiffness": 0.7942137801523621,
+    "maxDisplacementIn": 0.00012835843653436065,
+    "peakStressPsi": 900.7162505079265,
+    "aestheticScore": null
+   },
+   "seconds": 0.0057010650634765625
+  },
+  {
+   "plate": "f02eefd773_1",
+   "kind": "real",
+   "repo": "TeamCerbotics4400/Team-4400-FRC-2023-CAD",
+   "holdout": true,
+   "params": {
+    "wallIn": 0.08756162588534966,
+    "ribIn": 0.2449999999999995,
+    "cornerRadiusIn": 0.04723220252990722,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.09446440505981445
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 7,
+    "removedFraction": 0.4265517160157147,
+    "stiffnessKept": 0.52128246435874,
+    "stressIncrease": 1.7680576237929206,
+    "specificStiffness": 0.9090313440941871,
+    "maxDisplacementIn": 0.0003441994713742425,
+    "peakStressPsi": 2789.4017249143153,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 15,
+    "removedFraction": 0.25920013974784795,
+    "stiffnessKept": 0.5342272246447508,
+    "stressIncrease": 1.6468704860955228,
+    "specificStiffness": 0.721149197386338,
+    "maxDisplacementIn": 0.00033527447901472143,
+    "peakStressPsi": 2523.5178009823776,
+    "aestheticScore": null
+   },
+   "seconds": 0.01734185218811035
+  },
+  {
+   "plate": "0d9cbb6d3b_0",
+   "kind": "real",
+   "repo": "Trial-N-Terror-FRC-7900/Sidewinder-CAD",
+   "holdout": false,
+   "params": {
+    "wallIn": 0.06,
+    "ribIn": 0.244999999999999,
+    "cornerRadiusIn": 0.12249299049377392,
+    "depthIn": null,
+    "bossIn": null,
+    "minPocketAreaIn2": 0.05,
+    "minPocketWidthIn": 0.24498598098754784
+   },
+   "real": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 12,
+    "removedFraction": 0.32598288817629933,
+    "stiffnessKept": 0.4440633285984554,
+    "stressIncrease": 1.6578351093553754,
+    "specificStiffness": 0.6588309418390654,
+    "maxDisplacementIn": 0.000819267269538434,
+    "peakStressPsi": 2757.7997744053973,
+    "aestheticScore": null
+   },
+   "generator": {
+    "valid": true,
+    "failedRules": [],
+    "pocketCount": 15,
+    "removedFraction": 0.23747983840117132,
+    "stiffnessKept": 0.5958590853132821,
+    "stressIncrease": 1.535082451066435,
+    "specificStiffness": 0.7814338758779876,
+    "maxDisplacementIn": 0.0007802351679542575,
+    "peakStressPsi": 2647.5389399480764,
+    "aestheticScore": null
+   },
+   "seconds": 0.014338016510009766
+  }
+ ],
+ "summary": {
+  "test plates / baseline": {
+   "plates": 4,
+   "validRate": 1.0,
+   "removedFraction": 0.4587204985379255,
+   "stiffnessKept": 0.27290199026266315,
+   "stressIncrease": 3.390328191518248,
+   "specificStiffness": 0.5043015901186284,
+   "aestheticScore": null
+  },
+  "real plates / baseline": {
+   "plates": 15,
+   "validRate": 1.0,
+   "removedFraction": 0.3514127422885943,
+   "stiffnessKept": 0.4850204665411914,
+   "stressIncrease": 2.427861660999909,
+   "specificStiffness": 0.7460282377960152,
+   "aestheticScore": null
+  },
+  "real plates / real teams": {
+   "plates": 15,
+   "validRate": 0.8,
+   "removedFraction": 0.4499586947360746,
+   "stiffnessKept": 0.4433748570281795,
+   "stressIncrease": 4.060963002380605,
+   "specificStiffness": 0.8278400062991361,
+   "aestheticScore": null
+  },
+  "STEP export pass rate (test plates)": 1.0
+ }
+}

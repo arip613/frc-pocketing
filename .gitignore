@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.egg-info/
+logs/
+# Scraped CAD and forum data: mostly unlicensed third-party content, keep it local.
+data/raw/
+data/processed/cache/
+
+# Superseded model checkpoints and per-round weights
+models/archive_*/
+models/generator_round*.pt
+
+models_run*_backup/
+.pytest_cache/
+.DS_Store

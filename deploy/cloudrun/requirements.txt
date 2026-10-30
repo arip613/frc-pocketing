@@ -1,0 +1,13 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.15.0
+cadquery==2.8.0
+cadquery-ocp==7.9.3.1.1
+scikit-fem==12.0.2
+shapely==2.2.0
+numpy==2.5.4
+scipy==1.18.1
+matplotlib==3.11.2
+contourpy==1.4.0
+pillow==12.3.0
+ezdxf==1.4.5
+triangle==20250106

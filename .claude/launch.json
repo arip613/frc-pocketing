@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pocketing-ui",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": ["-I", "-m", "frcpocket.app"],
+      "port": 7860
+    }
+  ]
+}

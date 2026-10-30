@@ -1,0 +1,212 @@
+{
+  "plates": 463,
+  "pocketedPlates": 37,
+  "exemplarPlates": 15,
+  "exemplarRule": "pocketCount >= 3 and removedFraction >= 0.15",
+  "allPocketed": {
+    "plates": 37,
+    "repos": [
+      "BrianZ657/FRC9088-CAD",
+      "DatastreamV2/2020-Team-20-Robotics-CAD",
+      "FIRST1939/2024CAD",
+      "FRC-5877/2016-Robot-CAD",
+      "JSchallert/Archangel-FRC-2016",
+      "JoshTeam841/FRC-2015-RobotCAD",
+      "MetroHomeschoolRobotics/FRC-2024-CAD-no-LFS",
+      "RedHotChiliBots/FRC4453_COTS",
+      "Spectrum3847/Spectrum-CAD-Library",
+      "Team3597/RoboRangers2024-CAD",
+      "TeamCerbotics4400/Team-4400-FRC-2023-CAD",
+      "Trial-N-Terror-FRC-7900/Sidewinder-CAD",
+      "ankthba/frc-robot-cad-2025",
+      "frc-team7587/CAD",
+      "hugo735/Team-4400-FRC-2024OFFSEASON-CAD"
+    ],
+    "pocketCount": {
+      "p10": 1.0,
+      "p25": 1.0,
+      "median": 2.0,
+      "p75": 6.0,
+      "p90": 8.8,
+      "n": 37
+    },
+    "thicknessIn": {
+      "p10": 0.125,
+      "p25": 0.136,
+      "median": 0.212,
+      "p75": 0.25,
+      "p90": 0.459,
+      "n": 34
+    },
+    "minWallPerPlateIn": {
+      "p10": 0.148,
+      "p25": 0.185,
+      "median": 0.25,
+      "p75": 0.625,
+      "p90": 1.0,
+      "n": 37
+    },
+    "wallIn": {
+      "p10": 0.15,
+      "p25": 0.187,
+      "median": 0.25,
+      "p75": 0.875,
+      "p90": 1.465,
+      "n": 154
+    },
+    "ribIn": {
+      "p10": 0.1,
+      "p25": 0.25,
+      "median": 0.25,
+      "p75": 0.438,
+      "p90": 1.964,
+      "n": 143
+    },
+    "ribOverThickness": {
+      "p10": 0.233,
+      "p25": 1.0,
+      "median": 1.058,
+      "p75": 2.0,
+      "p90": 8.0,
+      "n": 130
+    },
+    "bossIn": {
+      "p10": 0.093,
+      "p25": 0.326,
+      "median": 0.688,
+      "p75": 2.436,
+      "p90": 7.105,
+      "n": 1479
+    },
+    "cornerRadiusIn": {
+      "p10": 0.031,
+      "p25": 0.125,
+      "median": 0.125,
+      "p75": 0.216,
+      "p90": 0.625,
+      "n": 1514
+    },
+    "removedFraction": {
+      "p10": 0.068,
+      "p25": 0.109,
+      "median": 0.218,
+      "p75": 0.427,
+      "p90": 0.791,
+      "n": 37
+    },
+    "symmetryIoU": {
+      "p10": 0.187,
+      "p25": 0.473,
+      "median": 0.999,
+      "p75": 1.0,
+      "p90": 1.0,
+      "n": 37
+    },
+    "pocketShapes": {
+      "quad": 55,
+      "triangle": 51,
+      "curved": 28,
+      "7+ sided": 14,
+      "5-6 sided": 6
+    }
+  },
+  "exemplars": {
+    "plates": 15,
+    "repos": [
+      "FIRST1939/2024CAD",
+      "FRC-5877/2016-Robot-CAD",
+      "JSchallert/Archangel-FRC-2016",
+      "MetroHomeschoolRobotics/FRC-2024-CAD-no-LFS",
+      "RedHotChiliBots/FRC4453_COTS",
+      "Spectrum3847/Spectrum-CAD-Library",
+      "TeamCerbotics4400/Team-4400-FRC-2023-CAD",
+      "Trial-N-Terror-FRC-7900/Sidewinder-CAD"
+    ],
+    "pocketCount": {
+      "p10": 3.4,
+      "p25": 5.5,
+      "median": 7.0,
+      "p75": 9.0,
+      "p90": 11.2,
+      "n": 15
+    },
+    "thicknessIn": {
+      "p10": 0.15,
+      "p25": 0.188,
+      "median": 0.25,
+      "p75": 0.25,
+      "p90": 0.437,
+      "n": 15
+    },
+    "minWallPerPlateIn": {
+      "p10": 0.134,
+      "p25": 0.186,
+      "median": 0.187,
+      "p75": 0.25,
+      "p90": 0.745,
+      "n": 15
+    },
+    "wallIn": {
+      "p10": 0.15,
+      "p25": 0.187,
+      "median": 0.25,
+      "p75": 0.634,
+      "p90": 0.875,
+      "n": 114
+    },
+    "ribIn": {
+      "p10": 0.102,
+      "p25": 0.25,
+      "median": 0.25,
+      "p75": 0.375,
+      "p90": 0.516,
+      "n": 114
+    },
+    "ribOverThickness": {
+      "p10": 0.233,
+      "p25": 1.0,
+      "median": 1.058,
+      "p75": 2.0,
+      "p90": 2.751,
+      "n": 114
+    },
+    "bossIn": {
+      "p10": 0.09,
+      "p25": 0.171,
+      "median": 0.389,
+      "p75": 0.39,
+      "p90": 0.742,
+      "n": 440
+    },
+    "cornerRadiusIn": {
+      "p10": 0.063,
+      "p25": 0.125,
+      "median": 0.13,
+      "p75": 0.219,
+      "p90": 0.75,
+      "n": 1088
+    },
+    "removedFraction": {
+      "p10": 0.205,
+      "p25": 0.288,
+      "median": 0.401,
+      "p75": 0.596,
+      "p90": 0.749,
+      "n": 15
+    },
+    "symmetryIoU": {
+      "p10": 0.591,
+      "p25": 0.891,
+      "median": 1.0,
+      "p75": 1.0,
+      "p90": 1.0,
+      "n": 15
+    },
+    "pocketShapes": {
+      "triangle": 48,
+      "quad": 37,
+      "curved": 23,
+      "5-6 sided": 6
+    }
+  }
+}

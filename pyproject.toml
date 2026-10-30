@@ -1,0 +1,29 @@
+[project]
+name = "frcpocket"
+version = "0.1.0"
+description = "ML-driven pocketing for flat FRC plates (STEP in, pocketed STEP out)"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "cadquery>=2.5",
+    "torch>=2.2",
+    "scikit-fem>=10",
+    "shapely>=2.0",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "gradio>=4",
+    "requests",
+    "pillow",
+    "ezdxf",
+    "triangle",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
