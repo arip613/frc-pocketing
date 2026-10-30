@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plate Pocketer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M4 8 L30 4 L36 30 L10 36 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M11 12 L19 11 L15 19 Z M22 10 L29 9 L27 17 Z M13 23 L21 21 L22 30 L14 31 Z M24 20 L31 19 L32 27 L25 28 Z" fill="currentColor"/>
+      <circle cx="9" cy="10" r="1.6" fill="var(--paper)"/>
+    </svg>
+    <div>
+      <h1>Plate Pocketer</h1>
+      <p class="sub">flat plate in, pocketed STEP out</p>
+    </div>
+  </div>
+  <nav class="steps" aria-label="Progress">
+    <span data-step="1" class="on">1 &nbsp;Plate</span>
+    <span data-step="2">2 &nbsp;Rules</span>
+    <span data-step="3">3 &nbsp;Pick</span>
+    <span data-step="4">4 &nbsp;Export</span>
+  </nav>
+</header>
+
+<main class="desk">
+
+  <!-- Left: the job sheet -->
+  <aside class="sheet">
+    <section class="block" id="plateBlock">
+      <h2><span class="num">01</span> Plate</h2>
+      <label class="drop" id="drop">
+        <input type="file" id="fileInput" accept=".step,.stp" hidden>
+        <span class="drop-title" id="dropTitle">Drop a plate STEP here</span>
+        <span class="drop-hint" id="dropHint">or click to browse. One flat plate per file; holes, slots and bosses are kept.</span>
+      </label>
+      <dl class="facts" id="plateFacts" hidden>
+        <div><dt>Size</dt><dd id="factSize">–</dd></div>
+        <div><dt>Thick</dt><dd id="factThick">–</dd></div>
+        <div><dt>Holes</dt><dd id="factHoles">–</dd></div>
+        <div><dt>Weight</dt><dd id="factWeight">–</dd></div>
+      </dl>
+    </section>
+
+    <section class="block" id="rulesBlock">
+      <h2><span class="num">02</span> Rules <span class="units" role="radiogroup" aria-label="Units">
+        <button type="button" data-units="in" class="on">in</button><button type="button" data-units="mm">mm</button>
+      </span></h2>
+
+      <div class="field">
+        <label for="wall">Outer wall</label>
+        <input id="wall" type="number" step="any" min="0" value="0.1875">
+        <span class="frac" data-for="wall"></span>
+        <p class="note">Never thinner than this, along the edge and along big cutouts.</p>
+      </div>
+      <div class="field">
+        <label for="rib">Rib</label>
+        <input id="rib" type="number" step="any" min="0" value="0.125">
+        <span class="frac" data-for="rib"></span>
+      </div>
+      <div class="field">
+        <label for="boss">Boss ring</label>
+        <input id="boss" type="number" step="any" min="0" value="0.1875">
+        <span class="frac" data-for="boss"></span>
+        <p class="note">Material left around each hole. Real plates often run about half the wall.</p>
+      </div>
+      <div class="field">
+        <label for="corner">Tool radius</label>
+        <input id="corner" type="number" step="any" min="0" value="0.0625">
+        <span class="frac" data-for="corner"></span>
+        <p class="note">Smallest inside corner. 1/8" end mill = 0.0625.</p>
+      </div>
+
+      <div class="field row">
+        <span class="label">Depth</span>
+        <div class="seg" id="depthSeg">
+          <button type="button" data-depth="through" class="on">Through</button>
+          <button type="button" data-depth="blind">Blind</button>
+        </div>
+        <input id="depth" type="number" step="any" min="0" value="0.125" disabled aria-label="Blind depth">
+      </div>
+
+      <div class="field row">
+        <span class="label">Density</span>
+        <div class="seg" id="densitySeg">
+          <button type="button" data-density="dense" class="on">Dense</button>
+          <button type="button" data-density="medium">Medium</button>
+          <button type="button" data-density="open">Open</button>
+        </div>
+      </div>
+
+      <div class="field row">
+        <label for="count" class="label">Designs</label>
+        <input id="count" type="range" min="2" max="8" value="6">
+        <output id="countOut">6</output>
+      </div>
+
+      <button class="go" id="goButton" disabled>Generate designs</button>
+      <p class="status" id="status" aria-live="polite">Load a plate to start.</p>
+    </section>
+  </aside>
+
+  <!-- Right: the drawing -->
+  <section class="board">
+    <div class="drawing" id="drawing">
+      <div class="zones top"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+      <div class="zones left"><span>A</span><span>B</span><span>C</span><span>D</span></div>
+      <svg id="view" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="empty" id="empty">
+        <p>Nothing on the board yet.</p>
+        <p class="small">Drop a STEP on the left. Scroll to zoom, drag to pan, double-click to fit.</p>
+      </div>
+      <div class="view-tools">
+        <label><input type="checkbox" id="showOriginal"> original</label>
+        <label><input type="checkbox" id="showWall" checked> wall line</label>
+        <label><input type="checkbox" id="showDims" checked> dims</label>
+      </div>
+
+      <table class="titleblock" id="titleblock">
+        <tr><th>Part</th><td colspan="3" id="tbPart">–</td></tr>
+        <tr><th>Matl</th><td>6061-T6</td><th>Thk</th><td id="tbThick">–</td></tr>
+        <tr><th>Design</th><td id="tbDesign">–</td><th>Wt</th><td id="tbWeight">–</td></tr>
+        <tr><th>Removed</th><td id="tbRemoved">–</td><th>Stiff</th><td id="tbStiff">–</td></tr>
+        <tr><th>Min wall</th><td id="tbWall">–</td><th>Stress</th><td id="tbStress">–</td></tr>
+        <tr><th>Date</th><td id="tbDate">–</td><th>Sheet</th><td id="tbSheet">1 of 1</td></tr>
+      </table>
+    </div>
+
+    <div class="tray" id="tray" hidden>
+      <div class="tray-head">
+        <h2><span class="num">03</span> Pick one</h2>
+        <span class="tray-note" id="trayNote"></span>
+      </div>
+      <ol class="cands" id="cands"></ol>
+    </div>
+
+    <div class="actions" id="actions" hidden>
+      <div class="rate">
+        <span class="label">Like it?</span>
+        <button type="button" id="rateUp">Good</button>
+        <button type="button" id="rateDown">Bad</button>
+        <span class="rated" id="rated"></span>
+      </div>
+      <button class="go export" id="exportButton">Export STEP</button>
+    </div>
+
+    <div class="checks" id="checks" hidden>
+      <h2><span class="num">04</span> Checks on the exact geometry</h2>
+      <ul id="checkList"></ul>
+      <a class="download" id="download" hidden>Download</a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  Stiffness and stress come from a quick 2D FEA, compared with the unpocketed plate. Good for comparing designs, not a certification.
+  Ratings are saved to <code>data/curation/ratings.jsonl</code> and used the next time the scorer is retrained.
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
