@@ -87,11 +87,14 @@ def qualityCut(items):
     return kept
 
 
-def collectItems(target):
-    """Generated sheet candidates (every round) and real pocketed designs, held-out excluded."""
+def collectItems(target, rounds=()):
+    """Generated sheet candidates (every round, or only `rounds`) and real pocketed designs,
+    held-out excluded."""
     items = []
     for path in sorted(sheetRoot.glob("*/candidates.jsonl")):
         roundName = path.parent.name
+        if rounds and roundName not in rounds:
+            continue
         for line in path.open():
             entry = json.loads(line)
             if isHoldout(entry.get("plateId") or entry["sheet"]):
@@ -124,9 +127,9 @@ def earlierIds(part):
     return ids
 
 
-def build(target, part):
+def build(target, part, rounds=()):
     shown = earlierIds(part)
-    items = [item for item in collectItems(target + len(shown)) if item["id"] not in shown][:target]
+    items = [item for item in collectItems(target + len(shown), rounds) if item["id"] not in shown][:target]
     outDir.mkdir(parents=True, exist_ok=True)
     with open(outDir / f"items_part{part}.jsonl", "w") as handle:
         for item in items:
@@ -179,9 +182,10 @@ def main():
     parser.add_argument("files", nargs="*")
     parser.add_argument("--count", type=int, default=1000)
     parser.add_argument("--part", type=int, default=1)
+    parser.add_argument("--rounds", default="", help="only generated designs from these sheet rounds, e.g. m1")
     args = parser.parse_args()
     if args.action == "build":
-        build(args.count, args.part)
+        build(args.count, args.part, tuple(filter(None, args.rounds.split(","))))
     else:
         ingest(args.files)
 
