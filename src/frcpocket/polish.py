@@ -10,6 +10,8 @@ stood out (user feedback, comparing real | generated plates):
   blobs     big solid regions with no pocket ruin the look; they are opened up and
             re-split into pockets of the plate's usual size
   split     pockets much bigger than the design's typical pocket are split by ribs
+  huggers   ribs running just beside a wall or big cutout are dropped, so the pocket next
+            to them reaches the wall instead of stopping short of it
             (a single rib, or an X of two crossing ribs in a large squarish or
             triangular pocket)
 
@@ -31,7 +33,7 @@ from shapely.prepared import prep
 from frcpocket import designFeatures, geom2d, validator
 from frcpocket.layout import (CandidateGraph, Layout, Node, arcSegments, filletRadius, makeLayout, mirrorGeometry,
                               plateSymmetries, polygons, toolOpening, wallCenterline)
-from frcpocket.plate import featureCenter
+from frcpocket.plate import featureCenter, isOpening
 
 enabled = True  # the shared generation path (Pocketer, rating sheets) polishes ML designs when on
 
@@ -50,6 +52,7 @@ linkPocketShare = 0.6  # ... and at least this share of the gap runs through poc
 minMeetDegrees = 30.0  # a new rib meets any rib, or the wall, at least this wide
 minMeetAtHoleDegrees = 20.0  # ribs leave a boss rim, so they may fan out more tightly there
 maxRounds = 12  # per step
+hugShare = 0.6  # a rib hugs a wall or cutout when this share of it runs too close to pocket the gap
 
 
 @dataclass
@@ -716,6 +719,78 @@ class Polisher:
                 design, layout = best[2], best[3]
         return design, layout, f"blobs: {', '.join(notes)}" if notes else ""
 
+    def dropHuggers(self, design, layout):
+        """Drop ribs that run just beside the wall or a big cutout.
+
+        Such a rib leaves a band between itself and the wall's (or cutout ring's) edge that
+        is too thin to be a pocket of its own, so it stays solid. Dropping the rib lets the
+        pocket beside it run up to the edge. Kept only if the plate gains pocket area and
+        no pocket ends up oversized, crumbled or asymmetric."""
+        params = self.params
+        boundaries = [(self.plate.outline.exterior, params.wallIn)]
+        boundaries += [(feature.exterior, params.ringFor(feature)) for feature in self.plate.features if isOpening(feature)]
+        notes = []
+        for _ in range(maxRounds):
+            segments = {rib: design.segment(rib) for rib in design.ribs}
+            candidates = []
+            for rib, segment in segments.items():
+                if segment.length < 2 * params.minPocketWidth:
+                    continue
+                points = [segment.interpolate(t, normalized=True) for t in np.linspace(0, 1, 9)]
+                for ring, keep in boundaries:
+                    distances = [ring.distance(point) for point in points]
+                    band = keep + 0.5 * self.width(design, rib)
+                    # along most of the rib the strip to the edge is too thin to pocket, none
+                    # of it is far off, and somewhere it sticks out past the ring (else it
+                    # costs nothing)
+                    close = np.mean([d < band + params.minPocketWidth for d in distances])
+                    if (close >= hugShare and max(distances) < band + 2 * params.minPocketWidth
+                            and max(distances) > band + validator.lengthTolIn):
+                        candidates.append(rib)
+                        break
+            pocketed = sum(pocket.area for pocket in layout.pockets)
+            worstBefore = max([self.overCap(pocket) for pocket in layout.pockets] or [0.0])
+            best = None
+            seen = set()
+            for rib in candidates:
+                orbit = self.orbit(segments[rib])
+                group = tuple(sorted(other for other in design.ribs
+                                     if any(sameSegment(segments[other], image, self.nodeSnap) for image in orbit)))
+                if group in seen:
+                    continue
+                seen.add(group)
+                trial = design.copy()
+                for other in group:
+                    trial.removeRib(other)
+                built, ok = self.build(trial)
+                if not ok:
+                    continue
+                gain = sum(pocket.area for pocket in built.pockets) - pocketed
+                if gain < params.minPocketArea:
+                    continue
+                if max([self.overCap(pocket) for pocket in built.pockets] or [0.0]) > max(1.0, worstBefore):
+                    # the merged pocket came out too big: split it back to the usual size
+                    reach = unary_union([segments[other] for other in group]).buffer(self.typicalWidth)
+                    trial, built, _ = self.splitLarge(trial, built, region=reach, rounds=2 * maxRounds)
+                    if not self.build(trial)[1]:
+                        continue
+                    gain = sum(pocket.area for pocket in built.pockets) - pocketed
+                    if gain < params.minPocketArea:
+                        continue
+                if self.crumbs(built) > self.crumbs(layout):
+                    continue
+                if max([self.overCap(pocket) for pocket in built.pockets] or [0.0]) > max(1.0, worstBefore):
+                    continue
+                if self.transforms and self.symmetryShortfall(built.pockets) > self.symmetryShortfall(layout.pockets) + 0.02:
+                    continue
+                if best is None or gain > best[0]:
+                    best = (gain, trial, built)
+            if best is None:
+                break
+            notes.append(f"{best[0]:.2f}in2")
+            design, layout = best[1], best[2]
+        return design, layout, f"huggers: dropped {len(notes)} ({', '.join(notes)} more pocket)" if notes else ""
+
     # ---------- driver ----------------------------------------------------------------
 
     def run(self, layout, skip=()):
@@ -730,7 +805,7 @@ class Polisher:
             return PolishResult(layout=layout, log=["skipped: input design not valid as rebuilt"], changed=False)
         log = []
         steps = [("symmetry", self.symmetrize), ("links", self.linkBosses), ("blobs", self.fillBlobs),
-                 ("split", self.splitLarge), ("symmetry", self.symmetrize),
+                 ("huggers", self.dropHuggers), ("split", self.splitLarge), ("symmetry", self.symmetrize),
                  # Symmetrizing can drop ribs and re-open big pockets; split those (in orbits).
                  ("split", self.splitLarge)]
         for name, step in steps:

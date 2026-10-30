@@ -98,10 +98,10 @@ class Pocketer:
             rescored = self.judge.rank(plate, params, [outcome.layout], feaCount=1)
             if rescored and not self.sound(rescored[0]):
                 # Too weak: redo it with the floor checked after every step, and without the
-                # blob step (the one that removes material); keep the best sound result.
+                # blob and hugger steps (they remove material); keep the best sound result.
                 retries = [(outcome, rescored)]
                 for kwargs in ({"structuralCheck": lambda pockets: self.isSoundDesign(plate, params, pockets)},
-                               {"skip": ("blobs",)}):
+                               {"skip": ("blobs", "huggers")}):
                     retry = polishPass.polishLayout(plate, params, original, **kwargs)
                     if retry.changed:
                         retries.append((retry, self.judge.rank(plate, params, [retry.layout], feaCount=1)))
