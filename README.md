@@ -165,12 +165,12 @@ How it works:
 .venv/bin/python -I -m frcpocket.web
 ```
 
-Open http://127.0.0.1:7861. This is the hand-built drawing-sheet UI (`src/frcpocket/webui/`):
-drop a STEP, set the rules (fractions shown next to inch values), generate, flip
-through designs A–F (arrow keys work), zoom and pan the drawing, rate, and export.
-The title block shows weight saved, stiffness kept, peak stress and the thinnest wall,
-and the export shows every exact-geometry check. The older Gradio UI does the same
-with less polish:
+Open http://127.0.0.1:7861 (front end in `src/frcpocket/webui/`). Pick a STEP, set the
+rules (inch values show their fraction), generate, click through designs A–F (arrow
+keys work; scroll to zoom the preview, drag to pan, double-click to fit), rate, and
+download. The line under the preview gives weight saved, stiffness kept and the
+thinnest wall; the download runs every exact-geometry check first. The older Gradio
+UI does the same:
 
 ```bash
 .venv/bin/python -I -m frcpocket.app
