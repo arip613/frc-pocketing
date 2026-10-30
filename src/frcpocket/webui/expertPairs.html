@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plate Pairs</title>
+<style>
+  :root {
+    --bg: #fafaf8;
+    --text: #222;
+    --muted: #777;
+    --line: #ddd;
+    --plate: #9aa5ad;
+    --edge: #3a444b;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  button { font: inherit; color: inherit; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 32px; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+  .start p, .start ul { max-width: 660px; }
+  .start ul { padding-left: 20px; }
+  .primary {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 5px;
+    background: var(--text);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .plain {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+  }
+  .plain:hover { border-color: #999; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .bar { height: 4px; background: #e6e6e2; border-radius: 2px; margin: 10px 0 14px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--text); width: 0; }
+
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .side {
+    position: relative;
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    height: min(58vh, 520px);
+    min-height: 240px;
+    cursor: pointer;
+    padding: 0;
+  }
+  .side:hover { border-color: #999; }
+  .side.picked { border-color: var(--text); }
+  .side svg { width: 100%; height: 100%; display: block; }
+  .tag { position: absolute; left: 12px; top: 8px; font-weight: 700; font-size: 18px; }
+  .plate { fill: var(--plate); stroke: var(--edge); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cut { fill: #fff; stroke: var(--edge); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .size { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
+
+  .choices { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .choices button {
+    padding: 11px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .choices button:hover { border-color: #888; background: #f4f4f1; }
+  .row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
+  .row .spacer { flex: 1; }
+  .saved { font-size: 13px; color: var(--muted); }
+  .done { text-align: center; padding: 60px 0; }
+
+  @media (max-width: 700px) {
+    .wrap { padding: 14px 12px 24px; }
+    .pair { grid-template-columns: 1fr; gap: 8px; }
+    .side { height: 30vh; min-height: 180px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="start" id="start">
+    <h1>Plate Pairs</h1>
+    <p>Each screen shows two pocketing designs for the same plate. Pick the one you'd rather cut, the way you would in a design review. These pairs are deliberately close calls, which is where your eye helps most.</p>
+    <ul>
+      <li>Click the better one, or press <b>←</b> for the left one and <b>→</b> for the right one.</li>
+      <li>If you really can't separate them, press <b>↓</b> (about the same). Use it sparingly.</li>
+      <li><b>Backspace</b> undoes. Your progress is saved in this browser.</li>
+      <li>You can stop and hit <b>Export picks</b> at any point. Send the file back.</li>
+    </ul>
+    <div class="row">
+      <button class="primary" id="go">Start</button>
+      <span class="muted small" id="resume"></span>
+    </div>
+  </section>
+
+  <section id="rate" hidden>
+    <div class="top">
+      <h1>Plate Pairs</h1>
+      <span class="muted" id="count"></span>
+    </div>
+    <div class="bar"><span id="bar"></span></div>
+    <div class="pair">
+      <button class="side" id="left" aria-label="Left design is better"><span class="tag">←</span><svg id="viewL" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg></button>
+      <button class="side" id="right" aria-label="Right design is better"><span class="tag">→</span><svg id="viewR" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg></button>
+    </div>
+    <p class="size" id="size"></p>
+    <div class="choices">
+      <button id="pickL">← Left is better</button>
+      <button id="pickSame">↓ About the same</button>
+      <button id="pickR">Right is better →</button>
+    </div>
+    <div class="row">
+      <button class="plain" id="undo">Undo</button>
+      <span class="spacer"></span>
+      <span class="saved" id="saved"></span>
+      <button class="primary" id="export">Export picks</button>
+    </div>
+  </section>
+
+  <section class="done" id="done" hidden>
+    <h1>That's every pair. Thank you!</h1>
+    <p>Hit export and send the file back.</p>
+    <p><button class="primary" id="export2">Export picks</button></p>
+  </section>
+
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const KEY = "platePairs.v" + DATA.version;
+const $ = (id) => document.getElementById(id);
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (_) { return null; }
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); $("saved").textContent = "saved"; } catch (_) { $("saved").textContent = "not saved (export soon)"; }
+}
+
+function freshState() {
+  // which design goes on the left is random per pair, so position can't bias the pick
+  return { rater: Math.random().toString(36).slice(2, 10), pos: 0, picks: {},
+           flip: DATA.pairs.map(() => Math.random() < 0.5) };
+}
+let state = load() || freshState();
+let shownAt = 0;
+
+function pathOf(flat) {
+  let d = "";
+  for (let k = 0; k < flat.length; k += 2) d += (k ? "L" : "M") + flat[k] + " " + (-flat[k + 1]);
+  return d + "Z";
+}
+
+function draw(svg, design) {
+  const xs = [], ys = [];
+  for (let k = 0; k < design.o.length; k += 2) { xs.push(design.o[k]); ys.push(-design.o[k + 1]); }
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const pad = Math.max(x1 - x0, y1 - y0) * 0.06;
+  svg.setAttribute("viewBox", `${x0 - pad} ${y0 - pad} ${x1 - x0 + 2 * pad} ${y1 - y0 + 2 * pad}`);
+  let inner = `<path class="plate" d="${pathOf(design.o)}"/>`;
+  for (const loop of design.f) inner += `<path class="cut" d="${pathOf(loop)}"/>`;
+  for (const loop of design.p) inner += `<path class="cut" d="${pathOf(loop)}"/>`;
+  svg.innerHTML = inner;
+}
+
+function sides(k) {
+  const [a, b] = DATA.pairs[k];
+  return state.flip[k] ? [b, a] : [a, b];
+}
+
+function show() {
+  if (state.pos >= DATA.pairs.length) {
+    $("rate").hidden = true;
+    $("done").hidden = false;
+    return;
+  }
+  const [left, right] = sides(state.pos);
+  draw($("viewL"), DATA.designs[left]);
+  draw($("viewR"), DATA.designs[right]);
+  const d = DATA.designs[left];
+  $("size").textContent = `Plate ${d.w} × ${d.h} in` + (d.t ? `, ${d.t} in thick` : "");
+  const done = Object.keys(state.picks).length;
+  $("count").textContent = `${done} picked · ${DATA.pairs.length - state.pos} left`;
+  $("bar").style.width = (100 * state.pos / DATA.pairs.length) + "%";
+  $("left").classList.remove("picked");
+  $("right").classList.remove("picked");
+  shownAt = performance.now();
+}
+
+function pick(choice) {
+  if (state.pos >= DATA.pairs.length) return;
+  const k = state.pos;
+  const [a] = DATA.pairs[k];
+  const [left] = sides(k);
+  let winner = "same";
+  if (choice !== "same") winner = (choice === "left") === (left === a) ? "a" : "b";
+  state.picks[k] = { w: winner, ms: Math.round(performance.now() - shownAt) };
+  if (choice !== "same") $(choice).classList.add("picked");
+  state.pos++;
+  save();
+  setTimeout(show, 120);
+}
+
+function undo() {
+  if (state.pos === 0) return;
+  state.pos--;
+  delete state.picks[state.pos];
+  $("done").hidden = true;
+  $("rate").hidden = false;
+  save();
+  show();
+}
+
+function exportPicks() {
+  const picks = Object.entries(state.picks).map(([k, v]) => ({ a: DATA.pairs[k][0], b: DATA.pairs[k][1], winner: v.w, ms: v.ms }));
+  const body = JSON.stringify({ kind: "pairs", rater: state.rater, version: DATA.version, exportedAt: new Date().toISOString(),
+                                count: picks.length, picks }, null, 1);
+  const blob = new Blob([body], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `plate-pairs-${new Date().toISOString().slice(0, 10)}-${picks.length}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 2000);
+}
+
+if (Object.keys(state.picks).length) {
+  $("resume").textContent = `Welcome back: ${Object.keys(state.picks).length} already picked, picking up where you left off.`;
+  $("go").textContent = "Continue";
+}
+$("go").addEventListener("click", () => { save(); $("start").hidden = true; $("rate").hidden = false; show(); });
+$("left").addEventListener("click", () => pick("left"));
+$("right").addEventListener("click", () => pick("right"));
+$("pickL").addEventListener("click", () => pick("left"));
+$("pickR").addEventListener("click", () => pick("right"));
+$("pickSame").addEventListener("click", () => pick("same"));
+$("undo").addEventListener("click", undo);
+$("export").addEventListener("click", exportPicks);
+$("export2").addEventListener("click", exportPicks);
+document.addEventListener("keydown", (e) => {
+  if (!$("start").hidden) { if (e.key === "Enter") $("go").click(); return; }
+  if (e.key === "ArrowLeft") { e.preventDefault(); pick("left"); }
+  else if (e.key === "ArrowRight") { e.preventDefault(); pick("right"); }
+  else if (e.key === "ArrowDown") { e.preventDefault(); pick("same"); }
+  else if (e.key === "Backspace") { e.preventDefault(); undo(); }
+});
+</script>
+</body>
+</html>

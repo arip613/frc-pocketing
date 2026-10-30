@@ -295,6 +295,49 @@ def userGradedEntries():
     return entries
 
 
+def pairStrengths(path=Path("data/curation/expertPairs.jsonl"), iterations=200):
+    """Design -> standardised strength from the experts' A-vs-B picks (Plate Pairs page).
+
+    Bradley-Terry per plate, fitted with the MM updates; "about the same" counts half a
+    win each way, and every design gets one virtual tie with a plate-average design so a
+    design that won (or lost) everything stays finite. Strengths are log-scale and
+    standardised within each plate, like a rater's 1-9 ratings."""
+    if not Path(path).exists():
+        return {}
+    byPlate = {}
+    for line in Path(path).read_text().splitlines():
+        pick = json.loads(line)
+        byPlate.setdefault(pick["a"].rsplit(":", 1)[0], []).append(pick)
+    out = {}
+    for picks in byPlate.values():
+        designs = sorted({pick[side] for pick in picks for side in ("a", "b")})
+        if len(designs) < 2:
+            continue
+        index = {design: k for k, design in enumerate(designs)}
+        wins = np.full(len(designs), 0.5)  # the virtual tie
+        games = []
+        for pick in picks:
+            a, b = index[pick["a"]], index[pick["b"]]
+            share = {"a": 1.0, "b": 0.0, "same": 0.5}[pick["winner"]]
+            wins[a] += share
+            wins[b] += 1 - share
+            games.append((a, b))
+        strength = np.ones(len(designs))
+        for _ in range(iterations):
+            denominator = np.full(len(designs), 0.0)
+            for a, b in games:
+                denominator[a] += 1 / (strength[a] + strength[b])
+                denominator[b] += 1 / (strength[a] + strength[b])
+            denominator += 1 / (strength + 1.0)  # the virtual opponent has strength 1
+            strength = wins / denominator
+            strength /= np.exp(np.mean(np.log(strength)))
+        logs = np.log(strength)
+        spread = max(logs.std(), 0.5)
+        for design, value in zip(designs, (logs - logs.mean()) / spread):
+            out[design] = float(value)
+    return out
+
+
 def expertGradedEntries(path=Path("data/curation/expertRatings.jsonl")):
     """Ratings from the Plate Rater page (CAD experts, 1-9) as sheet-candidate entries.
 
@@ -302,10 +345,8 @@ def expertGradedEntries(path=Path("data/curation/expertRatings.jsonl")):
     raters per design, then mapped onto the 1-5 grade scale (mean -> 3, one spread -> 1
     grade). Only generated designs from the rating-sheet rounds become entries; ratings of
     real designs are kept in the file for later use."""
-    if not Path(path).exists():
-        return []
     byRater = {}
-    for line in Path(path).read_text().splitlines():
+    for line in (Path(path).read_text().splitlines() if Path(path).exists() else []):
         entry = json.loads(line)
         byRater.setdefault(entry["rater"], {})[entry["id"]] = entry["rating"]  # a re-export replaces
     scores = {}
@@ -316,6 +357,8 @@ def expertGradedEntries(path=Path("data/curation/expertRatings.jsonl")):
         mean, spread = values.mean(), max(values.std(), 0.5)
         for designId, rating in ratings.items():
             scores.setdefault(designId, []).append((rating - mean) / spread)
+    for designId, z in pairStrengths().items():
+        scores.setdefault(designId, []).append(z)
     grades = {}
     for designId, zs in scores.items():
         if designId.startswith("sheet:"):
