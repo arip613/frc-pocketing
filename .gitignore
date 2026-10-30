@@ -18,3 +18,4 @@ models_run*_backup/
 
 # Agent worktrees
 .claude/worktrees/
+models/marathon/*/generator_round*.pt

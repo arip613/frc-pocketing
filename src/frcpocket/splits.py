@@ -39,6 +39,9 @@ if goldAddedPath.exists():
 # Weighted above the other gold so scraped vendor plates don't pull the style away.
 userTasteIds = userImageGold | {"f1da8bbfec_90", "0d9cbb6d3b_0", "76fd2d183d_0"}
 userTasteWeight = 3.0
+# Team 2056's drawing plates are one team's dense style; at full weight they pulled the
+# generator away from the user's examples, so they count for less in imitation.
+drawingGoldWeight = 0.4
 
 holdoutFiles = {
     "76fd2d183d", "f02eefd773",  # CAD gold: by source-file prefix of the plate id
