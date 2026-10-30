@@ -105,7 +105,7 @@ class Polisher:
         self.minSplitPiece = max(splitPieceFactor * self.typical, 2.5 * params.minPocketArea)
         self.inner = plate.outline.buffer(-params.wallIn, quad_segs=arcSegments)
         self.rings = wallCenterline(plate, params)
-        self.bosses = [feature.buffer(params.boss, quad_segs=arcSegments) for feature in plate.features]
+        self.bosses = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
         self.preparedFeatures = [prep(feature) for feature in plate.features]
         self.insideOutline = prep(plate.outline.buffer(1e-6))
         self.snap = max(0.5 * params.ribIn, 0.012 * self.scale)
@@ -354,7 +354,7 @@ class Polisher:
         widest = max([self.width(design, rib) for rib in design.ribs] or [params.ribIn])
         reach = min(widest, 2 * params.ribIn) + margin
         taken = [pocket.buffer(reach, quad_segs=8) for pocket in layout.pockets]
-        taken += [feature.buffer(params.boss + margin, quad_segs=8) for feature in self.plate.features]
+        taken += [feature.buffer(params.ringFor(feature) + margin, quad_segs=8) for feature in self.plate.features]
         free = self.inner.difference(unary_union(taken)) if taken else self.inner
         radius = max(0.5 * params.minPocketWidth, margin)
         opened = free.buffer(-radius, quad_segs=8).buffer(radius, quad_segs=8)

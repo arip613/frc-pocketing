@@ -217,7 +217,7 @@ def connectFloatingFeatures(plate, params, graph, chosen, probabilities, edgeMir
     """
     import heapq
 
-    bosses = [feature.buffer(params.boss, quad_segs=8) for feature in plate.features]
+    bosses = [feature.buffer(params.ringFor(feature), quad_segs=8) for feature in plate.features]
     inner = plate.outline.buffer(-params.wallIn, quad_segs=8)
     wallTouching = {index for index, boss in enumerate(bosses) if not inner.contains(boss)}
     featureNodes = {node.featureIndex: index for index, node in enumerate(graph.nodes) if node.kind == "feature"}
@@ -415,12 +415,12 @@ def fillJunkPockets(plate, params, layout):
 def boundShare(plate, params, pocket, samples=48):
     """Share of a pocket's outline that runs along the wall or a feature's boss (not a rib)."""
     ring = pocket.exterior
-    wallReach, bossReach = 1.25 * params.wallIn, 1.25 * params.boss
+    wallReach = 1.25 * params.wallIn
     near = 0
     for k in range(samples):
         point = ring.interpolate(k / samples, normalized=True)
         if plate.outline.exterior.distance(point) <= wallReach or any(
-                feature.distance(point) <= bossReach for feature in plate.features):
+                feature.distance(point) <= 1.25 * params.ringFor(feature) for feature in plate.features):
             near += 1
     return near / samples
 

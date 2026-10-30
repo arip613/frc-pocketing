@@ -16,6 +16,14 @@ from frcpocket import geom2d
 
 mmPerInch = 25.4
 boltMaxDiameterIn = 0.45  # bolts and counterbores; the smallest FRC bearing bores are ~0.5 in and up
+# Big non-round cutouts (windows, slots, notches) are edges of the plate, not holes: their
+# pockets keep the full wall, never just the boss ring. Hex bores (roundness 0.91) stay holes.
+openingMinAreaIn2 = 0.5
+openingMaxRoundness = 0.8
+
+
+def isOpening(feature):
+    return feature.area > openingMinAreaIn2 and 4 * math.pi * feature.area / feature.length**2 < openingMaxRoundness
 
 
 @dataclass
@@ -61,6 +69,11 @@ class PocketParams:
         """Ring width kept around every hole. Its own setting: real FRC plates often use rings
         about half the wall (0.12 in rings with 0.25 in walls on the WCP and Team 221 plates)."""
         return self.bossIn if self.bossIn is not None else self.wallIn
+
+    def ringFor(self, feature):
+        """Material kept between a pocket and this feature: the boss ring around holes, and
+        at least the wall along big cutouts, whose edges are walls."""
+        return max(self.boss, self.wallIn) if isOpening(feature) else self.boss
 
     @property
     def minPocketArea(self):

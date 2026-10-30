@@ -29,7 +29,7 @@ class Projection:
 
 def alwaysKept(plate, params):
     inner = plate.outline.buffer(-params.wallIn, quad_segs=arcSegments)
-    bosses = [feature.buffer(params.boss, quad_segs=arcSegments) for feature in plate.features]
+    bosses = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
     return unary_union([plate.outline.difference(inner), *bosses])
 
 

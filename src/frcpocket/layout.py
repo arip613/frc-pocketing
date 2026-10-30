@@ -165,7 +165,7 @@ def candidateGraph(plate, params, anchorSpacing=None, extraNeighbors=4, interior
         Node(*featureCenter(feature).coords[0], kind="feature", featureIndex=index, featureKind=featureKind(feature))
         for index, feature in enumerate(plate.features)
     ]
-    bosses = [feature.buffer(params.boss, quad_segs=arcSegments) for feature in plate.features]
+    bosses = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
     unionBoss = unary_union(bosses) if bosses else None
     for anchor in anchorPoints(plate, params, spacing, plate.features):
         # A feature whose boss already covers this stretch of wall needs no anchor there.
@@ -259,7 +259,7 @@ def ribBand(graph, edge, width):
 def buildPockets(plate, params, graph, ribs, ribWidths=None):
     ribWidths = ribWidths or {}
     inner = plate.outline.buffer(-params.wallIn, quad_segs=arcSegments)
-    keep = [feature.buffer(params.boss, quad_segs=arcSegments) for feature in plate.features]
+    keep = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
     keep += [ribBand(graph, edge, max(ribWidths.get(edge, params.ribIn), params.ribIn)) for edge in ribs]
     raw = inner.difference(unary_union(keep)) if keep else inner
     return finishRegions(polygons(raw), params)
@@ -398,7 +398,7 @@ def holeGraph(plate, params):
         Node(*featureCenter(feature).coords[0], kind="feature", featureIndex=index, featureKind=featureKind(feature))
         for index, feature in enumerate(plate.features)
     ]
-    bosses = [feature.buffer(params.boss, quad_segs=arcSegments) for feature in plate.features]
+    bosses = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
     unionBoss = unary_union(bosses) if bosses else None
     minGap = 2.5 * params.ribIn
 
@@ -505,7 +505,7 @@ def sparseJunctions(plate, params, nodes, step):
     angle = math.radians(geom2d.principalAngle(plate.outline))
     reach = math.dist(*np.reshape(plate.outline.bounds, (2, 2)))
     taken = np.array([node.point for node in nodes]) if nodes else np.zeros((0, 2))
-    bossZone = unary_union([feature.buffer(params.boss + params.ribIn) for feature in plate.features]) if plate.features else None
+    bossZone = unary_union([feature.buffer(params.ringFor(feature) + params.ribIn) for feature in plate.features]) if plate.features else None
     rowStep = step * math.sqrt(3) / 2
     points = []
     for row in range(-int(reach / rowStep) - 1, int(reach / rowStep) + 2):
