@@ -227,8 +227,26 @@ def make(roundName, generatorPath, seed, extraCount, workers=3, scorerPath="mode
             name, lines, message = job.result()
             with open(candidatesPath, "a") as handle:  # written as each sheet lands
                 for line in lines:
-                    handle.write(json.dumps(line) + "\n")
+                    handle.write(json.dumps(compactEntry(line)) + "\n")
             print(f"{name}: {message}", flush=True)
+
+
+def compactEntry(entry, digits=5):
+    """Geometry rounded to 1e-5 in (far below any tolerance), so a round's candidates.jsonl
+    stays well under GitHub's 100 MB file limit."""
+    def rounded(value):
+        if isinstance(value, float):
+            return round(value, digits)
+        if isinstance(value, list):
+            return [rounded(item) for item in value]
+        return value
+    return {key: rounded(value) if key in ("outline", "holes", "pockets") else value for key, value in entry.items()}
+
+
+def compactRound(roundName):
+    path = sheetRoot / roundName / "candidates.jsonl"
+    lines = [json.dumps(compactEntry(json.loads(line))) for line in path.read_text().splitlines()]
+    path.write_text("".join(line + "\n" for line in lines))
 
 
 def ingest(roundName, rater):
