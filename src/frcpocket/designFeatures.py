@@ -40,8 +40,13 @@ featureNames = [
     "elongatedFraction",
     "meanFatness",
     "sharpCornerFraction",
+    "hangingHoleFraction",
 ]
 sharpCornerDegrees = 45  # pockets with a corner tighter than this read as wedges
+# A hole whose ring is pocketed nearly all the way round hangs off a rib or two instead of
+# sitting on the web or the wall ("cantilevered bolts", the top review criticism of FRC
+# pocketing; see docs/pocketingResearch.md).
+hangingOpenShare = 0.75
 
 goldElongationLimit = 2.4  # 95% of gold pockets are at most this long relative to their width
 
@@ -149,6 +154,23 @@ def goldStyleReference(plates):
             "spanSlope": spanSlope, "referenceScale": math.exp(centre)}
 
 
+def hangingHoles(plate, params, pocketUnion, samples=24):
+    """Share of the holes (not big cutouts) whose ring has pockets nearly all the way round."""
+    from frcpocket.plate import isOpening
+
+    holes = [feature for feature in plate.features if not isOpening(feature)]
+    if not holes:
+        return 0.0
+    near = pocketUnion.buffer(params.ribIn)
+    count = 0
+    for hole in holes:
+        ring = hole.buffer(params.boss + 0.5 * params.ribIn).exterior
+        points = [ring.interpolate(k / samples, normalized=True) for k in range(samples)]
+        if np.mean([near.contains(point) for point in points]) >= hangingOpenShare:
+            count += 1
+    return count / len(holes)
+
+
 def describe(plate, params, pockets, plateSym=None):
     scale = math.sqrt(plate.materialArea)
     count = len(pockets)
@@ -164,6 +186,7 @@ def describe(plate, params, pockets, plateSym=None):
         values["elongatedFraction"] = 0.0
         values["meanFatness"] = 0.0
         values["sharpCornerFraction"] = 0.0
+        values["hangingHoleFraction"] = 0.0
         return np.array([values[name] for name in featureNames], dtype=np.float32)
 
     areas = np.array([pocket.area for pocket in pockets])
@@ -196,6 +219,7 @@ def describe(plate, params, pockets, plateSym=None):
 
     pocketUnion = unary_union(pockets)
     solid = plate.material.buffer(-params.wallIn).difference(pocketUnion.buffer(params.ribIn))
+    hanging = hangingHoles(plate, params, pocketUnion)
     largest = largestInscribedRadius(solid, scale / 50) / scale if not solid.is_empty else 0.0
 
     plateSym = plateSymmetry(plate) if plateSym is None else plateSym
@@ -231,5 +255,6 @@ def describe(plate, params, pockets, plateSym=None):
         "meanFatness": float(np.mean([math.pi * largestInscribedRadius(pocket, scale / 200) ** 2 / pocket.area
                                       for pocket in pockets])),
         "sharpCornerFraction": float(np.mean([sharpestCorner(pocket) < sharpCornerDegrees for pocket in pockets])),
+        "hangingHoleFraction": hanging,
     }
     return np.array([values[name] for name in featureNames], dtype=np.float32)

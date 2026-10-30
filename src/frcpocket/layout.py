@@ -276,6 +276,10 @@ def finishRegions(regions, params):
     return enforcePocketGaps(pockets, params)
 
 
+# Inside corners at least 1.3x the tool radius (the usual machining rule: a corner equal to
+# the tool radius buries the cutter at full engagement; docs/pocketingResearch.md).
+minFilletFactor = 1.3
+
 _inscribedCache = {}
 
 
@@ -309,7 +313,7 @@ def _inscribedRadius(region, iterations):
 def filletRadius(region, params):
     """Soft-corner radius for one pocket region: a fraction of its size, clamped."""
     style = params.filletFraction * inscribedRadius(region)
-    return max(params.cornerRadiusIn, min(params.maxFilletIn, style))
+    return max(minFilletFactor * params.cornerRadiusIn, min(params.maxFilletIn, style))
 
 
 def toolOpening(region, radius):

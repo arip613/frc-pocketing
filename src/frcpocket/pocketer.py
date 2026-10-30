@@ -26,7 +26,9 @@ duplicateIoU = 0.97
 # limit). Average grades on the rating sheets: round 1, 20 deg 3.26 and 40 deg / 4 ribs 3.25
 # (50 deg / 3 ribs 2.87); round 2, 40 deg 3.39, 40 deg / 4 ribs 3.31, 20 deg 3.16. Each wins
 # on some plates, so all three are proposed and the scorer picks.
-ribStyles = ((20.0, 0), (40.0, 0), (40.0, 4))
+# Rib styles (min rib-rib angle, max ribs per small hole). 30 deg is the floor experienced
+# teams give so filleted corners do not end in wedges (docs/pocketingResearch.md).
+ribStyles = ((30.0, 0), (40.0, 0), (40.0, 4))
 
 
 class Pocketer:
