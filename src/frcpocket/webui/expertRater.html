@@ -88,6 +88,7 @@
   .saved { font-size: 13px; color: var(--muted); }
 
   .done { text-align: center; padding: 60px 0; }
+  .milestone { margin: 0 0 12px; padding: 10px 12px; background: #eef5ee; border: 1px solid #cfe3cf; border-radius: 5px; }
 
   @media (max-width: 600px) {
     .wrap { padding: 14px 12px 24px; }
@@ -109,6 +110,7 @@
       <li>Go with your gut. A couple of seconds per plate is plenty.</li>
       <li>Keys: <b>1–9</b> to rate, <b>S</b> to skip, <b>Backspace</b> to undo.</li>
       <li>Your progress is saved in this browser. You can stop and export at any point, even after 50.</li>
+      <li id="priority" hidden></li>
     </ul>
     <div class="row">
       <button class="primary" id="go">Start</button>
@@ -122,6 +124,7 @@
       <span class="muted" id="count"></span>
     </div>
     <div class="bar"><span id="bar"></span></div>
+    <p class="milestone" id="milestone" hidden></p>
     <div class="stage">
       <svg id="view" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
       <span class="size" id="size"></span>
@@ -159,11 +162,20 @@ function save() {
 }
 
 // One shuffled order per browser, kept across visits.
+// Shuffled within each section; sections keep their order (most useful first).
 function shuffledOrder() {
-  const order = DATA.items.map((_, k) => k);
-  for (let k = order.length - 1; k > 0; k--) {
-    const j = Math.floor(Math.random() * (k + 1));
-    [order[k], order[j]] = [order[j], order[k]];
+  const sizes = DATA.sections || [DATA.items.length];
+  const order = [];
+  let start = 0;
+  for (const size of sizes) {
+    const part = [];
+    for (let k = start; k < start + size; k++) part.push(k);
+    for (let k = part.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [part[k], part[j]] = [part[j], part[k]];
+    }
+    order.push(...part);
+    start += size;
   }
   return order;
 }
@@ -196,7 +208,13 @@ function pathOf(flat) {
   return d + "Z";
 }
 
+function firstSection() {
+  return DATA.sections && DATA.sections.length > 1 ? DATA.sections[0] : 0;
+}
+
 function show() {
+  const first = firstSection();
+  $("milestone").hidden = !(first && state.pos === first && !state.milestoneSeen);
   if (state.pos >= state.order.length) {
     $("rate").hidden = true;
     $("done").hidden = false;
@@ -229,6 +247,7 @@ function flash(text) {
 
 function rate(value) {
   if (state.pos >= state.order.length) return;
+  if (firstSection() && state.pos === firstSection()) state.milestoneSeen = true;
   const item = DATA.items[state.order[state.pos]];
   state.ratings[item.i] = { r: value, ms: Math.round(performance.now() - shownAt) };
   state.history.push(state.pos);
@@ -240,6 +259,7 @@ function rate(value) {
 
 function skip() {
   if (state.pos >= state.order.length) return;
+  if (firstSection() && state.pos === firstSection()) state.milestoneSeen = true;
   state.history.push(state.pos);
   state.pos++;
   flash("–");
@@ -280,6 +300,15 @@ for (let k = 1; k <= 9; k++) {
   $("keys").appendChild(b);
 }
 
+if (firstSection()) {
+  const first = firstSection(), rest = DATA.items.length - first;
+  $("priority").innerHTML = `<b>The first ${first} plates help the most</b>, so please get through those first. ` +
+    `The ${rest} after them are still useful but less important: do them if you have time.`;
+  $("priority").hidden = false;
+  $("milestone").innerHTML = `<b>That's the first ${first} done, the ones that matter most. Thank you!</b> ` +
+    `Hit <b>Export ratings</b> now so nothing gets lost. The ${rest} left are optional extras; keep going if you have time ` +
+    `(export again at the end, the new file includes everything).`;
+}
 if (Object.keys(state.ratings).length) {
   $("resume").textContent = `Welcome back: ${Object.keys(state.ratings).length} already rated, picking up where you left off.`;
   $("go").textContent = "Continue";

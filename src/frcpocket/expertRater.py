@@ -176,11 +176,16 @@ def combine(parts):
     items = [item for data in datas for item in data["items"]]
     name = "".join(str(k) for k in parts)
     digest = hashlib.sha1("".join(item["i"] for item in items).encode()).hexdigest()[:6]
-    data = json.dumps({"version": f"{name}-{digest}", "migrate": [d["version"] for d in datas], "items": items},
-                      separators=(",", ":"))
-    label = " + ".join(str(k) for k in parts)
+    # Earlier combined pages of the same parts (any order) hand over their saved progress too.
+    earlier = [m.group(1) for path in outDir.glob("plate-rater-parts*.html")
+               if (m := re.search(r'"version":"([^"]+)"', path.read_text()[:2_000_000]))]
+    migrate = [d["version"] for d in datas] + [v for v in earlier if v != f"{name}-{digest}"]
+    # Parts in the order given, most useful first; the page shuffles within each.
+    data = json.dumps({"version": f"{name}-{digest}", "migrate": migrate, "sections": [len(d["items"]) for d in datas],
+                       "items": items}, separators=(",", ":"))
     out = outDir / f"plate-rater-parts{name}.html"
-    out.write_text(templatePath.read_text().replace("/*__DATA__*/null", data).replace("__PART__", label))
+    page = templatePath.read_text().replace(", part __PART__", "").replace(' <span class="muted">· part __PART__</span>', "")
+    out.write_text(page.replace("/*__DATA__*/null", data))
     print(f"{len(items)} designs, {out} {out.stat().st_size / 1e6:.1f} MB")
 
 
