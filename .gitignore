@@ -5,6 +5,7 @@ logs/
 # Scraped CAD and forum data: mostly unlicensed third-party content, keep it local.
 data/raw/
 data/processed/cache/
+data/processed_new/
 
 # Superseded model checkpoints and per-round weights
 models/archive_*/
