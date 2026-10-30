@@ -5,6 +5,9 @@ models/generator.pt exists) and the truss baseline, which is always included and
 labelled so the two can be compared. The generator proposes in each rib style, and the
 aesthetic scorer (trained on graded rating sheets) picks among them. Every candidate
 shown has passed the validator.
+
+ML designs then go through the polish pass (polish.py: symmetry, hole-to-hole links,
+blob filling, pocket-size cap), on by default, and are validated and scored again.
 """
 
 from dataclasses import replace
@@ -12,8 +15,9 @@ from pathlib import Path
 
 from shapely.ops import unary_union
 
+from frcpocket import fea, polish as polishPass
 from frcpocket.baseline import trussBaseline
-from frcpocket.trainGenerator import Judge, isSound
+from frcpocket.trainGenerator import Judge, coarseMeshFactor, isSound
 
 defaultGeneratorPath = Path("models/generator.pt")
 defaultScorerPath = Path("models/aestheticScorer.pt")
@@ -32,7 +36,9 @@ class Pocketer:
         self.generator = RibGenerator(generatorPath) if Path(generatorPath).exists() else None
         self.judge = Judge(scorerPath, workers=workers)
 
-    def candidates(self, plate, params, count=6, proposals=16, seed=0):
+    def candidates(self, plate, params, count=6, proposals=16, seed=0, polish=None):
+        """Ranked, validated designs. polish=None follows polish.enabled (on by default)."""
+        polish = polishPass.enabled if polish is None else polish
         layouts = []
         if self.generator is not None:
             for angle, cap in ribStyles:
@@ -53,6 +59,8 @@ class Pocketer:
             if not duplicate:
                 result["source"] = "ML generator"
                 chosen.append(result)
+        if polish and chosen:
+            chosen = self.polished(plate, params, chosen)
         for result in baselineRanked:
             result["source"] = "truss baseline"
             chosen.append(result)
@@ -62,3 +70,45 @@ class Pocketer:
             known = result["stiffnessKept"] is not None
             result["sound"] = (not known) or isSound(result["stiffnessKept"], result["stressIncrease"])
         return sorted(chosen, key=lambda result: (not result["sound"], -result["utility"]))
+
+    def isSoundDesign(self, plate, params, pockets):
+        """The structural floor (coarse FEA, as in ranking); unknown (FEA failed) counts as sound."""
+        meshSize = fea.defaultMeshSize(plate, params) * coarseMeshFactor
+        result = self.judge.structural(plate, params, [pockets], meshSize)[0] if self.judge.useFea else None
+        return result is None or isSound(result["stiffnessKept"], result["stressIncrease"])
+
+    def polished(self, plate, params, results):
+        """Polish each chosen ML design, then validate and score it again.
+
+        The steps are first applied with the validator only; if the finished design falls
+        below the structural floor while the original was above it, polishing is redone with
+        the floor checked after every step, so the offending steps are reverted."""
+        out = []
+        for result in results:
+            original = result["layout"]
+            outcome = polishPass.polishLayout(plate, params, original)
+            if not outcome.changed:
+                result["polish"] = outcome.log
+                out.append(result)
+                continue
+            rescored = self.judge.rank(plate, params, [outcome.layout], feaCount=1)
+            originalSound = result["stiffnessKept"] is None or isSound(result["stiffnessKept"], result["stressIncrease"])
+            if rescored and rescored[0]["stiffnessKept"] is not None and originalSound and not isSound(
+                    rescored[0]["stiffnessKept"], rescored[0]["stressIncrease"]):
+                outcome = polishPass.polishLayout(
+                    plate, params, original, structuralCheck=lambda pockets: self.isSoundDesign(plate, params, pockets))
+                rescored = self.judge.rank(plate, params, [outcome.layout], feaCount=1) if outcome.changed else []
+            if not rescored:
+                result["polish"] = outcome.log + ["kept unpolished"]
+                out.append(result)
+                continue
+            rescored[0]["source"] = result["source"]
+            rescored[0]["polish"] = outcome.log
+            out.append(rescored[0])
+        unique = []
+        for result in out:
+            pockets = unary_union(result["layout"].pockets)
+            if not any(pockets.intersection(other).area / max(pockets.union(other).area, 1e-9) > duplicateIoU
+                       for other in (unary_union(item["layout"].pockets) for item in unique)):
+                unique.append(result)
+        return unique

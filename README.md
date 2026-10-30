@@ -142,6 +142,15 @@ How it works:
   bigger than 3x the gold typical size (3.7% of the plate) or longer than 3x its width,
   using the likely rib that cuts it most evenly into compact pieces. Every split must
   keep the design valid.
+- **Polish pass** (`polish.py`, on by default, `polish.enabled`). A deterministic
+  pass over every ML design shown in the UI, the rating sheets and the evaluation
+  (training proposals are left unpolished). It mirrors the rib set on symmetric plates,
+  links bosses facing each other across a pocket with a straight hole-to-hole rib,
+  opens up solid blobs and re-splits them into pockets of the plate's usual size, and
+  splits pockets bigger than 1.8x that size (one rib, or an X in a big squarish one).
+  Added ribs go into the candidate graph, so the pocket builder and the STEP export
+  are unchanged. Each step must pass the validator, and the UI also checks the FEA
+  soundness floor; a step that fails either is reverted.
 - **Training loop** (`trainGenerator.py`). The generator first imitates the gold plates
   and every rating-sheet design graded 4 or higher. Each round then proposes designs
   in both rib styles and keeps the best as new targets. Utility = 0.70 aesthetic + 0.15 structure
