@@ -175,6 +175,7 @@ def runAll(files, cacheDir, nWorkers, timeoutSeconds=fileTimeoutSeconds):
         cachePath = cachePathFor(path, cacheDir)
         if not isCached(cachePath):
             pending.append((path, cachePath))
+    pending.sort(key=lambda item: item[0].stat().st_size)  # small files first: big assemblies can take minutes each
     print(f"{len(files)} files, {len(pending)} to process", flush=True)
     running = []
     while pending or running:
