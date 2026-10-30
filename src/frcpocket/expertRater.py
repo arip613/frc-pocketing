@@ -10,7 +10,7 @@ pocketed plates, shuffled together and never labelled. Held-out plates are never
 Each part holds only designs that no earlier part showed, so a rater can do part 1 now
 and part 2 later; design ids are the same in every part.
 
-Ingested ratings become rater "expert:<name>" entries in data/curation/expertRatings.jsonl,
+Ingested ratings become rater "expert:<id>" entries in data/curation/expertRatings.jsonl,
 which the scorer reads like the user's own grades (see ratingSheets.loadSheetRatings).
 """
 
@@ -157,6 +157,16 @@ def build(target, part, rounds=()):
     print(f"{len(items)} designs {kinds}, {out} {out.stat().st_size / 1e6:.1f} MB")
 
 
+def rewrap(part):
+    """Put the current page template around an existing part's design list (same designs,
+    same saved-progress key)."""
+    import re
+    out = outDir / f"plate-rater-part{part}.html"
+    data = re.search(r"const DATA = (\{.*?\});\n", out.read_text(), re.S).group(1)
+    out.write_text(templatePath.read_text().replace("/*__DATA__*/null", data).replace("__PART__", str(part)))
+    print(f"rewrapped {out}")
+
+
 def ingest(paths):
     known = set()
     for path in outDir.glob("items_part*.jsonl"):
@@ -165,6 +175,7 @@ def ingest(paths):
     with open(ratingsPath, "a") as handle:
         for path in paths:
             export = json.loads(Path(path).read_text())
+            # A random id per browser (pages before 2026-10-30 evening sent the rater's name).
             rater = "expert:" + (export.get("rater") or Path(path).stem).strip().lower().replace(" ", "_")
             for entry in export["ratings"]:
                 if entry["id"] not in known or not 1 <= int(entry["rating"]) <= 9:
@@ -178,7 +189,7 @@ def ingest(paths):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("action", choices=["build", "ingest"])
+    parser.add_argument("action", choices=["build", "rewrap", "ingest"])
     parser.add_argument("files", nargs="*")
     parser.add_argument("--count", type=int, default=1000)
     parser.add_argument("--part", type=int, default=1)
@@ -186,6 +197,8 @@ def main():
     args = parser.parse_args()
     if args.action == "build":
         build(args.count, args.part, tuple(filter(None, args.rounds.split(","))))
+    elif args.action == "rewrap":
+        rewrap(args.part)
     else:
         ingest(args.files)
 

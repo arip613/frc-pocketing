@@ -110,10 +110,8 @@
       <li>Keys: <b>1–9</b> to rate, <b>S</b> to skip, <b>Backspace</b> to undo.</li>
       <li>Your progress is saved in this browser. You can stop and export at any point, even after 50.</li>
     </ul>
-    <label for="name">Your name (so we can tell raters apart)</label>
-    <input id="name" autocomplete="name" maxlength="40">
     <div class="row">
-      <button class="primary" id="go" disabled>Start</button>
+      <button class="primary" id="go">Start</button>
       <span class="muted small" id="resume"></span>
     </div>
   </section>
@@ -170,7 +168,8 @@ function shuffledOrder() {
   return order;
 }
 
-let state = load() || { name: "", order: shuffledOrder(), pos: 0, ratings: {}, history: [] };
+let state = load() || { rater: Math.random().toString(36).slice(2, 10), order: shuffledOrder(), pos: 0, ratings: {}, history: [] };
+if (!state.rater) state.rater = Math.random().toString(36).slice(2, 10);
 let shownAt = 0;
 
 function pathOf(flat) {
@@ -242,13 +241,13 @@ function undo() {
 
 function exportRatings() {
   const ratings = Object.entries(state.ratings).map(([id, v]) => ({ id, rating: v.r, ms: v.ms }));
-  const body = JSON.stringify({ rater: state.name, version: DATA.version, exportedAt: new Date().toISOString(),
+  const body = JSON.stringify({ rater: state.rater, version: DATA.version, exportedAt: new Date().toISOString(),
                                 count: ratings.length, ratings }, null, 1);
   const blob = new Blob([body], { type: "application/json" });
   const link = document.createElement("a");
   const stamp = new Date().toISOString().slice(0, 10);
   link.href = URL.createObjectURL(blob);
-  link.download = `plate-ratings-${(state.name || "anon").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}-${stamp}-${ratings.length}.json`;
+  link.download = `plate-ratings-part${DATA.version.split("-")[0]}-${stamp}-${ratings.length}.json`;
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -263,16 +262,11 @@ for (let k = 1; k <= 9; k++) {
   $("keys").appendChild(b);
 }
 
-$("name").value = state.name || "";
-$("go").disabled = !$("name").value.trim();
 if (Object.keys(state.ratings).length) {
   $("resume").textContent = `Welcome back: ${Object.keys(state.ratings).length} already rated, picking up where you left off.`;
   $("go").textContent = "Continue";
 }
-$("name").addEventListener("input", () => { $("go").disabled = !$("name").value.trim(); });
-$("name").addEventListener("keydown", (e) => { if (e.key === "Enter" && $("name").value.trim()) $("go").click(); });
 $("go").addEventListener("click", () => {
-  state.name = $("name").value.trim();
   save();
   $("start").hidden = true;
   $("rate").hidden = false;
@@ -283,8 +277,10 @@ $("skip").addEventListener("click", skip);
 $("export").addEventListener("click", exportRatings);
 $("export2").addEventListener("click", exportRatings);
 document.addEventListener("keydown", (e) => {
-  if ($("rate").hidden && $("done").hidden) return;
-  if (e.target.tagName === "INPUT") return;
+  if ($("rate").hidden && $("done").hidden) {
+    if (e.key === "Enter") $("go").click();
+    return;
+  }
   if (e.key >= "1" && e.key <= "9") rate(+e.key);
   else if (e.key === "s" || e.key === "S" || e.key === "0") skip();
   else if (e.key === "Backspace" || e.key === "z" || e.key === "Z") { e.preventDefault(); undo(); }
