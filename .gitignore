@@ -6,6 +6,7 @@ logs/
 data/raw/
 data/processed/cache/
 data/processed_new/
+data/processed_wcp/
 
 # Superseded model checkpoints and per-round weights
 models/archive_*/
