@@ -29,8 +29,8 @@ from shapely.ops import unary_union
 from shapely.prepared import prep
 
 from frcpocket import designFeatures, geom2d, validator
-from frcpocket.layout import (CandidateGraph, Layout, Node, arcSegments, makeLayout, mirrorGeometry, plateSymmetries,
-                              polygons, wallCenterline)
+from frcpocket.layout import (CandidateGraph, Layout, Node, arcSegments, filletRadius, makeLayout, mirrorGeometry,
+                              plateSymmetries, polygons, toolOpening, wallCenterline)
 from frcpocket.plate import featureCenter
 
 enabled = True  # the shared generation path (Pocketer, rating sheets) polishes ML designs when on
@@ -115,6 +115,7 @@ class Polisher:
         self.centre = plate.outline.centroid
         self.angle = geom2d.principalAngle(plate.outline)
         self.cache = {}
+        self.strictExport = True  # off only when the input design itself needed gap trimming
         self.orbitCache = {}
         self.linesCache = {}
 
@@ -139,12 +140,28 @@ class Polisher:
             layout = makeLayout(self.plate, self.params, design.graph, design.ribs, name="ml", ribWidths=design.ribWidths)
             layout = fillJunkPockets(self.plate, self.params, layout)
             ok = bool(layout.pockets) and validator.validateLayout(self.plate, self.params, layout.pockets).passed
+            ok = ok and (not self.strictExport or self.exportMatches(design, layout))
             self.cache[key] = (layout, ok)
         layout, ok = self.cache[key]
         if len(layout.ribs) != len(design.ribs):
             design.ribs = list(layout.ribs)  # dead ends pruned
             design.ribWidths = {edge: width for edge, width in design.ribWidths.items() if edge in set(design.ribs)}
         return layout, ok
+
+    def exportMatches(self, design, layout):
+        """The STEP export rebuilds pockets without the 2D gap trimming (layout.enforcePocketGaps),
+        so a design is only taken if no trimming was needed: the untrimmed tool-opened pockets
+        it keeps are already a rib apart."""
+        params = self.params
+        keep = list(self.bosses) + [design.segment(rib).buffer(self.width(design, rib) / 2, cap_style="flat") for rib in design.ribs]
+        raw = self.inner.difference(unary_union(keep)) if keep else self.inner
+        untrimmed = []
+        for region in polygons(raw):
+            opened = toolOpening(region, filletRadius(region, params))
+            for piece in polygons(opened.intersection(region)):
+                if any(pocket.contains(piece.representative_point()) for pocket in layout.pockets):
+                    untrimmed.append(piece)
+        return validator.minPairDistance(untrimmed, 2 * params.ribIn) >= params.ribIn - validator.lengthTolIn
 
     def width(self, design, edge):
         return max(design.ribWidths.get(edge, self.params.ribIn), self.params.ribIn)
@@ -705,6 +722,10 @@ class Polisher:
     def run(self, layout):
         design = Design(layout.graph, layout.ribs, layout.ribWidths)
         built, ok = self.build(design)
+        if not ok:
+            # An input that needed 2D gap trimming can't be held to the stricter check.
+            self.strictExport, self.cache = False, {}
+            built, ok = self.build(design)
         if not ok:
             # The pass only edits designs that already pass; anything else is left alone.
             return PolishResult(layout=layout, log=["skipped: input design not valid as rebuilt"], changed=False)
