@@ -126,9 +126,24 @@ class BodyGeometry:
             return [], kind, None
         return [start, end], ("line" if kind == "line" else kind), None
 
+    def loopOrder(self, loop):
+        """Half-edges in traversal order, following each one's forward link (the stored
+        list isn't guaranteed to be in loop order)."""
+        members = set(loop.half_edges)
+        if not members:
+            return []
+        order, current = [], loop.half_edges[0]
+        while current is not None and current in members and current not in order:
+            order.append(current)
+            current = self.halfEdges[current].forward
+        return order if len(order) == len(members) else list(loop.half_edges)
+
     def loopPoints(self, loop):
-        """Loop as 3D points in traversal order with STEP-style line/arc metadata."""
-        points, nLines, arcRadii = [], 0, []
+        """Loop as 3D points in traversal order with STEP-style line/arc metadata.
+
+        Edges are chained by geometry (each joins the remaining edge whose end is
+        nearest), since neither the stored half-edge order nor senses can be relied on."""
+        segments, nLines, arcRadii = [], 0, []
         for halfEdgeId in loop.half_edges:
             halfEdge = self.halfEdges[halfEdgeId]
             if halfEdge.edge is None:
@@ -138,13 +153,22 @@ class BodyGeometry:
                 nLines += 1
             elif kind == "circle":
                 arcRadii.append(radius)
-            for point in edgePoints:
-                if not points or np.linalg.norm(points[-1] - point) > 1e-6:
-                    points.append(point)
+            if len(edgePoints) >= 2:
+                segments.append(list(edgePoints))
+        if not segments:
+            return [], nLines, arcRadii
+        points = list(segments.pop(0))
+        while segments:
+            end = points[-1]
+            best = min(range(len(segments)), key=lambda i: min(np.linalg.norm(segments[i][0] - end),
+                                                               np.linalg.norm(segments[i][-1] - end)))
+            segment = segments.pop(best)
+            if np.linalg.norm(segment[-1] - end) < np.linalg.norm(segment[0] - end):
+                segment = segment[::-1]
+            points += [point for point in segment if np.linalg.norm(points[-1] - point) > 1e-6]
         if len(points) > 2 and np.linalg.norm(points[0] - points[-1]) < 1e-4:
             points.pop()
         return points, nLines, arcRadii
-
 
 def toPlane(points, origin, xAxis, yAxis):
     return [((p - origin) @ xAxis, (p - origin) @ yAxis) for p in points]
