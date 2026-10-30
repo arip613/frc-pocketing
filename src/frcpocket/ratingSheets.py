@@ -37,7 +37,7 @@ from matplotlib.patches import Polygon as PatchPolygon
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
-from frcpocket import geom2d, validator
+from frcpocket import geom2d, polish, validator
 from frcpocket.baseline import trussBaseline
 from frcpocket.evaluate import styleParamsFromRecord
 from frcpocket.generator import RibGenerator
@@ -94,13 +94,15 @@ def sheetPlates(rng, extraCount=10, platesPath="data/processed/plates.jsonl", ex
 
 
 def candidatePool(plate, params, generator, seed):
-    """Every valid design on offer: ML proposals for each rib style and density, plus the
-    truss baseline."""
+    """Every valid design on offer: ML proposals for each rib style and density (polished,
+    like the UI's), plus the truss baseline."""
     pool = []
     for angle, cap in ribStyles:
         for factor in densityFactors:
             styleParams = replace(params, pocketSizeFactor=factor, minRibAngleDegrees=angle, maxHoleRibs=cap)
             for index, layout in enumerate(generator.propose(plate, styleParams, count=proposalsPerStyle, seed=seed)):
+                if polish.enabled and layout.pockets:
+                    layout = polish.polishLayout(plate, styleParams, layout).layout  # same pass as the UI
                 pool.append((f"ml a{angle:g}c{cap} d{factor} p{index}", styleParams, layout))
     pool.append(("baseline", params, trussBaseline(plate, params)))
     return [(source, candidateParams, layout) for source, candidateParams, layout in pool
