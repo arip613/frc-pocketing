@@ -276,20 +276,61 @@ def userGradedEntries():
     return entries
 
 
+def expertGradedEntries(path=Path("data/curation/expertRatings.jsonl")):
+    """Ratings from the Plate Rater page (CAD experts, 1-9) as sheet-candidate entries.
+
+    Each rater's ratings are standardised against their own mean and spread, averaged over
+    raters per design, then mapped onto the 1-5 grade scale (mean -> 3, one spread -> 1
+    grade). Only generated designs from the rating-sheet rounds become entries; ratings of
+    real designs are kept in the file for later use."""
+    if not Path(path).exists():
+        return []
+    byRater = {}
+    for line in Path(path).read_text().splitlines():
+        entry = json.loads(line)
+        byRater.setdefault(entry["rater"], {})[entry["id"]] = entry["rating"]  # a re-export replaces
+    scores = {}
+    for ratings in byRater.values():
+        values = np.array(list(ratings.values()), dtype=float)
+        if len(values) < 10:
+            continue  # too few to know this rater's scale
+        mean, spread = values.mean(), max(values.std(), 0.5)
+        for designId, rating in ratings.items():
+            scores.setdefault(designId, []).append((rating - mean) / spread)
+    grades = {}
+    for designId, zs in scores.items():
+        if designId.startswith("sheet:"):
+            _, roundName, sheet, candidate = designId.split(":")
+            grades[(roundName, sheet, int(candidate))] = float(np.clip(3 + np.mean(zs), 1, 5))
+    entries = []
+    for roundName in sorted({key[0] for key in grades}):
+        for line in (sheetRoot / roundName / "candidates.jsonl").read_text().splitlines():
+            entry = json.loads(line)
+            grade = grades.get((roundName, entry["sheet"], int(entry["candidate"])))
+            if grade is not None:
+                entry.update({"kind": "sheetCandidate", "round": roundName, "rater": "experts", "grade": grade})
+                entries.append(entry)
+    return entries
+
+
 def loadSheetRatings(path=ratingsPath):
     """plateKey -> (plate, [(params, pockets, ribs, grade, entry)]) from every graded round."""
     byPlate = {}
     if not Path(path).exists():
         return byPlate
     entries = [json.loads(line) for line in Path(path).read_text().splitlines()]
-    entries += userGradedEntries()
-    # Where the user graded a design, their grade replaces Claude's.
-    userGraded = {(e["round"], e["sheet"], e["candidate"]) for e in entries
-                  if e.get("kind") == "sheetCandidate" and e.get("rater") == "user"}
+    entries += userGradedEntries() + expertGradedEntries()
+    # One grade per design: the user's beats the experts', which beats Claude's.
+    rank = {"user": 2, "experts": 1}
+    top = {}
+    for e in entries:
+        if e.get("kind") == "sheetCandidate":
+            key = (e["round"], e["sheet"], e["candidate"])
+            top[key] = max(top.get(key, 0), rank.get(e.get("rater"), 0))
     for entry in entries:
         if entry.get("kind") != "sheetCandidate":
             continue
-        if entry.get("rater") != "user" and (entry["round"], entry["sheet"], entry["candidate"]) in userGraded:
+        if rank.get(entry.get("rater"), 0) < top[(entry["round"], entry["sheet"], entry["candidate"])]:
             continue
         if entry["plateKey"] not in byPlate:
             plate = Plate(outline=Polygon(entry["outline"]), features=[Polygon(hole) for hole in entry["holes"]],
