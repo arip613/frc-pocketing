@@ -176,7 +176,8 @@ async function generate() {
     button.disabled = false;
     button.textContent = "Generate";
   }
-  status(`Done in ${Math.round(state.job.seconds)} s.`);
+  status(`Done in ${Math.round(state.job.seconds)} s.` +
+    (state.job.relaxed ? ` Nothing passed the strength check with your settings, so these use ${state.job.relaxed}.` : ""));
   buildCards();
   choose(0);
 }

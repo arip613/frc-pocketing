@@ -101,6 +101,8 @@ def generate(rules: Rules):
         raise HTTPException(400, "Blind depth has to be less than the plate thickness.")
     started = time.time()
     results = pocketer().candidates(plate, params, count=max(1, min(8, rules.count)))
+    relaxed = results[0].get("relaxed") if results else None
+    params = results[0].get("params", params) if results else params  # the settings actually used
     if not results:
         raise HTTPException(422, "Nothing valid fits with these rules. Try a thinner wall or rib, or a smaller corner radius.")
     jobId = uuid.uuid4().hex[:12]
@@ -126,7 +128,7 @@ def generate(rules: Rules):
         })
     inner = plate.outline.buffer(-params.wallIn)
     wallLine = [coords(piece) for piece in getattr(inner, "geoms", [inner]) if not piece.is_empty]
-    return {"jobId": jobId, "seconds": time.time() - started, "candidates": candidates, "wallLine": wallLine,
+    return {"jobId": jobId, "seconds": time.time() - started, "candidates": candidates, "wallLine": wallLine, "relaxed": relaxed,
             "params": {"wallIn": params.wallIn, "ribIn": params.ribIn, "cornerIn": params.cornerRadiusIn, "bossIn": params.boss}}
 
 

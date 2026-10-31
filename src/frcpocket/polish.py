@@ -41,6 +41,7 @@ enabled = True  # the shared generation path (Pocketer, rating sheets) polishes 
 typicalClip = (0.7, 1.3)  # typical pocket area, in gold reference areas for this plate size
 splitCapFactor = 1.8  # pockets above this many typical pockets get split
 splitElongation = 3.0  # and long pockets above this elongation, if at least a typical pocket big
+slotElongation = 3.5  # or this long at any size
 minPieceFactor = 0.3  # no link leaves a piece below this many typical pockets
 splitPieceFactor = 0.45  # and no split or X a piece below this many
 crossMinFactor = 3.0  # X-bracing only in pockets at least this many typical pockets big
@@ -379,8 +380,10 @@ class Polisher:
     def overCap(self, pocket):
         cap = min(0.15 * self.plate.materialArea, splitCapFactor * self.typical)
         need = pocket.area / cap
-        if pocket.area > self.typical:
-            need = max(need, elongationOf(pocket) / splitElongation)
+        elongation = elongationOf(pocket)
+        if pocket.area > self.typical or elongation > slotElongation:
+            # long slots read badly at any size (the expert scored long pockets down)
+            need = max(need, elongation / splitElongation)
         return need
 
     def slots(self, layout):

@@ -38,8 +38,29 @@ class Pocketer:
         self.generator = RibGenerator(generatorPath) if Path(generatorPath).exists() else None
         self.judge = Judge(scorerPath, workers=workers)
 
-    def candidates(self, plate, params, count=6, proposals=16, seed=0, polish=None):
-        """Ranked, validated designs. polish=None follows polish.enabled (on by default)."""
+    def candidates(self, plate, params, count=6, proposals=16, seed=0, polish=None, relax=True):
+        """Ranked, validated designs. polish=None follows polish.enabled (on by default).
+
+        If no ML design passes the structural floor (small or thin plates under big pockets
+        and 3/16 in ribs), it tries again with smaller pockets, then with a 1/8 in rib, and
+        returns the first attempt that has a sound ML design; each result notes the settings
+        used in result["relaxed"]."""
+        results = self._candidates(plate, params, count, proposals, seed, polish)
+        if not relax or any(r["sound"] and r["source"] == "ML generator" for r in results):
+            return results
+        attempts = [("smaller pockets", replace(params, pocketSizeFactor=params.pocketSizeFactor * 0.6))]
+        if params.ribIn > 0.125:
+            attempts.append(("smaller pockets, 1/8 in rib", replace(params, pocketSizeFactor=params.pocketSizeFactor * 0.6, ribIn=0.125)))
+        for note, relaxed in attempts:
+            retry = self._candidates(plate, relaxed, count, proposals, seed, polish)
+            if any(r["sound"] and r["source"] == "ML generator" for r in retry):
+                for r in retry:
+                    r["relaxed"] = note
+                    r["params"] = relaxed
+                return retry
+        return results
+
+    def _candidates(self, plate, params, count, proposals, seed, polish):
         polish = polishPass.enabled if polish is None else polish
         layouts = []
         if self.generator is not None:

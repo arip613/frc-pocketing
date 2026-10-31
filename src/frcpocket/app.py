@@ -83,6 +83,8 @@ def generate(stepFile, units, wall, rib, corner, boss, depthMode, depth, density
     if params.depthIn is not None and params.depthIn >= plate.thicknessIn:
         raise gr.Error("Blind depth must be less than the plate thickness (use Through instead).")
     results = getPocketer().candidates(plate, params, count=int(count))
+    if results and results[0].get("relaxed"):
+        params = results[0]["params"]
     if not results:
         raise gr.Error("No valid pocketing fits this plate with these settings. Try a smaller wall, rib, or corner radius.")
     gallery = [(previewImage(plate, result, index), caption(index, result)) for index, result in enumerate(results)]
