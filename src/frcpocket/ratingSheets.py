@@ -398,12 +398,15 @@ def compactRatings(path=ratingsPath):
     Path(path).write_text("".join(line + "\n" for line in lines))
 
 
-def loadSheetRatings(path=ratingsPath):
-    """plateKey -> (plate, [(params, pockets, ribs, grade, entry)]) from every graded round."""
+def loadSheetRatings(path=ratingsPath, claudeGrades=True):
+    """plateKey -> (plate, [(params, pockets, ribs, grade, entry)]) from every graded round.
+
+    claudeGrades=False leaves out Claude's own sheet grades, so only the user's and the
+    experts' grades train the models (Claude's leaned towards dense, busy designs)."""
     byPlate = {}
     if not Path(path).exists():
         return byPlate
-    entries = expandReferences([json.loads(line) for line in Path(path).read_text().splitlines()])
+    entries = expandReferences([json.loads(line) for line in Path(path).read_text().splitlines()]) if claudeGrades else []
     entries += userGradedEntries() + expertGradedEntries()
     # One grade per design: the user's beats the experts', which beats Claude's.
     rank = {"user": 2, "experts": 1}

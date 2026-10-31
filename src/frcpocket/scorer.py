@@ -138,12 +138,12 @@ def uiRatingSets(seed, ratingsPath=Path("data/curation/ratings.jsonl"), perKind=
     return sets
 
 
-def sheetSetItems(seed, records, perKind=1, weight=2.0):
+def sheetSetItems(seed, records, perKind=1, weight=2.0, claudeGrades=True):
     """Job arguments for every graded plate on the rating sheets (ratingSheets.py)."""
     from frcpocket import ratingSheets
 
     items = []
-    for key, (plate, rated) in sorted(ratingSheets.loadSheetRatings().items()):
+    for key, (plate, rated) in sorted(ratingSheets.loadSheetRatings(claudeGrades=claudeGrades).items()):
         plateId = rated[0][4]["plateId"]
         real = records[plateId]["pockets"] if plateId in records else []
         graded = [(params, pockets, grade) for params, pockets, _, grade, _ in rated]
@@ -349,7 +349,7 @@ class AestheticScorer:
         return torch.sigmoid((self.logits(plate, params, designs, plateSym) - mean) / std).numpy()
 
 
-def train(outPath, platesPath, seed=0, perKind=4, cnnEpochs=25, parallel=1):
+def train(outPath, platesPath, seed=0, perKind=4, cnnEpochs=25, parallel=1, claudeGrades=True):
     rng = np.random.default_rng(seed)
     torch.manual_seed(seed)
     records = {record["id"]: record for record in loadRecords(platesPath)}
@@ -360,7 +360,7 @@ def train(outPath, platesPath, seed=0, perKind=4, cnnEpochs=25, parallel=1):
          for plateId in gold if not isHoldout(plateId)]))
     print(f"gold style reference: {designFeatures.styleReference}", flush=True)
     built = runPlateJobs({
-        "sheets": (sheetSetJob, sheetSetItems(seed, records)),
+        "sheets": (sheetSetJob, sheetSetItems(seed, records, claudeGrades=claudeGrades)),
         "goldTrain": (goldSetJob, [(records[plateId], seed, perKind) for plateId in gold if not isHoldout(plateId)]),
         "goldTest": (goldSetJob, [(records[plateId], seed, perKind) for plateId in gold if isHoldout(plateId)]),
         "prior": (priorSetJob, priorSetItems(seed, platesPath)),

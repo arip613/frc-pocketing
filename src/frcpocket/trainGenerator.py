@@ -146,7 +146,7 @@ def imitationExamples(goldTrain):
     return examples
 
 
-def gradedImitationExamples(parallel=None):
+def gradedImitationExamples(parallel=None, claudeGrades=True):
     """Designs graded 4 or 5 on the rating sheets, as imitation targets.
 
     Ribs are matched to this plate's candidate graph by their end points. Designs that
@@ -159,7 +159,7 @@ def gradedImitationExamples(parallel=None):
     from frcpocket import ratingSheets
 
     jobs = []
-    for plate, rated in ratingSheets.loadSheetRatings().values():
+    for plate, rated in ratingSheets.loadSheetRatings(claudeGrades=claudeGrades).values():
         for params, pockets, ribs, grade, entry in rated:
             weight = next((weight for minGrade, weight in gradedImitationWeights if grade >= minGrade), None)
             if weight is not None:
@@ -468,7 +468,7 @@ def train(args):
 
     model = RibGnn()
     imitation = imitationExamples(goldTrain)
-    graded = gradedImitationExamples(parallel=args.parallel)
+    graded = gradedImitationExamples(parallel=args.parallel, claudeGrades=not args.no_claude_grades)
     print(f"imitation: {len(imitation)} gold, {len(graded)} graded 4-5 on rating sheets", flush=True)
     imitation += graded
     logPath = outDir / "trainingLog.json"
@@ -590,6 +590,7 @@ def buildParser():
     parser.add_argument("--parallel", type=int, default=max(1, min(6, (os.cpu_count() or 2) - 2)),
                         help="processes to spread each round's plates over (1 = sequential)")
     parser.add_argument("--fea", action="store_true", help="run FEA inside the training loop (slow)")
+    parser.add_argument("--no-claude-grades", action="store_true", help="train only on the user's and experts' sheet grades")
     parser.add_argument("--val-limit", type=int, default=12, help="non-gold validation plates per round")
     parser.add_argument("--resume-round", type=int, default=None, help="continue from models/generator_round<N>.pt")
     parser.add_argument("--resume-log", default=None, help="JSON list of earlier round metrics")
