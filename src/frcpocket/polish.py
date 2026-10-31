@@ -17,8 +17,9 @@ stood out (user feedback, comparing real | generated plates):
             uneven little cells down; he rewards even pocket sizes)
             (a single rib, or an X of two crossing ribs in a large squarish or
             triangular pocket)
-  holes     every hole off the outer wall is held by at least two ribs (the user's rule);
-            holes whose bosses overlap count as one, and holes on the wall need none
+  holes     no hole hangs off a single rib (the user's rule): a hole off the outer wall
+            held by one rib gets a second; holes whose bosses overlap count as one, a hole
+            with no rib sits in solid plate, and holes on the wall need none
 
 Every rib the pass adds is a straight segment realized in the layout's candidate graph
 (snapped to an existing node, or a new wall point, a T-junction on an existing rib, or a
@@ -64,7 +65,7 @@ smallFactor = 0.5  # pockets below this many typical pockets are merged into a n
 mergeSolidity = 0.85  # a merged pocket must stay this close to convex
 mergeMinGain = 0.005  # least drop in the spread of log pocket areas worth a merge
 mergeTries = 6  # fully check only the few merges that even out pocket sizes the most
-minHoleRibs = 2  # ribs every hole off the outer wall is held by (the user's rule)
+minHoleRibs = 2  # a hole off the outer wall held by ribs is held by at least this many (the user's rule)
 holeTries = 6  # fully check only the few cheapest ribs per missing one
 
 
@@ -929,7 +930,7 @@ class Polisher:
         return sum(1 for i, j in design.ribs if (i in nodes) != (j in nodes))
 
     def anchorHoles(self, design, layout):
-        """Add ribs until every hole off the outer wall is held by at least minHoleRibs.
+        """Give every hole off the outer wall that hangs off a single rib a second one.
 
         A new rib runs from the hole straight across a neighbouring pocket to a point on its
         far side (another hole, a rib, a rib junction or the wall), and must leave pieces
@@ -937,7 +938,7 @@ class Polisher:
         params = self.params
         notes = []
         for members in self.holeIslands():
-            while self.islandRibs(design, members) < minHoleRibs:
+            while 0 < self.islandRibs(design, members) < minHoleRibs:
                 island = unary_union([self.bosses[member] for member in members])
                 options = []
                 for pocket in layout.pockets:
@@ -979,8 +980,8 @@ class Polisher:
         return design, layout, f"held holes {', '.join(notes)}" if notes else ""
 
     def holeShortfall(self, design):
-        """Islands off the wall still held by fewer than minHoleRibs ribs."""
-        return sum(1 for members in self.holeIslands() if self.islandRibs(design, members) < minHoleRibs)
+        """Islands off the wall still hanging off fewer than minHoleRibs ribs (but some)."""
+        return sum(1 for members in self.holeIslands() if 0 < self.islandRibs(design, members) < minHoleRibs)
 
     # ---------- driver ----------------------------------------------------------------
 
