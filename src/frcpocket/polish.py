@@ -60,6 +60,7 @@ hugShare = 0.6  # a rib hugs a wall or cutout when this share of it runs too clo
 hugTries = 4  # fully check only the few drops that gain the most pocket
 smallFactor = 0.5  # pockets below this many typical pockets are merged into a neighbour
 mergeSolidity = 0.85  # a merged pocket must stay this close to convex
+mergeMinGain = 0.005  # least drop in the spread of log pocket areas worth a merge
 mergeTries = 6  # fully check only the few merges that even out pocket sizes the most
 
 
@@ -857,7 +858,7 @@ class Polisher:
                     if len(raw) >= len(layout.pockets):
                         continue  # the drop didn't join two pockets
                     gainGuess = spreadBefore - self.sizeSpread(raw)
-                    if gainGuess > 0.02:
+                    if gainGuess > mergeMinGain:
                         trials.append((gainGuess, group, trial))
             best = None
             for _, group, trial in sorted(trials, key=lambda item: -item[0])[:mergeTries]:
@@ -865,16 +866,23 @@ class Polisher:
                 built, ok = self.build(trial)
                 if not ok or not built.pockets:
                     continue
-                gain = spreadBefore - self.sizeSpread(built.pockets)
-                if gain <= 0.02:
-                    continue
                 if max(self.overCap(pocket) for pocket in built.pockets) > max(1.0, worstBefore):
+                    # the joined pocket came out too big: split it again the other way, which
+                    # turns two uneven cells into two even ones
+                    reach = unary_union([segments[other] for other in group]).buffer(self.typicalWidth)
+                    trial, built, _ = self.splitLarge(trial, built, region=reach, rounds=4)
+                    if not self.build(trial)[1]:
+                        continue
+                    if max(self.overCap(pocket) for pocket in built.pockets) > max(1.0, worstBefore):
+                        continue
+                gain = spreadBefore - self.sizeSpread(built.pockets)
+                if gain <= mergeMinGain:
                     continue
                 if self.slots(built) > self.slots(layout) or self.crumbs(built) > self.crumbs(layout):
                     continue
                 if self.transforms and self.symmetryShortfall(built.pockets) > self.symmetryShortfall(layout.pockets) + 0.02:
                     continue
-                fresh = [pocket for pocket in built.pockets if not any(pocket.equals_exact(old, 1e-6) for old in layout.pockets)]
+                fresh = [pocket for pocket in built.pockets if not any(geom2d.iou(pocket, old) > 0.95 for old in layout.pockets)]
                 if any(designFeatures.sharpestCorner(pocket) < 20 or pocket.area < mergeSolidity * pocket.convex_hull.area
                        for pocket in fresh):
                     continue  # the merged pocket has a needle corner, or is an L or a crescent
@@ -883,9 +891,9 @@ class Polisher:
             if best is None:
                 break
             merged = len(layout.pockets) - len(best[2].pockets)
-            notes.append(f"{merged} pocket{'s' if merged > 1 else ''}")
+            notes.append(f"{merged} pocket{'s' if merged != 1 else ''}" if merged > 0 else "re-split 1 pair evenly")
             design, layout = best[1], best[2]
-        return design, layout, f"merge: joined {', '.join(notes)} into neighbours" if notes else ""
+        return design, layout, f"merge: {', '.join(notes)}" if notes else ""
 
     # ---------- driver ----------------------------------------------------------------
 
