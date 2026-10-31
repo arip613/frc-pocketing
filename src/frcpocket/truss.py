@@ -25,11 +25,20 @@ from frcpocket import designFeatures
 from frcpocket.layout import CandidateGraph, Node, arcSegments, makeLayout, polygons, wallCenterline
 from frcpocket.plate import featureCenter
 
-spacingFactors = (0.8, 1.0, 1.25, 1.6)  # node spacing in target pocket widths, one design each
+# One design per (node spacing in lattice widths, sharpest open-junction angle kept): pure
+# triangles, a light clean-up, and mostly 3-way junctions, each at a few densities.
+# (Looked at on non-held-out kept plates: 0.8 crowds small plates with crumbs, and 80 degrees
+# merges too far, into a few big cells.)
+variants = ((1.0, 0.0), (1.3, 0.0), (1.6, 0.0), (0.9, 55.0), (1.1, 55.0), (1.35, 55.0))
 lloydIterations = 25
 sampleCount = 6000  # area samples for the relaxation
 wallReachFactor = 1.0  # a hole whose boss is within this many rib widths of the wall band is on the wall
 narrowFactor = 1.15  # on a narrow stretch, wall points are this many local widths apart (equilateral zigzag)
+# The plates the user kept (data/curation/plateKeeper.json, measured in docs/designNotes.md):
+# median pocket area about 0.165 * S^1.05 in^2 with S = sqrt(material area), at the default
+# pocket-size factor; open rib junctions mostly 3-way, their smallest angle about 90 degrees.
+keptPocketCoefficient, keptPocketExponent, defaultSizeFactor = 0.165, 1.05, 1.25
+mergedPerTriangle = 1.6  # removing acute ribs merges triangles: pockets end up about this many lattice triangles
 
 
 def triangleSide(area):
@@ -44,19 +53,19 @@ class TrussEngine:
         # Pocketer asks once per rib style; a different seed per style gives different relaxations.
         seed = seed + int(params.minRibAngleDegrees) * 7 + int(params.maxHoleRibs or 0)
         layouts = []
-        for factor in spacingFactors[: max(1, count)]:
-            layout = relaxedTruss(plate, params, factor, seed)
+        for factor, junctionDegrees in variants:
+            layout = relaxedTruss(plate, params, factor, seed, junctionDegrees)
             if layout is not None and layout.pockets:
                 layouts.append(layout)
         return layouts
 
 
-def relaxedTruss(plate, params, spacingFactor=1.0, seed=0):
+def relaxedTruss(plate, params, spacingFactor=1.0, seed=0, junctionDegrees=0.0):
     if not wallCenterline(plate, params):
         return None
     scale = math.sqrt(plate.materialArea)
-    target = designFeatures.referencePocketArea(scale) * params.pocketSizeFactor
-    spacing = spacingFactor * (triangleSide(target) + params.ribIn)
+    target = keptPocketCoefficient * scale ** keptPocketExponent * params.pocketSizeFactor / defaultSizeFactor
+    spacing = spacingFactor * (triangleSide(target / mergedPerTriangle) + params.ribIn)
     inner = plate.outline.buffer(-params.wallIn, quad_segs=arcSegments)
     bosses = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
     reach = inner.buffer(-wallReachFactor * params.ribIn)
@@ -141,8 +150,11 @@ def relaxedTruss(plate, params, spacingFactor=1.0, seed=0):
         if any(index not in ends and preparedHoles[index].intersects(segment) for index in range(len(plate.features))):
             continue
         kept.append((i, j))
+    if junctionDegrees:
+        kept = openJunctions(nodes, kept, junctionDegrees)
+        nodes = straightenBends(nodes, kept)
     graph = CandidateGraph(nodes=nodes, edges=kept, isDelaunay=[True] * len(kept))
-    return makeLayout(plate, params, graph, kept, name=f"truss{spacingFactor:g}")
+    return makeLayout(plate, params, graph, kept, name=f"truss{spacingFactor:g}-{junctionDegrees:g}")
 
 
 def sampleIn(prepared, bounds, count, rng, batch=4000):
@@ -178,3 +190,62 @@ def localWidth(plate, rings, ring, position):
                 if hit.geom_type == "Point" and hit.distance(point) > 1e-2:
                     best = min(best, hit.distance(point))
     return best
+
+
+def openJunctions(nodes, edges, minDegrees):
+    """Remove ribs so no two ribs meet at an open (interior) junction at a sharp angle.
+
+    At each sharp pair the longer rib goes (merging the two pockets beside it), unless that
+    would leave its far end with fewer than two ribs; repeat until no sharp pair is left.
+    Holes and wall points keep their fans: ribs converge on holes in the plates the user kept."""
+    edges = set(edges)
+    points = np.array([node.point for node in nodes])
+    limit = math.radians(minDegrees)
+
+    def neighbours(index):
+        return [j if i == index else i for i, j in edges if index in (i, j)]
+
+    for _ in range(4 * len(edges)):
+        worst = None
+        for index, node in enumerate(nodes):
+            if node.kind != "interior":
+                continue
+            around = neighbours(index)
+            if len(around) < 2:
+                continue
+            angles = sorted((math.atan2(*(points[j] - points[index])[::-1]) % (2 * math.pi), j) for j in around)
+            for (a, ja), (b, jb) in zip(angles, angles[1:] + [(angles[0][0] + 2 * math.pi, angles[0][1])]):
+                gap = b - a
+                if gap < limit and (worst is None or gap < worst[0]):
+                    worst = (gap, index, ja, jb)
+        if worst is None:
+            break
+        _, index, ja, jb = worst
+        options = sorted((ja, jb), key=lambda j: -np.hypot(*(points[j] - points[index])))
+        for far in options:
+            if len(neighbours(far)) > 2 or nodes[far].kind != "interior":
+                edges.discard((min(index, far), max(index, far)))
+                break
+        else:
+            edges.discard((min(index, options[0]), max(index, options[0])))
+    return sorted(edges)
+
+
+def straightenBends(nodes, edges):
+    """An open junction left with two ribs is a bend: move it onto the line between its two
+    neighbours, so the two ribs become one straight rib."""
+    nodes = list(nodes)
+    around = {}
+    for i, j in edges:
+        around.setdefault(i, []).append(j)
+        around.setdefault(j, []).append(i)
+    for index, others in around.items():
+        if nodes[index].kind != "interior" or len(others) != 2:
+            continue
+        a, b = (np.array(nodes[k].point) for k in others)
+        here = np.array(nodes[index].point)
+        direction = b - a
+        t = float(np.clip((here - a) @ direction / max(direction @ direction, 1e-12), 0.2, 0.8))
+        x, y = a + t * direction
+        nodes[index] = Node(float(x), float(y), kind="interior")
+    return nodes
