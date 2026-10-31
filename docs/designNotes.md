@@ -242,7 +242,12 @@ were never shown to him.
   ranked by the live scorer, the u1 and e1 generators remove a little less than the live
   one (46.0% and 47.0% against 47.7%) and use more ribs on 12 of the 18. That is the
   opposite of what the raters reward, so neither replaced the live generator.
-  `trainGenerator --linear-mass 0.75` scores the rounds without the cap instead.
+  `trainGenerator --linear-mass 0.75` scores the rounds without the cap instead. The
+  m1 run (live scorer, no Claude grades) kept removal level in its one round (48.1%
+  to 47.9% on validation) but stopped at the plateau, and on the 18 plates it removes
+  46.9–47.0%, like e1. The live generator is still the lightest. Every generator
+  learns mostly from imitating the gold plates, so the rounds move it very little.
+  The numbers are in `data/eval/marathon/generators/traits.jsonl`.
 - **Density.** Both the user and the expert grade the 1.0 pocket-size factor above
   0.6. In his picks the more open design won 66 of 89 times. The user grades 1.5 below
   1.0. The live default, 1.25, sits in that range. Rating sheets now offer 1.0 and
