@@ -312,6 +312,8 @@ def _inscribedRadius(region, iterations):
 
 def filletRadius(region, params):
     """Soft-corner radius for one pocket region: a fraction of its size, clamped."""
+    if params.tightCorners:
+        return minFilletFactor * params.cornerRadiusIn
     style = params.filletFraction * inscribedRadius(region)
     return max(minFilletFactor * params.cornerRadiusIn, min(params.maxFilletIn, style))
 

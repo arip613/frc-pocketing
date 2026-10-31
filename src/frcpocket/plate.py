@@ -42,6 +42,10 @@ class PocketParams:
     # the gold pockets: median 0.32 on the user's examples, 0.38 on the CAD gold plates.
     filletFraction: float = 0.33
     maxFilletIn: float = 0.25
+    # Tight corners: every pocket corner is just the machining minimum (1.3x the tool radius),
+    # so ribs keep one width right up to where they meet instead of flaring into webs. The user
+    # and their CAD experts want uniform ribs; turn off for the soft gold-plate corners above.
+    tightCorners: bool = True
     # Rib layout style for the ML decoder: ribs sharing an end meet at least this wide, and
     # a small hole carries at most this many ribs (0 = no limit), a wall point one fewer.
     # Gold plates: the tightest rib-rib angle at a node is 45 deg at the 10th percentile and
