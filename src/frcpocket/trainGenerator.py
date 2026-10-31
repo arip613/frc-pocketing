@@ -222,7 +222,12 @@ class Judge:
     the native mesher costs one candidate instead of the whole run."""
 
     def __init__(self, scorerPath, workers=4, useFea=True):
-        self.scorer = AestheticScorer(scorerPath)
+        if str(scorerPath).endswith(".json"):
+            from frcpocket.taste import TasteScorer
+
+            self.scorer = TasteScorer(scorerPath)  # people's taste model (taste.py) in place of the scorer
+        else:
+            self.scorer = AestheticScorer(scorerPath)
         self.workers = workers
         self.useFea = useFea
         self.pool = None
