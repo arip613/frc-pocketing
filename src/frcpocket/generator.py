@@ -15,8 +15,10 @@ probability and a width class. Decoding turns those into a clean, valid layout:
 The 2D layout is then validated and cut with exact geometry like any other design.
 """
 
+import json
 import math
 from dataclasses import dataclass
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -633,14 +635,23 @@ def splitOversizedPockets(plate, params, graph, layout, probabilities, segments,
 class RibGenerator:
     """Loads trained weights and proposes layouts for a plate."""
 
-    def __init__(self, path=None, model=None):
+    def __init__(self, path=None, model=None, graph=None):
+        """graph: candidate-graph settings (layout.graphSettingNames) the model was trained
+        with; by default read from <path minus .pt>.graph.json beside the weights, if any."""
         self.model = model or RibGnn()
+        self.graph = dict(graph or {})
         if path is not None:
             self.model.load_state_dict(torch.load(path, weights_only=True))
+            sidecar = Path(path).with_suffix(".graph.json")
+            if graph is None and sidecar.exists():
+                self.graph = json.loads(sidecar.read_text())
         self.model.eval()
 
     def prepare(self, plate, params):
-        graph = defaultGraph(plate, params)
+        from frcpocket.layout import graphSettings
+
+        with graphSettings(self.graph):
+            graph = defaultGraph(plate, params)
         tensors = encodeGraph(plate, params, graph)
         return graph, tensors, mirrorMap(plate, graph)
 

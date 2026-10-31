@@ -146,7 +146,7 @@ def imitationExamples(goldTrain):
     return examples
 
 
-def gradedImitationExamples(parallel=None, claudeGrades=True):
+def gradedImitationExamples(parallel=None, claudeGrades=True, graph=None):
     """Designs graded 4 or 5 on the rating sheets, as imitation targets.
 
     Ribs are matched to this plate's candidate graph by their end points. Designs that
@@ -167,7 +167,10 @@ def gradedImitationExamples(parallel=None, claudeGrades=True):
     workers = parallel or max(1, min(6, (os.cpu_count() or 2)))
     if workers <= 1 or len(jobs) < 8:
         return [gradedExample(*job) for job in jobs]
-    with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context("spawn")) as pool:
+    from frcpocket.layout import setGraphSettings
+
+    with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context("spawn"),
+                             initializer=setGraphSettings, initargs=(dict(graph or {}),)) as pool:
         return list(pool.map(gradedExample, *zip(*jobs), chunksize=4))
 
 
@@ -343,12 +346,16 @@ def setLinearMass(weight):
     massWeight, targetRemoved = weight, 1.0
 
 
-def initWorker(scorerPath, useFea, linearMass=None):
+def initWorker(scorerPath, useFea, linearMass=None, graph=None):
     """Each round worker keeps its own scorer (and FEA pool, if used) for the whole run."""
     global _workerJudge
     torch.set_num_threads(1)
     if linearMass is not None:
         setLinearMass(linearMass)
+    if graph:
+        from frcpocket.layout import setGraphSettings
+
+        setGraphSettings(graph)
     _workerJudge = Judge(scorerPath, workers=1, useFea=useFea)
 
 
@@ -468,11 +475,16 @@ def train(args):
     print(f"plates: {len(goldTrain)} gold train, {len(inputs)} training inputs, {len(validation)} validation", flush=True)
     if args.linear_mass is not None:
         setLinearMass(args.linear_mass)
+    graph = json.loads(args.graph) if args.graph else {}
+    if graph:
+        from frcpocket.layout import setGraphSettings
+
+        setGraphSettings(graph)  # this run's candidate graph; saved beside the weights
     judge = Judge(args.scorer, workers=args.workers, useFea=args.fea)
     roundPool = None
     if args.parallel > 1:
         roundPool = ProcessPoolExecutor(max_workers=args.parallel, mp_context=multiprocessing.get_context("spawn"),
-                                        initializer=initWorker, initargs=(args.scorer, args.fea, args.linear_mass))
+                                        initializer=initWorker, initargs=(args.scorer, args.fea, args.linear_mass, graph))
         print(f"spreading each round over {args.parallel} processes", flush=True)
 
     def evaluate(model):
@@ -486,7 +498,7 @@ def train(args):
 
     model = RibGnn()
     imitation = imitationExamples(goldTrain)
-    graded = gradedImitationExamples(parallel=args.parallel, claudeGrades=not args.no_claude_grades)
+    graded = gradedImitationExamples(parallel=args.parallel, claudeGrades=not args.no_claude_grades, graph=graph)
     print(f"imitation: {len(imitation)} gold, {len(graded)} graded 4-5 on rating sheets", flush=True)
     imitation += graded
     logPath = outDir / "trainingLog.json"
@@ -583,6 +595,8 @@ def train(args):
         roundPool.shutdown()
     best = torch.load(outDir / f"generator_round{bestRound}.pt", weights_only=True)
     torch.save(best, outDir / "generator.pt")
+    if graph:
+        (outDir / "generator.graph.json").write_text(json.dumps(graph) + "\n")
     logPath.write_text(json.dumps({"bestRound": bestRound, "rounds": log}, indent=1))
     print(f"best round {bestRound}, utility {bestUtility:.3f}", flush=True)
 
@@ -609,6 +623,8 @@ def buildParser():
                         help="processes to spread each round's plates over (1 = sequential)")
     parser.add_argument("--fea", action="store_true", help="run FEA inside the training loop (slow)")
     parser.add_argument("--no-claude-grades", action="store_true", help="train only on the user's and experts' sheet grades")
+    parser.add_argument("--graph", default=None,
+                        help='candidate-graph settings as JSON, e.g. {"spineJunctions": true, "rhythmFactor": 0.75}')
     parser.add_argument("--linear-mass", type=float, default=None,
                         help="score rounds with this weight x material removed, without the 40%% cap")
     parser.add_argument("--val-limit", type=int, default=12, help="non-gold validation plates per round")

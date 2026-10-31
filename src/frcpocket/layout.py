@@ -15,6 +15,7 @@ cadExport rebuilds the same layout with exact OpenCascade geometry for the STEP 
 """
 
 import math
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -389,6 +390,8 @@ spokeStepDegrees = 30  # spoke candidates around big bores, every this many degr
 rhythmFactor = 1.5  # wall points between holes are about this many target pocket widths apart
 bigBoreDiameterIn = 0.5
 junctionClearance = 0.8  # a free junction stays this many lattice steps from any hole or wall point
+spineJunctions = False  # add rib junctions halfway between neighbouring holes (where truss ribs meet)
+spineMinGap = 4.0  # ... only across a gap between the holes' bosses at least this many rib widths
 
 
 def triangulationEdges(points, subset):
@@ -498,6 +501,9 @@ def holeGraph(plate, params):
     junctionStep = step * math.sqrt(params.pocketSizeFactor)
     junctions = sparseJunctions(plate, params, nodes, junctionStep)
     nodes += [Node(point.x, point.y, kind="interior") for point in junctions]
+    if spineJunctions:
+        nodes += [Node(point.x, point.y, kind="interior", featureKind="spine")
+                  for point in spinePoints(plate, params, nodes, bosses)]
     if len(nodes) < 3:
         return CandidateGraph(nodes=nodes, edges=[(0, 1)] if len(nodes) == 2 else [], isDelaunay=[True] * (len(nodes) == 2))
     points = np.array([node.point for node in nodes])
@@ -547,12 +553,61 @@ def sparseJunctions(plate, params, nodes, step):
     return points
 
 
+def spinePoints(plate, params, nodes, bosses):
+    """Rib junctions halfway between neighbouring holes (Delaunay neighbours), where a
+    truss's ribs meet between the holes instead of at them. Only across gaps wide enough
+    to pocket on both sides, in open plate, and clear of every other node."""
+    points = np.array([node.point for node in nodes])
+    featureIndices = [index for index, node in enumerate(nodes) if node.kind == "feature"]
+    if len(featureIndices) < 2:
+        return []
+    inner = plate.material.buffer(-(params.wallIn + 1.5 * params.ribIn))
+    bossZone = unary_union([boss.buffer(1.5 * params.ribIn) for boss in bosses]) if bosses else None
+    minGap = 2.5 * params.ribIn
+    found = []
+    for i, j in sorted(triangulationEdges(points, featureIndices)):
+        a, b = nodes[i], nodes[j]
+        gap = LineString([a.point, b.point]).difference(bosses[a.featureIndex]).difference(bosses[b.featureIndex]).length
+        if gap < spineMinGap * params.ribIn:
+            continue
+        middle = Point((a.x + b.x) / 2, (a.y + b.y) / 2)
+        if not inner.contains(middle) or (bossZone is not None and bossZone.contains(middle)):
+            continue
+        if np.hypot(*(points - middle.coords[0]).T).min() < minGap or any(middle.distance(other) < minGap for other in found):
+            continue
+        found.append(middle)
+    return found
+
+
 def isLatticeEdge(graph, edge):
-    """A rib between two neighbouring free junctions of the lattice."""
+    """A rib between two neighbouring free junctions of the lattice (not spine junctions)."""
     i, j = edge
     if not graph.junctionStep or graph.nodes[i].kind != "interior" or graph.nodes[j].kind != "interior":
         return False
+    if "spine" in (graph.nodes[i].featureKind, graph.nodes[j].featureKind):
+        return False
     return math.dist(graph.nodes[i].point, graph.nodes[j].point) <= 1.1 * graph.junctionStep
+
+
+graphSettingNames = ("spineJunctions", "spineMinGap", "rhythmFactor")
+
+
+def setGraphSettings(settings):
+    """Candidate-graph settings a generator was trained with (see RibGenerator)."""
+    unknown = set(settings) - set(graphSettingNames)
+    if unknown:
+        raise ValueError(f"unknown graph settings: {sorted(unknown)}")
+    globals().update(settings)
+
+
+@contextmanager
+def graphSettings(settings):
+    saved = {name: globals()[name] for name in settings}
+    setGraphSettings(settings)
+    try:
+        yield
+    finally:
+        globals().update(saved)
 
 
 def defaultGraph(plate, params):
