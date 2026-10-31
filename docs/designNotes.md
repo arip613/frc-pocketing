@@ -212,6 +212,36 @@ What the eye picked up, and what the measurements confirm:
   lattice is centred on the plate, so symmetry is kept. The example and gold plates
   get no junctions at all, so their look is unchanged.
 
+## 10. What the expert's picks say
+
+An experienced FRC designer rated 282 designs 1–9 (rounds m3 and m3b) and made 258
+A-vs-B picks on the Plate Pairs page (round n1 against m3 and m3b). Held-out plates
+were never shown to him.
+- **Claude's grades hurt.** The scorer was retrained with and without Claude's own
+  sheet grades, cross-validated over three fifths of the graded plates. On held-out
+  plates it matched his picks 94 of 144 times without Claude's grades and 81 with
+  them. Leaving them out won in all three folds. The live scorer, trained before he
+  rated anything, matched 93, so his data has not yet produced a scorer that beats it.
+  The runs are in `models/marathon/cv/` (`agreement.log`); `models/marathon/e1` is
+  the fold-0 run without Claude's grades.
+- **Everyone prefers lighter plates with fewer ribs.** Within a plate, the design
+  that removes more material wins 76–79% of graded pairs for the user, the expert and
+  Claude alike, and the one with fewer ribs wins 71–76%. Material removed alone predicts
+  his 1–9 ratings (78%) and his picks (64%) as well as the live scorer does (76%,
+  62%).
+- **Uncapping the mass term barely changes the output.** The ranking stops
+  rewarding removal at 40%, and 74% of designs are past that. Rewarding it linearly
+  (0.70 looks + 0.75 × removed) matched him a little better on every check (picks
+  62% → 68% with the live scorer; held out, his ratings 72% → 73% and the user's grades
+  74% → 77%). But it chose the same design on 6 of 8 look-test plates, and only a
+  slightly lighter one on the other two (`data/eval/marathon/massCap/`). One run's
+  candidates remove about the same amount, so only the generator can make plates
+  lighter. Not adopted.
+- **Density.** Both the user and the expert grade the 1.0 pocket-size factor above
+  0.6. In his picks the more open design won 66 of 89 times. The user grades 1.5 below
+  1.0. The live default, 1.25, sits in that range. Rating sheets should stop offering
+  0.6.
+
 ## Sources
 
 See `data/sources.jsonl` for the per-item log (URL, timestamp, license, sha256,
