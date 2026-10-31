@@ -237,10 +237,16 @@ were never shown to him.
   slightly lighter one on the other two (`data/eval/marathon/massCap/`). One run's
   candidates remove about the same amount, so only the generator can make plates
   lighter. Not adopted.
+- **The training rounds make plates heavier.** With the cap, each generate-and-score
+  round of the e1 generator removed less: 47.1%, 45.8%, 44.8%. On 18 open plates, all
+  ranked by the live scorer, the u1 and e1 generators remove a little less than the live
+  one (46.0% and 47.0% against 47.7%) and use more ribs on 12 of the 18. That is the
+  opposite of what the raters reward, so neither replaced the live generator.
+  `trainGenerator --linear-mass 0.75` scores the rounds without the cap instead.
 - **Density.** Both the user and the expert grade the 1.0 pocket-size factor above
   0.6. In his picks the more open design won 66 of 89 times. The user grades 1.5 below
-  1.0. The live default, 1.25, sits in that range. Rating sheets should stop offering
-  0.6.
+  1.0. The live default, 1.25, sits in that range. Rating sheets now offer 1.0 and
+  1.25.
 
 ## Sources
 
