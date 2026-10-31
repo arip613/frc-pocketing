@@ -329,10 +329,20 @@ def validationPlates(validation, testPlateDir, rng, limit=None):
 _workerJudge = None
 
 
-def initWorker(scorerPath, useFea):
+def setLinearMass(weight):
+    """Training only (--linear-mass): reward material removed linearly, weight x removed,
+    instead of capping the reward at targetRemoved. Every rater picks the lighter of two
+    designs about 3 times in 4, and with the cap the rounds drift towards heavier plates."""
+    global massWeight, targetRemoved
+    massWeight, targetRemoved = weight, 1.0
+
+
+def initWorker(scorerPath, useFea, linearMass=None):
     """Each round worker keeps its own scorer (and FEA pool, if used) for the whole run."""
     global _workerJudge
     torch.set_num_threads(1)
+    if linearMass is not None:
+        setLinearMass(linearMass)
     _workerJudge = Judge(scorerPath, workers=1, useFea=useFea)
 
 
@@ -450,11 +460,13 @@ def train(args):
     np.random.seed(args.seed)
     goldTrain, inputs, validation = loadPlates(args.plates)
     print(f"plates: {len(goldTrain)} gold train, {len(inputs)} training inputs, {len(validation)} validation", flush=True)
+    if args.linear_mass is not None:
+        setLinearMass(args.linear_mass)
     judge = Judge(args.scorer, workers=args.workers, useFea=args.fea)
     roundPool = None
     if args.parallel > 1:
         roundPool = ProcessPoolExecutor(max_workers=args.parallel, mp_context=multiprocessing.get_context("spawn"),
-                                        initializer=initWorker, initargs=(args.scorer, args.fea))
+                                        initializer=initWorker, initargs=(args.scorer, args.fea, args.linear_mass))
         print(f"spreading each round over {args.parallel} processes", flush=True)
 
     def evaluate(model):
@@ -591,6 +603,8 @@ def buildParser():
                         help="processes to spread each round's plates over (1 = sequential)")
     parser.add_argument("--fea", action="store_true", help="run FEA inside the training loop (slow)")
     parser.add_argument("--no-claude-grades", action="store_true", help="train only on the user's and experts' sheet grades")
+    parser.add_argument("--linear-mass", type=float, default=None,
+                        help="score rounds with this weight x material removed, without the 40%% cap")
     parser.add_argument("--val-limit", type=int, default=12, help="non-gold validation plates per round")
     parser.add_argument("--resume-round", type=int, default=None, help="continue from models/generator_round<N>.pt")
     parser.add_argument("--resume-log", default=None, help="JSON list of earlier round metrics")
