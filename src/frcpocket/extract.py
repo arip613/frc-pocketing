@@ -23,7 +23,7 @@ from shapely.ops import unary_union
 from frcpocket import geom2d
 
 fileTimeoutSeconds = 240
-maxSolidsPerFile = 400
+maxSolidsPerFile = 20000  # whole-robot exports run to a thousand or more solids (fasteners, bearings, wheels)
 dxfLineMinLengthIn = 0.1
 arcAttachToleranceIn = 0.01
 cacheVersion = 2  # bump when the raw geometry format changes
