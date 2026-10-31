@@ -1,10 +1,11 @@
 """High-level API: plate + parameters -> ranked, validated pocketing candidates.
 
-Used by the UI and the evaluation. Candidates come from the trained ML generator (if
-models/generator.pt exists) and the truss baseline, which is always included and
-labelled so the two can be compared. The generator proposes in each rib style, and the
-aesthetic scorer (trained on graded rating sheets) picks among them. Every candidate
-shown has passed the validator.
+Used by the UI and the evaluation. Candidates come from the trained ML generators (v2:
+the live generator and the marathon e1, u1 and m1 generators, each proposing) and the
+truss baseline, which is always included and labelled so the two can be compared. Each
+generator proposes in each rib style, and the taste model (taste.py, fitted to the user's
+and the expert's preferences) picks among them. Every candidate shown has passed the
+validator. The v1 setup was models/generator.pt with models/aestheticScorer.pt.
 
 ML designs then go through the polish pass (polish.py: symmetry, hole-to-hole links,
 blob filling, pocket-size cap), on by default, and are validated and scored again.
@@ -19,8 +20,10 @@ from frcpocket import fea, polish as polishPass
 from frcpocket.baseline import trussBaseline
 from frcpocket.trainGenerator import Judge, coarseMeshFactor, isSound
 
-defaultGeneratorPath = Path("models/generator.pt")
-defaultScorerPath = Path("models/aestheticScorer.pt")
+# v2: in blind picks on 8 new plates the user chose it over v1 on 5 of 5 plates where they differed.
+defaultGeneratorPath = (Path("models/generator.pt"), Path("models/marathon/e1/generator.pt"),
+                        Path("models/marathon/u1/generator.pt"), Path("models/marathon/m1/generator.pt"))
+defaultScorerPath = Path("models/marathon/v2/taste.json")
 duplicateIoU = 0.97
 # Rib styles the generator proposes in (min rib-rib angle, max ribs per small hole; 0 = no
 # limit). Average grades on the rating sheets: round 1, 20 deg 3.26 and 40 deg / 4 ribs 3.25
