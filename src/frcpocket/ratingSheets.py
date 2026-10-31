@@ -48,7 +48,7 @@ from frcpocket.splits import goldIds, isHoldout, loadRecords
 
 sheetRoot = Path("data/curation/sheets")
 ratingsPath = Path("data/curation/sheetRatings.jsonl")
-densityFactors = (0.6, 1.0)  # Open (1.5) graded no better than these two in rounds 1-3
+densityFactors = (1.0, 1.25)  # the user and the expert grade 1.0 above 0.6 (and the user 1.5 below 1.0); 1.25 is the live default
 proposalsPerStyle = 2
 candidatesPerSheet = 9
 duplicateIou = 0.95  # pocket sets this similar count as the same design
