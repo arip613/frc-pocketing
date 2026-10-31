@@ -35,9 +35,15 @@ goldAddedPath = Path("data/curation/goldAdded.json")
 if goldAddedPath.exists():
     goldPlateIds |= {entry["id"] for entry in json.loads(goldAddedPath.read_text())}
 
-# The user's own taste: their example screenshots and the three CAD plates they liked.
-# Weighted above the other gold so scraped vendor plates don't pull the style away.
-userTasteIds = userImageGold | {"f1da8bbfec_90", "0d9cbb6d3b_0", "76fd2d183d_0"}
+# Plates the user kept as good pocketing on the Robot Plate Keeper page (other teams' robots
+# they exported from Onshape by hand; data/processed_manual).
+plateKeeperPath = Path("data/curation/plateKeeper.json")
+keeperIds = {entry["id"] for entry in json.loads(plateKeeperPath.read_text())["kept"]} if plateKeeperPath.exists() else set()
+goldPlateIds |= keeperIds
+
+# The user's own taste: their example screenshots, the three CAD plates they liked, and the
+# plates they kept. Weighted above the other gold so scraped vendor plates don't pull the style away.
+userTasteIds = userImageGold | {"f1da8bbfec_90", "0d9cbb6d3b_0", "76fd2d183d_0"} | keeperIds
 userTasteWeight = 3.0
 # Team 2056's drawing plates are one team's dense style; at full weight they pulled the
 # generator away from the user's examples, so they count for less in imitation.
