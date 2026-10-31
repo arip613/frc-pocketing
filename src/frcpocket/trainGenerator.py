@@ -146,43 +146,54 @@ def imitationExamples(goldTrain):
     return examples
 
 
-def gradedImitationExamples():
+def gradedImitationExamples(parallel=None):
     """Designs graded 4 or 5 on the rating sheets, as imitation targets.
 
     Ribs are matched to this plate's candidate graph by their end points. Designs that
-    came from another graph (e.g. the truss baseline) are projected onto it instead, the
-    same way real designs are. Width labels of -1 mean "unknown" and are not trained on."""
+    came from another graph (e.g. the truss baseline, or polish-added ribs) are projected
+    onto it instead, the same way real designs are, which takes ~20 s each, so the work is
+    spread over processes. Width labels of -1 mean "unknown" and are not trained on."""
+    import multiprocessing
+    from concurrent.futures import ProcessPoolExecutor
+
     from frcpocket import ratingSheets
 
-    examples = []
+    jobs = []
     for plate, rated in ratingSheets.loadSheetRatings().values():
         for params, pockets, ribs, grade, entry in rated:
             weight = next((weight for minGrade, weight in gradedImitationWeights if grade >= minGrade), None)
-            if weight is None:
-                continue
-            graph = defaultGraph(plate, params)
-            nodeIndex = {tuple(np.round(node.point, 6)): k for k, node in enumerate(graph.nodes)}
-            lookup = {edge: k for k, edge in enumerate(graph.edges)}
-            keep = torch.zeros(len(graph.edges))
-            widths = torch.full((len(graph.edges),), -1, dtype=torch.long)
-            ribWidths = entry.get("ribWidths") or [None] * len(ribs)
-            matched = True
-            for (a, b), width in zip(ribs, ribWidths):
-                i, j = nodeIndex.get(tuple(np.round(a, 6))), nodeIndex.get(tuple(np.round(b, 6)))
-                edge = tuple(sorted((i, j))) if i is not None and j is not None else None
-                if edge not in lookup:
-                    matched = False
-                    break
-                keep[lookup[edge]] = 1.0
-                if width is not None:
-                    widths[lookup[edge]] = int(np.argmin([abs(width - factor) for factor in (1.0, 1.6, 2.4)]))
-            if not matched:
-                projection = projectRealDesign(plate, params, pockets, graph)
-                chosen = set(projection.layout.ribs)
-                keep = torch.tensor([float(edge in chosen) for edge in graph.edges])
-                widths = torch.tensor(projection.widthClass, dtype=torch.long)
-            examples.append(Example(encodeGraph(plate, params, graph), keep, widths, weight=weight))
-    return examples
+            if weight is not None:
+                jobs.append((plate, params, pockets, ribs, entry.get("ribWidths"), weight))
+    workers = parallel or max(1, min(6, (os.cpu_count() or 2)))
+    if workers <= 1 or len(jobs) < 8:
+        return [gradedExample(*job) for job in jobs]
+    with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context("spawn")) as pool:
+        return list(pool.map(gradedExample, *zip(*jobs), chunksize=4))
+
+
+def gradedExample(plate, params, pockets, ribs, ribWidths, weight):
+    graph = defaultGraph(plate, params)
+    nodeIndex = {tuple(np.round(node.point, 6)): k for k, node in enumerate(graph.nodes)}
+    lookup = {edge: k for k, edge in enumerate(graph.edges)}
+    keep = torch.zeros(len(graph.edges))
+    widths = torch.full((len(graph.edges),), -1, dtype=torch.long)
+    ribWidths = ribWidths or [None] * len(ribs)
+    matched = True
+    for (a, b), width in zip(ribs, ribWidths):
+        i, j = nodeIndex.get(tuple(np.round(a, 6))), nodeIndex.get(tuple(np.round(b, 6)))
+        edge = tuple(sorted((i, j))) if i is not None and j is not None else None
+        if edge not in lookup:
+            matched = False
+            break
+        keep[lookup[edge]] = 1.0
+        if width is not None:
+            widths[lookup[edge]] = int(np.argmin([abs(width - factor) for factor in (1.0, 1.6, 2.4)]))
+    if not matched:
+        projection = projectRealDesign(plate, params, pockets, graph)
+        chosen = set(projection.layout.ribs)
+        keep = torch.tensor([float(edge in chosen) for edge in graph.edges])
+        widths = torch.tensor(projection.widthClass, dtype=torch.long)
+    return Example(encodeGraph(plate, params, graph), keep, widths, weight=weight)
 
 
 def fit(model, examples, epochs, lr=2e-3):
@@ -457,7 +468,7 @@ def train(args):
 
     model = RibGnn()
     imitation = imitationExamples(goldTrain)
-    graded = gradedImitationExamples()
+    graded = gradedImitationExamples(parallel=args.parallel)
     print(f"imitation: {len(imitation)} gold, {len(graded)} graded 4-5 on rating sheets", flush=True)
     imitation += graded
     logPath = outDir / "trainingLog.json"
