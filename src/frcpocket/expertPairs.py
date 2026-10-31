@@ -5,6 +5,7 @@ pick carries no 1-9 scale noise. Pairs are chosen where they teach the most: des
 graded about the same, and pairs where the scorer disagrees with Claude's grades.
 
     python -I -m frcpocket.expertPairs build --rounds m1 --count 400
+    python -I -m frcpocket.expertPairs build --rounds n1 --versus m3,m3b --name 2
     python -I -m frcpocket.expertPairs ingest <pairs.json> [...]
 
 Ingested picks go to data/curation/expertPairs.jsonl; ratingSheets turns them into one
@@ -87,8 +88,41 @@ def informativePairs(byPlate, count, seed=5):
     return chosen
 
 
-def build(rounds, count, name):
-    pairs = informativePairs(candidates(rounds), count)
+def versusPairs(newRounds, oldRounds, perSide=2, closeNew=1, seed=7):
+    """New generator against old on the same plate (each side's best by the live scorer),
+    plus the closest calls between new designs: does the new version beat the old one,
+    and which of the new looks does he prefer."""
+    from frcpocket.plate import Plate, PocketParams
+    from frcpocket.scorer import AestheticScorer
+
+    def bySheet(rounds):
+        grouped = {}
+        for (_, sheet), designs in candidates(rounds).items():
+            grouped.setdefault(sheet, []).extend(designs)
+        return grouped
+
+    def ranked(designs):
+        first = designs[0]
+        plate = Plate(outline=Polygon(first["outline"]), features=[Polygon(loop) for loop in first["holes"]],
+                      thicknessIn=first.get("thicknessIn") or 0.25)
+        params = PocketParams(**first["params"]) if first.get("params") else PocketParams()
+        scores = scorer.score(plate, params, [[Polygon(loop) for loop in d["pockets"]] for d in designs])
+        return sorted(zip((float(s) for s in scores), range(len(designs)), designs), reverse=True)
+
+    scorer = AestheticScorer("models/aestheticScorer.pt")
+    new, old = bySheet(newRounds), bySheet(oldRounds)
+    chosen = []
+    for sheet in sorted(set(new) & set(old)):
+        bestNew, bestOld = ranked(new[sheet]), ranked(old[sheet])
+        chosen += [(a, b) for *_, a in bestNew[:perSide] for *_, b in bestOld[:perSide]]
+        close = sorted((abs(x[0] - y[0]), x[2], y[2]) for x, y in itertools.combinations(bestNew, 2))
+        chosen += [(a, b) for _, a, b in close[:closeNew]]
+    random.Random(seed).shuffle(chosen)
+    return chosen
+
+
+def build(rounds, count, name, versus=()):
+    pairs = versusPairs(rounds, versus)[:count] if versus else informativePairs(candidates(rounds), count)
     designs = {}
     for a, b in pairs:
         for design in (a, b):
@@ -137,10 +171,12 @@ def main():
     parser.add_argument("files", nargs="*")
     parser.add_argument("--rounds", default="m1")
     parser.add_argument("--count", type=int, default=400)
+    parser.add_argument("--versus", default="", help="older rounds to pit the new rounds against")
     parser.add_argument("--name", default="1")
     args = parser.parse_args()
     if args.action == "build":
-        build(tuple(filter(None, args.rounds.split(","))), args.count, args.name)
+        build(tuple(filter(None, args.rounds.split(","))), args.count, args.name,
+              tuple(filter(None, args.versus.split(","))))
     else:
         ingest(args.files)
 
