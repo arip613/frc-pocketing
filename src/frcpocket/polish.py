@@ -12,6 +12,9 @@ stood out (user feedback, comparing real | generated plates):
   split     pockets much bigger than the design's typical pocket are split by ribs
   huggers   ribs running just beside a wall or big cutout are dropped, so the pocket next
             to them reaches the wall instead of stopping short of it
+  merge     a pocket much smaller than the design's typical pocket loses the rib it shares
+            with a neighbour, so the two become one (the expert marked busy plates of
+            uneven little cells down; he rewards even pocket sizes)
             (a single rib, or an X of two crossing ribs in a large squarish or
             triangular pocket)
 
@@ -55,6 +58,9 @@ minMeetAtHoleDegrees = 20.0  # ribs leave a boss rim, so they may fan out more t
 maxRounds = 12  # per step
 hugShare = 0.6  # a rib hugs a wall or cutout when this share of it runs too close to pocket the gap
 hugTries = 4  # fully check only the few drops that gain the most pocket
+smallFactor = 0.5  # pockets below this many typical pockets are merged into a neighbour
+mergeSolidity = 0.85  # a merged pocket must stay this close to convex
+mergeTries = 6  # fully check only the few merges that even out pocket sizes the most
 
 
 @dataclass
@@ -811,6 +817,76 @@ class Polisher:
             design, layout = best[1], best[2]
         return design, layout, f"huggers: dropped {len(notes)} ({', '.join(notes)} more pocket)" if notes else ""
 
+    def sizeSpread(self, pockets):
+        """Spread of pocket sizes (standard deviation of log area): 0 when all are even."""
+        if len(pockets) < 2:
+            return 0.0
+        return float(np.std(np.log([pocket.area for pocket in pockets])))
+
+    def mergeSmall(self, design, layout):
+        """Merge pockets much smaller than the typical one into a neighbour by dropping the
+        rib between them (with its symmetry images). Kept only if pocket sizes get more even,
+        nothing comes out oversized or slot-like, and the usual checks hold."""
+        params = self.params
+        notes = []
+        tried = set()
+        for _ in range(maxRounds):
+            small = [pocket for pocket in layout.pockets if pocket.area < smallFactor * self.typical]
+            if not small:
+                break
+            segments = {rib: design.segment(rib) for rib in design.ribs}
+            spreadBefore = self.sizeSpread(layout.pockets)
+            worstBefore = max([self.overCap(pocket) for pocket in layout.pockets] or [0.0])
+            trials, seen = [], set()
+            for pocket in small:
+                for rib, segment in segments.items():
+                    # a rib along this pocket's side (not one that only touches a corner)
+                    reach = 0.5 * self.width(design, rib) + 1.5 * params.cornerRadiusIn + validator.lengthTolIn
+                    if segment.buffer(reach, cap_style="flat").intersection(pocket.exterior).length < 0.5 * segment.length:
+                        continue
+                    orbit = self.orbit(segment)
+                    group = tuple(sorted(other for other in design.ribs
+                                         if any(sameSegment(segments[other], image, self.nodeSnap) for image in orbit)))
+                    if group in seen or group in tried:
+                        continue
+                    seen.add(group)
+                    trial = design.copy()
+                    for other in group:
+                        trial.removeRib(other)
+                    raw = self.rawLayout(trial).pockets
+                    if len(raw) >= len(layout.pockets):
+                        continue  # the drop didn't join two pockets
+                    gainGuess = spreadBefore - self.sizeSpread(raw)
+                    if gainGuess > 0.02:
+                        trials.append((gainGuess, group, trial))
+            best = None
+            for _, group, trial in sorted(trials, key=lambda item: -item[0])[:mergeTries]:
+                tried.add(group)
+                built, ok = self.build(trial)
+                if not ok or not built.pockets:
+                    continue
+                gain = spreadBefore - self.sizeSpread(built.pockets)
+                if gain <= 0.02:
+                    continue
+                if max(self.overCap(pocket) for pocket in built.pockets) > max(1.0, worstBefore):
+                    continue
+                if self.slots(built) > self.slots(layout) or self.crumbs(built) > self.crumbs(layout):
+                    continue
+                if self.transforms and self.symmetryShortfall(built.pockets) > self.symmetryShortfall(layout.pockets) + 0.02:
+                    continue
+                fresh = [pocket for pocket in built.pockets if not any(pocket.equals_exact(old, 1e-6) for old in layout.pockets)]
+                if any(designFeatures.sharpestCorner(pocket) < 20 or pocket.area < mergeSolidity * pocket.convex_hull.area
+                       for pocket in fresh):
+                    continue  # the merged pocket has a needle corner, or is an L or a crescent
+                if best is None or gain > best[0]:
+                    best = (gain, trial, built)
+            if best is None:
+                break
+            merged = len(layout.pockets) - len(best[2].pockets)
+            notes.append(f"{merged} pocket{'s' if merged > 1 else ''}")
+            design, layout = best[1], best[2]
+        return design, layout, f"merge: joined {', '.join(notes)} into neighbours" if notes else ""
+
     # ---------- driver ----------------------------------------------------------------
 
     def run(self, layout, skip=()):
@@ -825,7 +901,8 @@ class Polisher:
             return PolishResult(layout=layout, log=["skipped: input design not valid as rebuilt"], changed=False)
         log = []
         steps = [("symmetry", self.symmetrize), ("links", self.linkBosses), ("blobs", self.fillBlobs),
-                 ("huggers", self.dropHuggers), ("split", self.splitLarge), ("symmetry", self.symmetrize),
+                 ("huggers", self.dropHuggers), ("merge", self.mergeSmall), ("split", self.splitLarge),
+                 ("symmetry", self.symmetrize),
                  # Symmetrizing can drop ribs and re-open big pockets; split those (in orbits).
                  ("split", self.splitLarge)]
         for name, step in steps:
