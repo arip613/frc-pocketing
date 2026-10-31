@@ -75,13 +75,16 @@ testPlateBuilders = {
 }
 
 
-def writeTestPlates(outDir):
+def writeTestPlates(outDir, overwrite=False):
+    """Write each test plate's STEP unless it already exists (re-exporting the same plate
+    changes the file's timestamp and entity numbering, which shows up as a git change)."""
     outDir = Path(outDir)
     outDir.mkdir(parents=True, exist_ok=True)
     paths = {}
     for name, builder in testPlateBuilders.items():
         path = outDir / f"{name}.step"
-        cq.exporters.export(builder().val().scale(25.4), str(path))
+        if overwrite or not path.exists():
+            cq.exporters.export(builder().val().scale(25.4), str(path))
         paths[name] = path
     return paths
 
