@@ -1,0 +1,12 @@
+fold 2 claude: 77 pair picks, 128 rating pairs on 18 held-out plates
+fold 2 claude: models/marathon/cv/f2_claude/aestheticScorer.pt pair 49/77 rating 99/128 all 72.2%
+fold 2 claude: models/aestheticScorer.pt pair 53/77 rating 99/128 all 74.1%
+fold 2 noclaude: 77 pair picks, 128 rating pairs on 18 held-out plates
+fold 2 noclaude: models/marathon/cv/f2_noclaude/aestheticScorer.pt pair 52/77 rating 93/128 all 70.7%
+fold 2 noclaude: models/aestheticScorer.pt pair 53/77 rating 99/128 all 74.1%
+fold 1 claude: 43 pair picks, 75 rating pairs on 11 held-out plates
+fold 1 claude: models/marathon/cv/f1_claude/aestheticScorer.pt pair 19/43 rating 51/75 all 59.3%
+fold 1 claude: models/aestheticScorer.pt pair 20/43 rating 52/75 all 61.0%
+fold 1 noclaude: 43 pair picks, 75 rating pairs on 11 held-out plates
+fold 1 noclaude: models/marathon/cv/f1_noclaude/aestheticScorer.pt pair 27/43 rating 52/75 all 66.9%
+fold 1 noclaude: models/aestheticScorer.pt pair 20/43 rating 52/75 all 61.0%
