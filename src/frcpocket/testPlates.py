@@ -93,7 +93,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", default="data/testPlates")
     args = parser.parse_args()
-    for name, path in writeTestPlates(args.out).items():
+    for name, path in writeTestPlates(args.out, overwrite=True).items():
         print(f"{name}: {path}")
 
 
