@@ -253,6 +253,32 @@ were never shown to him.
   1.0. The live default, 1.25, sits in that range. Rating sheets now offer 1.0 and
   1.25.
 
+## 11. v2: built from the user's and the expert's own choices
+
+- **The user's picks.** On a blind page (data/curation/sheets/p1) the user picked their
+  favourite of the live, e1, u1 and m1 designs on 18 of 22 open plates: live 6, u1 5,
+  e1 4, m1 4. No single set wins. The live scorer chose the user's pick on 5 of 18, about
+  chance (4.7), and the lightest design on 10. On 8 fresh plates picked blind afterwards
+  (p2), the lightest was the pick on 6 of 7 and the live ranking's on none (random 1.8).
+  The cards showed each design's share removed, which may have helped. `CombinedPocketer`
+  runs several sets and offers the lightest sound design first.
+- **The taste model** (`taste.py`, `models/marathon/v2/taste.json`) is a linear model on
+  the scorer's design features and its looks score, fitted only to people: 2,012
+  within-plate preferences from the user's sheet grades and picks and the expert's ratings
+  and pair picks, the user and the expert weighted equally, no Claude grades. Held out by
+  plate it agrees with the expert's pair picks 70% (live ranking 62%), his ratings 79%
+  (76%) and the user's model-set picks 77% (59%). On the user's sheet grades it gets 88%,
+  where the live scorer's 93% is in-sample. It rewards looks, material removed, bigger and
+  more even pockets, triangles and symmetry.
+- **v2** proposes with all four generators, ranks with the taste model through the usual
+  structural floor, and polishes, including the hole rule below. A v2 generator trained
+  on the user's and the expert's top designs, with rounds scored by the taste model, is
+  in `models/marathon/v2`.
+- **No hole hangs off one rib** (the user's rule). A hole off the outer wall held by a
+  single rib gets a second in the last polish step. Holes whose bosses overlap count as
+  one, and a hole closer to the wall than a pocket could fit counts as on the wall. On the
+  114 designs of the pick pages no hole was left hanging by one arm.
+
 ## Sources
 
 See `data/sources.jsonl` for the per-item log (URL, timestamp, license, sha256,
