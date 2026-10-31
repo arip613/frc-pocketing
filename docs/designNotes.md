@@ -212,6 +212,73 @@ What the eye picked up, and what the measurements confirm:
   lattice is centred on the plate, so symmetry is kept. The example and gold plates
   get no junctions at all, so their look is unchanged.
 
+## 10. What the expert's picks say
+
+An experienced FRC designer rated 282 designs 1–9 (rounds m3 and m3b) and made 258
+A-vs-B picks on the Plate Pairs page (round n1 against m3 and m3b). Held-out plates
+were never shown to him.
+- **Claude's grades hurt.** The scorer was retrained with and without Claude's own
+  sheet grades, cross-validated over three fifths of the graded plates. On held-out
+  plates it matched his picks 94 of 144 times without Claude's grades and 81 with
+  them. Leaving them out won in all three folds. The live scorer, trained before he
+  rated anything, matched 93, so his data has not yet produced a scorer that beats it.
+  The runs are in `models/marathon/cv/` (`agreement.log`); `models/marathon/e1` is
+  the fold-0 run without Claude's grades.
+- **Everyone prefers lighter plates with fewer ribs.** Within a plate, the design
+  that removes more material wins 76–79% of graded pairs for the user, the expert and
+  Claude alike, and the one with fewer ribs wins 71–76%. Material removed alone predicts
+  his 1–9 ratings (78%) and his picks (64%) as well as the live scorer does (76%,
+  62%).
+- **Uncapping the mass term barely changes the output.** The ranking stops
+  rewarding removal at 40%, and 74% of designs are past that. Rewarding it linearly
+  (0.70 looks + 0.75 × removed) matched him a little better on every check (picks
+  62% → 68% with the live scorer; held out, his ratings 72% → 73% and the user's grades
+  74% → 77%). But it chose the same design on 6 of 8 look-test plates, and only a
+  slightly lighter one on the other two (`data/eval/marathon/massCap/`). One run's
+  candidates remove about the same amount, so only the generator can make plates
+  lighter. Not adopted.
+- **The training rounds make plates heavier.** With the cap, each generate-and-score
+  round of the e1 generator removed less: 47.1%, 45.8%, 44.8%. On 18 open plates, all
+  ranked by the live scorer, the u1 and e1 generators remove a little less than the live
+  one (46.0% and 47.0% against 47.7%) and use more ribs on 12 of the 18. That is the
+  opposite of what the raters reward, so neither replaced the live generator.
+  `trainGenerator --linear-mass 0.75` scores the rounds without the cap instead. The
+  m1 run (live scorer, no Claude grades) kept removal level in its one round (48.1%
+  to 47.9% on validation) but stopped at the plateau, and on the 18 plates it removes
+  46.9–47.0%, like e1. The live generator is still the lightest. Every generator
+  learns mostly from imitating the gold plates, so the rounds move it very little.
+  The numbers are in `data/eval/marathon/generators/traits.jsonl`.
+- **Density.** Both the user and the expert grade the 1.0 pocket-size factor above
+  0.6. In his picks the more open design won 66 of 89 times. The user grades 1.5 below
+  1.0. The live default, 1.25, sits in that range. Rating sheets now offer 1.0 and
+  1.25.
+
+## 11. v2: built from the user's and the expert's own choices
+
+- **The user's picks.** On a blind page (data/curation/sheets/p1) the user picked their
+  favourite of the live, e1, u1 and m1 designs on 18 of 22 open plates: live 6, u1 5,
+  e1 4, m1 4. No single set wins. The live scorer chose the user's pick on 5 of 18, about
+  chance (4.7), and the lightest design on 10. On 8 fresh plates picked blind afterwards
+  (p2), the lightest was the pick on 6 of 7 and the live ranking's on none (random 1.8).
+  The cards showed each design's share removed, which may have helped. `CombinedPocketer`
+  runs several sets and offers the lightest sound design first.
+- **The taste model** (`taste.py`, `models/marathon/v2/taste.json`) is a linear model on
+  the scorer's design features and its looks score, fitted only to people: 2,012
+  within-plate preferences from the user's sheet grades and picks and the expert's ratings
+  and pair picks, the user and the expert weighted equally, no Claude grades. Held out by
+  plate it agrees with the expert's pair picks 70% (live ranking 62%), his ratings 79%
+  (76%) and the user's model-set picks 77% (59%). On the user's sheet grades it gets 88%,
+  where the live scorer's 93% is in-sample. It rewards looks, material removed, bigger and
+  more even pockets, triangles and symmetry.
+- **v2** proposes with all four generators, ranks with the taste model through the usual
+  structural floor, and polishes, including the hole rule below. A v2 generator trained
+  on the user's and the expert's top designs, with rounds scored by the taste model, is
+  in `models/marathon/v2`.
+- **No hole hangs off one rib** (the user's rule). A hole off the outer wall held by a
+  single rib gets a second in the last polish step. Holes whose bosses overlap count as
+  one, and a hole closer to the wall than a pocket could fit counts as on the wall. On the
+  114 designs of the pick pages no hole was left hanging by one arm.
+
 ## Sources
 
 See `data/sources.jsonl` for the per-item log (URL, timestamp, license, sha256,

@@ -138,7 +138,8 @@ def exactPocketFaces(plate, params, layout):
     inner = fuseSolids([prism(face) for face in offsetWire(outerWire, params.wallIn * mmPerInch, grow=False)])
     if inner is None:
         return []
-    keep = [face for wire in holeWires for face in offsetWire(wire, params.boss * mmPerInch, grow=True)]
+    rings = [params.ringFor(geom2d.toPolygon(cadio.wireLoop(wire)["coords"] / mmPerInch)) for wire in holeWires]
+    keep = [face for wire, ring in zip(holeWires, rings) for face in offsetWire(wire, ring * mmPerInch, grow=True)]
     for edge in layout.ribs:
         i, j = edge
         start = (layout.graph.nodes[i].x * mmPerInch, layout.graph.nodes[i].y * mmPerInch)

@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plate Rater, part __PART__</title>
+<style>
+  :root {
+    --bg: #fafaf8;
+    --text: #222;
+    --muted: #777;
+    --line: #ddd;
+    --plate: #9aa5ad;
+    --edge: #3a444b;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  button, input { font: inherit; color: inherit; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 20px 20px 32px; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+
+  /* start */
+  .start p { max-width: 640px; }
+  .start ul { padding-left: 20px; max-width: 640px; }
+  .start label { display: block; margin: 18px 0 6px; font-weight: 600; }
+  .start input { width: 260px; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; background: #fff; }
+  .primary {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 5px;
+    background: var(--text);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .primary:disabled { background: #ccc; cursor: default; }
+  .plain {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+  }
+  .plain:hover { border-color: #999; }
+
+  /* rating */
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .bar { height: 4px; background: #e6e6e2; border-radius: 2px; margin: 10px 0 14px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--text); width: 0; }
+  .stage {
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    height: min(62vh, 560px);
+    min-height: 280px;
+  }
+  .stage svg { width: 100%; height: 100%; display: block; }
+  .plate { fill: var(--plate); stroke: var(--edge); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cut { fill: #fff; stroke: var(--edge); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .size { position: absolute; left: 12px; bottom: 8px; font-size: 13px; color: var(--muted); }
+  .flash { position: absolute; right: 14px; top: 10px; font-size: 22px; font-weight: 700; opacity: 0; transition: opacity 0.4s; }
+  .flash.on { opacity: 1; transition: none; }
+
+  .keys { display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; margin-top: 14px; }
+  .keys button {
+    padding: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .keys button:hover { border-color: #888; background: #f4f4f1; }
+  .keys button:active { background: #e8e8e4; }
+  .scale { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
+  .row .spacer { flex: 1; }
+  .saved { font-size: 13px; color: var(--muted); }
+
+  .done { text-align: center; padding: 60px 0; }
+  .milestone { margin: 0 0 12px; padding: 10px 12px; background: #eef5ee; border: 1px solid #cfe3cf; border-radius: 5px; }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 14px 12px 24px; }
+    .stage { height: 52vh; }
+    .keys { grid-template-columns: repeat(9, 1fr); gap: 4px; }
+    .keys button { padding: 12px 0; font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="start" id="start">
+    <h1>Plate Rater <span class="muted">· part __PART__</span></h1>
+    <p>You'll see FRC plates with lightening pockets, one at a time. Some were designed by teams and vendors, some by a pocketing tool we're training. Rate each one on how good the pocketing is, the way you would if a teammate showed it to you in a design review.</p>
+    <ul>
+      <li><b>1</b> means you'd send it back. <b>9</b> means you'd cut it as is.</li>
+      <li>Judge the pocketing, not the plate outline or the hole layout. Those are fixed.</li>
+      <li>Go with your gut. A couple of seconds per plate is plenty.</li>
+      <li>Keys: <b>1–9</b> to rate, <b>S</b> to skip, <b>Backspace</b> to undo.</li>
+      <li>Your progress is saved in this browser. You can stop and export at any point, even after 50.</li>
+      <li id="priority" hidden></li>
+    </ul>
+    <div class="row">
+      <button class="primary" id="go">Start</button>
+      <span class="muted small" id="resume"></span>
+    </div>
+  </section>
+
+  <section id="rate" hidden>
+    <div class="top">
+      <h1>Plate Rater</h1>
+      <span class="muted" id="count"></span>
+    </div>
+    <div class="bar"><span id="bar"></span></div>
+    <p class="milestone" id="milestone" hidden></p>
+    <div class="stage">
+      <svg id="view" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
+      <span class="size" id="size"></span>
+      <span class="flash" id="flash"></span>
+    </div>
+    <div class="keys" id="keys"></div>
+    <div class="scale"><span>1 · send it back</span><span>9 · cut it as is</span></div>
+    <div class="row">
+      <button class="plain" id="undo">Undo</button>
+      <button class="plain" id="skip">Skip</button>
+      <span class="spacer"></span>
+      <span class="saved" id="saved"></span>
+      <button class="primary" id="export">Export ratings</button>
+    </div>
+  </section>
+
+  <section class="done" id="done" hidden>
+    <h1>That's all of them. Thank you!</h1>
+    <p>Hit export and send the file back.</p>
+    <p><button class="primary" id="export2">Export ratings</button></p>
+  </section>
+
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const KEY = "plateRater.v" + DATA.version;
+const $ = (id) => document.getElementById(id);
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (_) { return null; }
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); $("saved").textContent = "saved"; } catch (_) { $("saved").textContent = "not saved (export soon)"; }
+}
+
+// One shuffled order per browser, kept across visits.
+// Shuffled within each section; sections keep their order (most useful first).
+function shuffledOrder() {
+  const sizes = DATA.sections || [DATA.items.length];
+  const order = [];
+  let start = 0;
+  for (const size of sizes) {
+    const part = [];
+    for (let k = start; k < start + size; k++) part.push(k);
+    for (let k = part.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [part[k], part[j]] = [part[j], part[k]];
+    }
+    order.push(...part);
+    start += size;
+  }
+  return order;
+}
+
+// A combined page picks up ratings saved by the separate part pages in this browser.
+function migrated() {
+  const ratings = {};
+  let rater = null;
+  for (const version of DATA.migrate || []) {
+    try {
+      const old = JSON.parse(localStorage.getItem("plateRater.v" + version));
+      if (old && old.ratings) { Object.assign(ratings, old.ratings); rater = rater || old.rater; }
+    } catch (_) { /* nothing saved */ }
+  }
+  if (!Object.keys(ratings).length) return null;
+  const done = DATA.items.map((item, k) => k).filter((k) => DATA.items[k].i in ratings);
+  const rest = shuffledOrder().filter((k) => !(DATA.items[k].i in ratings));
+  return { rater: rater || Math.random().toString(36).slice(2, 10), order: done.concat(rest), pos: done.length,
+           ratings: Object.fromEntries(Object.entries(ratings).filter(([id]) => DATA.items.some((item) => item.i === id))),
+           history: [] };
+}
+
+let state = load() || migrated() || { rater: Math.random().toString(36).slice(2, 10), order: shuffledOrder(), pos: 0, ratings: {}, history: [] };
+if (!state.rater) state.rater = Math.random().toString(36).slice(2, 10);
+let shownAt = 0;
+
+function pathOf(flat) {
+  let d = "";
+  for (let k = 0; k < flat.length; k += 2) d += (k ? "L" : "M") + flat[k] + " " + (-flat[k + 1]);
+  return d + "Z";
+}
+
+function firstSection() {
+  return DATA.sections && DATA.sections.length > 1 ? DATA.sections[0] : 0;
+}
+
+function show() {
+  const first = firstSection();
+  $("milestone").hidden = !(first && state.pos === first && !state.milestoneSeen);
+  if (state.pos >= state.order.length) {
+    $("rate").hidden = true;
+    $("done").hidden = false;
+    return;
+  }
+  const item = DATA.items[state.order[state.pos]];
+  const xs = [], ys = [];
+  for (let k = 0; k < item.o.length; k += 2) { xs.push(item.o[k]); ys.push(-item.o[k + 1]); }
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const pad = Math.max(x1 - x0, y1 - y0) * 0.05;
+  const svg = $("view");
+  svg.setAttribute("viewBox", `${x0 - pad} ${y0 - pad} ${x1 - x0 + 2 * pad} ${y1 - y0 + 2 * pad}`);
+  let inner = `<path class="plate" d="${pathOf(item.o)}"/>`;
+  for (const loop of item.f) inner += `<path class="cut" d="${pathOf(loop)}"/>`;
+  for (const loop of item.p) inner += `<path class="cut" d="${pathOf(loop)}"/>`;
+  svg.innerHTML = inner;
+  $("size").textContent = `${item.w} × ${item.h} in` + (item.t ? `, ${item.t} in thick` : "");
+  const done = Object.keys(state.ratings).length;
+  $("count").textContent = `${done} rated · ${state.order.length - state.pos} left`;
+  $("bar").style.width = (100 * state.pos / state.order.length) + "%";
+  shownAt = performance.now();
+}
+
+function flash(text) {
+  const el = $("flash");
+  el.textContent = text;
+  el.classList.add("on");
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove("on")));
+}
+
+function rate(value) {
+  if (state.pos >= state.order.length) return;
+  if (firstSection() && state.pos === firstSection()) state.milestoneSeen = true;
+  const item = DATA.items[state.order[state.pos]];
+  state.ratings[item.i] = { r: value, ms: Math.round(performance.now() - shownAt) };
+  state.history.push(state.pos);
+  state.pos++;
+  flash(value);
+  save();
+  show();
+}
+
+function skip() {
+  if (state.pos >= state.order.length) return;
+  if (firstSection() && state.pos === firstSection()) state.milestoneSeen = true;
+  state.history.push(state.pos);
+  state.pos++;
+  flash("–");
+  save();
+  show();
+}
+
+function undo() {
+  if (!state.history.length) return;
+  state.pos = state.history.pop();
+  delete state.ratings[DATA.items[state.order[state.pos]].i];
+  $("done").hidden = true;
+  $("rate").hidden = false;
+  save();
+  show();
+}
+
+function exportRatings() {
+  const ratings = Object.entries(state.ratings).map(([id, v]) => ({ id, rating: v.r, ms: v.ms }));
+  const body = JSON.stringify({ rater: state.rater, version: DATA.version, exportedAt: new Date().toISOString(),
+                                count: ratings.length, ratings }, null, 1);
+  const blob = new Blob([body], { type: "application/json" });
+  const link = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0, 10);
+  link.href = URL.createObjectURL(blob);
+  link.download = `plate-ratings-part${DATA.version.split("-")[0]}-${stamp}-${ratings.length}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 2000);
+}
+
+// keys row
+for (let k = 1; k <= 9; k++) {
+  const b = document.createElement("button");
+  b.textContent = k;
+  b.addEventListener("click", () => rate(k));
+  $("keys").appendChild(b);
+}
+
+if (firstSection()) {
+  const first = firstSection(), rest = DATA.items.length - first;
+  $("priority").innerHTML = `<b>The first ${first} plates help the most</b>, so please get through those first. ` +
+    `The ${rest} after them are still useful but less important: do them if you have time.`;
+  $("priority").hidden = false;
+  $("milestone").innerHTML = `<b>That's the first ${first} done, the ones that matter most. Thank you!</b> ` +
+    `Hit <b>Export ratings</b> now so nothing gets lost. The ${rest} left are optional extras; keep going if you have time ` +
+    `(export again at the end, the new file includes everything).`;
+}
+if (Object.keys(state.ratings).length) {
+  $("resume").textContent = `Welcome back: ${Object.keys(state.ratings).length} already rated, picking up where you left off.`;
+  $("go").textContent = "Continue";
+}
+$("go").addEventListener("click", () => {
+  save();
+  $("start").hidden = true;
+  $("rate").hidden = false;
+  show();
+});
+$("undo").addEventListener("click", undo);
+$("skip").addEventListener("click", skip);
+$("export").addEventListener("click", exportRatings);
+$("export2").addEventListener("click", exportRatings);
+document.addEventListener("keydown", (e) => {
+  if ($("rate").hidden && $("done").hidden) {
+    if (e.key === "Enter") $("go").click();
+    return;
+  }
+  if (e.key >= "1" && e.key <= "9") rate(+e.key);
+  else if (e.key === "s" || e.key === "S" || e.key === "0") skip();
+  else if (e.key === "Backspace" || e.key === "z" || e.key === "Z") { e.preventDefault(); undo(); }
+});
+</script>
+</body>
+</html>

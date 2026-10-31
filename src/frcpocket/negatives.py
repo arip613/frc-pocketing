@@ -20,7 +20,7 @@ from frcpocket.projection import dropCrossings
 
 def pocketRegion(plate, params):
     inner = plate.outline.buffer(-params.wallIn, quad_segs=arcSegments)
-    bosses = [feature.buffer(params.boss, quad_segs=arcSegments) for feature in plate.features]
+    bosses = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
     return inner.difference(unary_union(bosses)) if bosses else inner
 
 
@@ -64,6 +64,8 @@ def asymmetrize(plate, params, layout, rng):
 
 def saltAndPepper(plate, params, rng, count):
     region = pocketRegion(plate, params)
+    if region.is_empty:
+        return finishPockets(plate, params, [])  # small plate: walls and boss rings leave nothing to pocket
     minx, miny, maxx, maxy = region.bounds
     holes = []
     for _ in range(count * 4):
@@ -79,6 +81,8 @@ def saltAndPepper(plate, params, rng, count):
 
 def gridWindows(plate, params, rng):
     region = pocketRegion(plate, params)
+    if region.is_empty:
+        return finishPockets(plate, params, [])
     minx, miny, maxx, maxy = region.bounds
     columns, rows = rng.integers(2, 5), rng.integers(1, 4)
     cellWidth, cellHeight = (maxx - minx) / columns, (maxy - miny) / rows

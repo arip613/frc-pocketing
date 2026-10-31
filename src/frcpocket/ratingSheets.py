@@ -37,7 +37,7 @@ from matplotlib.patches import Polygon as PatchPolygon
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
-from frcpocket import geom2d, validator
+from frcpocket import geom2d, polish, validator
 from frcpocket.baseline import trussBaseline
 from frcpocket.evaluate import styleParamsFromRecord
 from frcpocket.generator import RibGenerator
@@ -48,7 +48,7 @@ from frcpocket.splits import goldIds, isHoldout, loadRecords
 
 sheetRoot = Path("data/curation/sheets")
 ratingsPath = Path("data/curation/sheetRatings.jsonl")
-densityFactors = (0.6, 1.0)  # Open (1.5) graded no better than these two in rounds 1-3
+densityFactors = (1.0, 1.25)  # the user and the expert grade 1.0 above 0.6 (and the user 1.5 below 1.0); 1.25 is the live default
 proposalsPerStyle = 2
 candidatesPerSheet = 9
 duplicateIou = 0.95  # pocket sets this similar count as the same design
@@ -94,13 +94,15 @@ def sheetPlates(rng, extraCount=10, platesPath="data/processed/plates.jsonl", ex
 
 
 def candidatePool(plate, params, generator, seed):
-    """Every valid design on offer: ML proposals for each rib style and density, plus the
-    truss baseline."""
+    """Every valid design on offer: ML proposals for each rib style and density (polished,
+    like the UI's), plus the truss baseline."""
     pool = []
     for angle, cap in ribStyles:
         for factor in densityFactors:
             styleParams = replace(params, pocketSizeFactor=factor, minRibAngleDegrees=angle, maxHoleRibs=cap)
             for index, layout in enumerate(generator.propose(plate, styleParams, count=proposalsPerStyle, seed=seed)):
+                if polish.enabled and layout.pockets:
+                    layout = polish.polishLayout(plate, styleParams, layout).layout  # same pass as the UI
                 pool.append((f"ml a{angle:g}c{cap} d{factor} p{index}", styleParams, layout))
     pool.append(("baseline", params, trussBaseline(plate, params)))
     return [(source, candidateParams, layout) for source, candidateParams, layout in pool
@@ -225,8 +227,26 @@ def make(roundName, generatorPath, seed, extraCount, workers=3, scorerPath="mode
             name, lines, message = job.result()
             with open(candidatesPath, "a") as handle:  # written as each sheet lands
                 for line in lines:
-                    handle.write(json.dumps(line) + "\n")
+                    handle.write(json.dumps(compactEntry(line)) + "\n")
             print(f"{name}: {message}", flush=True)
+
+
+def compactEntry(entry, digits=5):
+    """Geometry rounded to 1e-5 in (far below any tolerance), so a round's candidates.jsonl
+    stays well under GitHub's 100 MB file limit."""
+    def rounded(value):
+        if isinstance(value, float):
+            return round(value, digits)
+        if isinstance(value, list):
+            return [rounded(item) for item in value]
+        return value
+    return {key: rounded(value) if key in ("outline", "holes", "pockets") else value for key, value in entry.items()}
+
+
+def compactRound(roundName):
+    path = sheetRoot / roundName / "candidates.jsonl"
+    lines = [json.dumps(compactEntry(json.loads(line))) for line in path.read_text().splitlines()]
+    path.write_text("".join(line + "\n" for line in lines))
 
 
 def ingest(roundName, rater):
@@ -245,20 +265,160 @@ def ingest(roundName, rater):
             grade = grades.get(entry["sheet"], {}).get(str(entry["candidate"]))
             if grade is None or (roundName, entry["sheet"], entry["candidate"], rater) in seen:
                 continue
-            entry.update({"kind": "sheetCandidate", "round": roundName, "rater": rater, "grade": float(grade)})
-            handle.write(json.dumps(entry) + "\n")
+            # Just the reference and the grade: the geometry stays in the round's candidates.jsonl.
+            handle.write(json.dumps({"kind": "sheetCandidate", "round": roundName, "sheet": entry["sheet"],
+                                     "candidate": entry["candidate"], "rater": rater, "grade": float(grade)}) + "\n")
             added += 1
     print(f"added {added} graded designs to {ratingsPath}")
 
 
-def loadSheetRatings(path=ratingsPath):
-    """plateKey -> (plate, [(params, pockets, ribs, grade, entry)]) from every graded round."""
+userGradesPath = Path("data/curation/userGrades.json")
+
+
+def userGradedEntries():
+    """The user's grades (from the Plate Curator page) as sheet-candidate entries.
+
+    Stored compactly as {"<round>__<sheet>__<candidate>": grade}; geometry comes from
+    each round's candidates.jsonl, which keeps sheetRatings.jsonl under GitHub's file limit.
+    """
+    if not userGradesPath.exists():
+        return []
+    grades = json.loads(userGradesPath.read_text())
+    entries = []
+    for roundName in sorted({key.split("__")[0] for key in grades}):
+        for line in (sheetRoot / roundName / "candidates.jsonl").read_text().splitlines():
+            entry = json.loads(line)
+            grade = grades.get(f"{roundName}__{entry['sheet']}__{entry['candidate']}")
+            if grade is not None:
+                entry.update({"kind": "sheetCandidate", "round": roundName, "rater": "user", "grade": float(grade)})
+                entries.append(entry)
+    return entries
+
+
+def pairStrengths(path=Path("data/curation/expertPairs.jsonl"), iterations=200):
+    """Design -> standardised strength from the experts' A-vs-B picks (Plate Pairs page).
+
+    Bradley-Terry per plate, fitted with the MM updates; "about the same" counts half a
+    win each way, and every design gets one virtual tie with a plate-average design so a
+    design that won (or lost) everything stays finite. Strengths are log-scale and
+    standardised within each plate, like a rater's 1-9 ratings."""
+    if not Path(path).exists():
+        return {}
+    byPlate = {}
+    for line in Path(path).read_text().splitlines():
+        pick = json.loads(line)
+        byPlate.setdefault(pick["a"].rsplit(":", 1)[0], []).append(pick)
+    out = {}
+    for picks in byPlate.values():
+        designs = sorted({pick[side] for pick in picks for side in ("a", "b")})
+        if len(designs) < 2:
+            continue
+        index = {design: k for k, design in enumerate(designs)}
+        wins = np.full(len(designs), 0.5)  # the virtual tie
+        games = []
+        for pick in picks:
+            a, b = index[pick["a"]], index[pick["b"]]
+            share = {"a": 1.0, "b": 0.0, "same": 0.5}[pick["winner"]]
+            wins[a] += share
+            wins[b] += 1 - share
+            games.append((a, b))
+        strength = np.ones(len(designs))
+        for _ in range(iterations):
+            denominator = np.full(len(designs), 0.0)
+            for a, b in games:
+                denominator[a] += 1 / (strength[a] + strength[b])
+                denominator[b] += 1 / (strength[a] + strength[b])
+            denominator += 1 / (strength + 1.0)  # the virtual opponent has strength 1
+            strength = wins / denominator
+            strength /= np.exp(np.mean(np.log(strength)))
+        logs = np.log(strength)
+        spread = max(logs.std(), 0.5)
+        for design, value in zip(designs, (logs - logs.mean()) / spread):
+            out[design] = float(value)
+    return out
+
+
+def expertGradedEntries(path=Path("data/curation/expertRatings.jsonl")):
+    """Ratings from the Plate Rater page (CAD experts, 1-9) as sheet-candidate entries.
+
+    Each rater's ratings are standardised against their own mean and spread, averaged over
+    raters per design, then mapped onto the 1-5 grade scale (mean -> 3, one spread -> 1
+    grade). Only generated designs from the rating-sheet rounds become entries; ratings of
+    real designs are kept in the file for later use."""
+    byRater = {}
+    for line in (Path(path).read_text().splitlines() if Path(path).exists() else []):
+        entry = json.loads(line)
+        byRater.setdefault(entry["rater"], {})[entry["id"]] = entry["rating"]  # a re-export replaces
+    scores = {}
+    for ratings in byRater.values():
+        values = np.array(list(ratings.values()), dtype=float)
+        if len(values) < 10:
+            continue  # too few to know this rater's scale
+        mean, spread = values.mean(), max(values.std(), 0.5)
+        for designId, rating in ratings.items():
+            scores.setdefault(designId, []).append((rating - mean) / spread)
+    for designId, z in pairStrengths().items():
+        scores.setdefault(designId, []).append(z)
+    grades = {}
+    for designId, zs in scores.items():
+        if designId.startswith("sheet:"):
+            _, roundName, sheet, candidate = designId.split(":")
+            grades[(roundName, sheet, int(candidate))] = float(np.clip(3 + np.mean(zs), 1, 5))
+    entries = []
+    for roundName in sorted({key[0] for key in grades}):
+        for line in (sheetRoot / roundName / "candidates.jsonl").read_text().splitlines():
+            entry = json.loads(line)
+            grade = grades.get((roundName, entry["sheet"], int(entry["candidate"])))
+            if grade is not None:
+                entry.update({"kind": "sheetCandidate", "round": roundName, "rater": "experts", "grade": grade})
+                entries.append(entry)
+    return entries
+
+
+def expandReferences(entries):
+    """Fill in geometry for compact grade entries (round, sheet, candidate) from each round's
+    candidates.jsonl."""
+    byRound = {}
+    out = []
+    for entry in entries:
+        if "outline" not in entry and entry.get("kind") == "sheetCandidate":
+            roundName = entry["round"]
+            if roundName not in byRound:
+                byRound[roundName] = {(c["sheet"], c["candidate"]): c for c in
+                                      map(json.loads, (sheetRoot / roundName / "candidates.jsonl").read_text().splitlines())}
+            entry = {**byRound[roundName][(entry["sheet"], entry["candidate"])], **entry}
+        out.append(entry)
+    return out
+
+
+def compactRatings(path=ratingsPath):
+    """Rewrite a ratings file that still carries full geometry as compact references."""
+    keep = ("kind", "round", "sheet", "candidate", "rater", "grade")
+    lines = [json.dumps({key: entry[key] for key in keep}) for entry in map(json.loads, Path(path).read_text().splitlines())]
+    Path(path).write_text("".join(line + "\n" for line in lines))
+
+
+def loadSheetRatings(path=ratingsPath, claudeGrades=True):
+    """plateKey -> (plate, [(params, pockets, ribs, grade, entry)]) from every graded round.
+
+    claudeGrades=False leaves out Claude's own sheet grades, so only the user's and the
+    experts' grades train the models (Claude's leaned towards dense, busy designs)."""
     byPlate = {}
     if not Path(path).exists():
         return byPlate
-    for line in Path(path).read_text().splitlines():
-        entry = json.loads(line)
+    entries = expandReferences([json.loads(line) for line in Path(path).read_text().splitlines()]) if claudeGrades else []
+    entries += userGradedEntries() + expertGradedEntries()
+    # One grade per design: the user's beats the experts', which beats Claude's.
+    rank = {"user": 2, "experts": 1}
+    top = {}
+    for e in entries:
+        if e.get("kind") == "sheetCandidate":
+            key = (e["round"], e["sheet"], e["candidate"])
+            top[key] = max(top.get(key, 0), rank.get(e.get("rater"), 0))
+    for entry in entries:
         if entry.get("kind") != "sheetCandidate":
+            continue
+        if rank.get(entry.get("rater"), 0) < top[(entry["round"], entry["sheet"], entry["candidate"])]:
             continue
         if entry["plateKey"] not in byPlate:
             plate = Plate(outline=Polygon(entry["outline"]), features=[Polygon(hole) for hole in entry["holes"]],

@@ -152,13 +152,14 @@ def isCached(cachePath):
         return False
 
 
-def loadSourceLog(logPath):
+def loadSourceLog(logPaths):
     sources = {}
-    if Path(logPath).exists():
-        for line in Path(logPath).read_text().splitlines():
-            entry = json.loads(line)
-            if "localPath" in entry:
-                sources[str(Path(entry["localPath"]))] = entry
+    for logPath in [logPaths] if isinstance(logPaths, (str, Path)) else logPaths:
+        if Path(logPath).exists():
+            for line in Path(logPath).read_text().splitlines():
+                entry = json.loads(line)
+                if "localPath" in entry:
+                    sources[str(Path(entry["localPath"]))] = entry
     return sources
 
 
@@ -174,6 +175,7 @@ def runAll(files, cacheDir, nWorkers, timeoutSeconds=fileTimeoutSeconds):
         cachePath = cachePathFor(path, cacheDir)
         if not isCached(cachePath):
             pending.append((path, cachePath))
+    pending.sort(key=lambda item: item[0].stat().st_size)  # small files first: big assemblies can take minutes each
     print(f"{len(files)} files, {len(pending)} to process", flush=True)
     running = []
     while pending or running:
@@ -202,7 +204,7 @@ def main():
     parser.add_argument("--raw", nargs="+", default=["data/raw/github", "data/raw/manual"],
                         help="one or more folders of downloaded CAD (missing folders are skipped)")
     parser.add_argument("--out", default="data/processed")
-    parser.add_argument("--log", default="data/sources.jsonl")
+    parser.add_argument("--log", nargs="+", default=["data/sources.jsonl"], help="one or more source logs")
     parser.add_argument("--workers", type=int, default=3)
     parser.add_argument("--timeout", type=int, default=fileTimeoutSeconds, help="seconds per file")
     args = parser.parse_args()
@@ -240,7 +242,8 @@ def main():
                 "id": f"{hashlib.sha1(str(path).encode()).hexdigest()[:10]}_{record['solidIndex']}",
                 "file": str(path),
                 "format": path.suffix.lower().lstrip("."),
-                "origin": "manual" if source.get("source") == "manual-export" else "github",
+                "origin": {"manual-export": "manual", "vendor": "vendor"}.get(source.get("source"), "github"),
+                "vendor": source.get("vendor"),
                 "team": source.get("team"),
                 "repo": source.get("repo"),
                 "url": source.get("url"),

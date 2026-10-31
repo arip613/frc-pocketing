@@ -1,0 +1,1066 @@
+[
+ {
+  "vendor": "REV",
+  "product": "MAXLift #25 Chain Attachment Plate - 2 Pack - REV-21-3535 STEP File",
+  "pageUrl": "https://www.revrobotics.com/rev-21-3535/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3535.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Bearing Blocks - REV-21-2550",
+  "pageUrl": "https://www.revrobotics.com/MAXSpline-Bearing-Blocks/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2550.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Bearing Blocks - REV-21-2551",
+  "pageUrl": "https://www.revrobotics.com/MAXSpline-Bearing-Blocks/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2551.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary Universal Input Stage V2 - REV-21-2146 STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2146/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2146.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "Differential Drivetrain Bumper Bracket Kit - Bumper Corner Bracket - LH (REV-21-3065) STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-25-3062/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3065.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "Differential Drivetrain Bumper Bracket Kit - Bumper Corner Bracket - RH (REV-21-3066) STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-25-3062/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3066.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "Differential Drivetrain Bumper Bracket Kit - AM14U5 Bumper Adapter (REV-21-3067) STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-25-3062/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3067.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "4in EasySwerve Module - REV-21-3006 STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-21-3006/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3006.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary System Kit - MAXPlanetary 1/2in Hex Socket Output STEP File",
+  "pageUrl": "https://www.revrobotics.com/maxplanetary-system-kit/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2104.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary System Kit - MAXPlanetary Universal Input Stage STEP File",
+  "pageUrl": "https://www.revrobotics.com/maxplanetary-system-kit/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2106.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary System Kit - MAXPlanetary 8mm Keyed Input Coupler Kit STEP File",
+  "pageUrl": "https://www.revrobotics.com/maxplanetary-system-kit/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2108.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary System Kit - MAXPlanetary Cartridges STEP Files",
+  "pageUrl": "https://www.revrobotics.com/maxplanetary-system-kit/",
+  "url": "https://revrobotics.com/content/cad/MAXPlanetary-Cartridges-STEP.zip",
+  "kind": "zip",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary System Kit - MAXPlanetary 1-Stage NEO Example STEP File",
+  "pageUrl": "https://www.revrobotics.com/maxplanetary-system-kit/",
+  "url": "https://revrobotics.com/content/cad/MAXPlanetary%201-Stage.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary System Kit - MAXPlanetary 2-Stage NEO Example STEP File",
+  "pageUrl": "https://www.revrobotics.com/maxplanetary-system-kit/",
+  "url": "https://revrobotics.com/content/cad/MAXPlanetary%202-Stage.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary System Kit - MAXPlanetary 3-Stage NEO Example STEP File",
+  "pageUrl": "https://www.revrobotics.com/maxplanetary-system-kit/",
+  "url": "https://revrobotics.com/content/cad/MAXPlanetary%203-Stage.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSwerve Spare Parts - REV-21-3005 STEP File",
+  "pageUrl": "https://www.revrobotics.com/MAXSwerve-Spare-Parts/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3005.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary 550 Input Kit - REV-21-2117 (MAXPlanetary 550 Input Kit) STEP File",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2117/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2117.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXLift Bearing Blocks - REV-21-2618",
+  "pageUrl": "https://www.revrobotics.com/MAXLift-Bearing-Blocks/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2618.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXLift Bearing Blocks - REV-21-2634",
+  "pageUrl": "https://www.revrobotics.com/MAXLift-Bearing-Blocks/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2634.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "3in MAXSwerve Module \u2013 15T Spline Input Kit - REV-21-3009 STEP File",
+  "pageUrl": "https://www.revrobotics.com/rev-21-3009/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3009.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "Aluminum Angle - 0.74in x 0.74in - 47in - REV-21-3207 STEP File",
+  "pageUrl": "https://www.revrobotics.com/rev-21-3207/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3207.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "ION Motor Brackets - REV-21-2046",
+  "pageUrl": "https://www.revrobotics.com/ION-Motor-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2046.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "ION Motor Brackets - REV-21-2360",
+  "pageUrl": "https://www.revrobotics.com/ION-Motor-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2360.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "ION Motor Brackets - REV-21-2361",
+  "pageUrl": "https://www.revrobotics.com/ION-Motor-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2361.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "ION Motor Brackets - REV-21-2804",
+  "pageUrl": "https://www.revrobotics.com/ION-Motor-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2804.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "ION Motor Brackets - REV-21-4444",
+  "pageUrl": "https://www.revrobotics.com/ION-Motor-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-4444.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAX Pattern Double Mount Adapter - 2 Pack - REV-21-2859 STEP File",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2859-pk2/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2859.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAX Pattern Plates - REV-21-2860",
+  "pageUrl": "https://www.revrobotics.com/MAX-Pattern-Plates/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2860.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAX Pattern Plates - REV-21-2861",
+  "pageUrl": "https://www.revrobotics.com/MAX-Pattern-Plates/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2861.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAX Pattern Plates - REV-21-2862",
+  "pageUrl": "https://www.revrobotics.com/MAX-Pattern-Plates/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2862.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAX Pattern Plates - REV-21-2866",
+  "pageUrl": "https://www.revrobotics.com/MAX-Pattern-Plates/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2866.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAX Pattern Plates - REV-21-2870",
+  "pageUrl": "https://www.revrobotics.com/MAX-Pattern-Plates/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2870.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAX Pattern Plates - REV-21-2874",
+  "pageUrl": "https://www.revrobotics.com/MAX-Pattern-Plates/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2874.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary 9:1 Cartridge - REV-21-2129 STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2129/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2129.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAX 180 Degree Gearbox - MAX 180 Degree Gearbox 1:1 Example STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-25-2741/",
+  "url": "https://www.revrobotics.com/content/cad/REV-25-2741-1to1.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAX 180 Degree Gearbox - MAX 180 Degree Gearbox 2:1 Example STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-25-2741/",
+  "url": "https://www.revrobotics.com/content/cad/REV-25-2741-2to1.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAX 90 Degree Gearbox Spare Parts - REV-21-2120 STEP File",
+  "pageUrl": "https://www.revrobotics.com/MAX-90-Gearbox-Spare-Parts",
+  "url": "https://revrobotics.com/content/cad/REV-21-2120.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "ION Motor Mounting Blocks - REV-21-3663_3Post STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/ION-Motor-Mounting-Blocks",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3663_3Post.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "ION Motor Mounting Blocks - REV-21-3663_4Post STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/ION-Motor-Mounting-Blocks",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3663_4Post.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "ION Motor Mounting Blocks - REV-21-3662_4Post STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/ION-Motor-Mounting-Blocks",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3662_4Post.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "Polycarbonate Sheets - REV-21-3410 STEP File",
+  "pageUrl": "https://www.revrobotics.com/Polycarbonate-Sheets/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3410.step",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "Polycarbonate Sheets - REV-41-7537 STEP File",
+  "pageUrl": "https://www.revrobotics.com/Polycarbonate-Sheets/",
+  "url": "https://www.revrobotics.com/content/cad/REV-41-7537.STEP.step",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Brackets - REV-21-2350",
+  "pageUrl": "https://www.revrobotics.com/MAXSpline-Brackets/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2350.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Brackets - REV-21-2351",
+  "pageUrl": "https://www.revrobotics.com/MAXSpline-Brackets/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2351.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Brackets - REV-21-2352",
+  "pageUrl": "https://www.revrobotics.com/MAXSpline-Brackets/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2352.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Brackets - REV-21-2353",
+  "pageUrl": "https://www.revrobotics.com/MAXSpline-Brackets/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2353.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-1570",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-1570.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2291",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2291.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-1571",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-1571.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2292",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2292.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2293",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2293.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2295",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2295.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2296",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2296.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2298",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2298.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-1574",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-1574.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2299",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2299.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-1575",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-1575.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2300",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2300.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2302",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2302.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2316",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2316.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2317",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2317.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2319",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2319.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2320",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2320.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2328",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2328.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2329",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2329.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-1577",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-1577.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-1582",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-1582.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-1583",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-1583.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2359",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2359.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2358",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2358.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Brackets - REV-21-2357",
+  "pageUrl": "https://www.revrobotics.com/1in-Brackets/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2357.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "SPARK MAX Mounting Bracket - REV-21-2151 STEP File",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2468-pk2/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2151.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Basic Corner Bracket - 2 Pack - REV-21-3293 STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-21-3293-pk2/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3293.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "2 Motor Drivetrain Gearbox - Through Bore - REV-21-2190 Example STEP File",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2190/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2190%20EXAMPLE.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x2 - REV-21-3288",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x2/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3288.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x2 - REV-21-3286",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x2/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3286.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x2 - REV-21-3287",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x2/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3287.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "Clamping Elevator Bearing Block - 2PK - REV-21-2636",
+  "pageUrl": "https://www.revrobotics.com/Elevator-Bearing-Blocks/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2636.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Inside Corner Bracket - 2 Pack - REV-21-1203 STEP File",
+  "pageUrl": "https://www.revrobotics.com/REV-21-1203/",
+  "url": "https://revrobotics.com/content/cad/REV-21-1203.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "2 Motor Gearbox - Through Bore - REV-21-2099 1:1 STEP File",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2099/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2099%201-to-1.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary 775 Input Kit - REV-21-2118 STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2118/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2118.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary MAXSpline Output Coupler - REV-21-3630 STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-21-3630/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3630.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Angled Corner Bracket - 2 Pack - REV-21-3291 STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-21-3291-pk2/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3291.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "Ratio Plates - REV-21-2567",
+  "pageUrl": "https://www.revrobotics.com/ratio-plates/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2567.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "Ratio Plates - REV-21-2574",
+  "pageUrl": "https://www.revrobotics.com/ratio-plates/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2574.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "Ratio Plates - REV-21-2575",
+  "pageUrl": "https://www.revrobotics.com/ratio-plates/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2575.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Shaft Bearing Blocks - REV-21-3297",
+  "pageUrl": "https://www.revrobotics.com/maxspline-shaft-bearing-blocks/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3297.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Shaft Bearing Blocks - REV-21-3298",
+  "pageUrl": "https://www.revrobotics.com/maxspline-shaft-bearing-blocks/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3298.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Shaft Bearing Blocks - REV-21-3299",
+  "pageUrl": "https://www.revrobotics.com/maxspline-shaft-bearing-blocks/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3299.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Shaft Bearing Blocks - REV-21-3300",
+  "pageUrl": "https://www.revrobotics.com/maxspline-shaft-bearing-blocks/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3300.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Shaft Bearing Blocks - REV-29-3295",
+  "pageUrl": "https://www.revrobotics.com/maxspline-shaft-bearing-blocks/",
+  "url": "https://revrobotics.com/content/cad/REV-29-3295.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Shaft Bearing Blocks - REV-29-3296",
+  "pageUrl": "https://www.revrobotics.com/maxspline-shaft-bearing-blocks/",
+  "url": "https://revrobotics.com/content/cad/REV-29-3296.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube Internal Supports - REV-21-2717",
+  "pageUrl": "https://www.revrobotics.com/maxtube-internal-supports/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2717.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube Internal Supports - REV-21-3617",
+  "pageUrl": "https://www.revrobotics.com/maxtube-internal-supports/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3617.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube Internal Supports - REV-21-3618",
+  "pageUrl": "https://www.revrobotics.com/maxtube-internal-supports/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3618.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube Internal Supports - REV-21-2716",
+  "pageUrl": "https://www.revrobotics.com/maxtube-internal-supports/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2716.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube Internal Supports - REV-21-2715",
+  "pageUrl": "https://www.revrobotics.com/maxtube-internal-supports/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2715.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube Internal Supports - REV-21-3619",
+  "pageUrl": "https://www.revrobotics.com/maxtube-internal-supports/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3619.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube Internal Supports - REV-21-3620",
+  "pageUrl": "https://www.revrobotics.com/maxtube-internal-supports/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3620.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube Internal Supports - REV-21-3623",
+  "pageUrl": "https://www.revrobotics.com/maxtube-internal-supports/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-3623.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "Adjustable Tube Mount - 2 Pack - REV-21-4016 STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-21-4016-pk2/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-4016.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 1x1 - REV-21-2160",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-1x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2160.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 1x1 - REV-21-3540",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-1x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3540.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 1x1 - REV-21-3543",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-1x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3543.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary 2:1 Cartridge - REV-21-2140 STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2140/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2140.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "Bearing Retaining Plate - 10 Pack - REV-21-2286\u00a0STEP File",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2286/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2286.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "1in Pivot Joint - 2 Pack - REV-21-2395 STEP File",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2395/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2395.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary NEO 2.0 Input Kit - REV-21-2138 STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2147/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2138.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-2161",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2161.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-2289",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2289.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-2162",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2162.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-2163",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2163.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-2164",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2164.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-2165",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2165.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-2169",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2169.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-2173",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2173.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-2177",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2177.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-2185",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-2185.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-3552",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3552.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-3555",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3555.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-3586",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3586.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-3558",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3558.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-3559",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3559.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-3560",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3560.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-3564",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3564.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-3568",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3568.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-3572",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3572.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 2x1 - REV-21-3580",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-2x1/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3580.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXPlanetary 1:1 Brake Cartridge - REV-21-2131 STEP File",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2131/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2131.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXSpline Pillow Block - REV-21-2750 STEP FILE",
+  "pageUrl": "https://www.revrobotics.com/rev-21-2750/",
+  "url": "https://www.revrobotics.com/content/cad/REV-21-2750.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "MAXTube - 1/2x1/2 - REV-21-3289",
+  "pageUrl": "https://www.revrobotics.com/MAXTube-0.5x0.5/",
+  "url": "https://revrobotics.com/content/cad/REV-21-3289.STEP",
+  "kind": "step",
+  "likelyPocketedPlates": false
+ },
+ {
+  "vendor": "REV",
+  "product": "2025 REV ION Starter Bot Build Guide - Coral Hood Part 1 (Sides)",
+  "pageUrl": "https://docs.revrobotics.com/frc-kickoff-concepts/2025/build-guide",
+  "url": "https://revrobotics.com/content/docs/2025-StarterBot-CoralHood_1.dxf",
+  "kind": "dxf",
+  "likelyPocketedPlates": true
+ },
+ {
+  "vendor": "REV",
+  "product": "2025 REV ION Starter Bot Build Guide - Coral Hood Part 2 (Top and Bottom)",
+  "pageUrl": "https://docs.revrobotics.com/frc-kickoff-concepts/2025/build-guide",
+  "url": "https://revrobotics.com/content/docs/2025-StarterBot-CoralHood_2.dxf",
+  "kind": "dxf",
+  "likelyPocketedPlates": true
+ }
+]

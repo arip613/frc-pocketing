@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plate Pocketer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Plate Pocketer</h1>
+  <p>Upload a flat plate, pick a pocketing design, download the STEP.</p>
+</header>
+
+<main>
+  <aside>
+    <label class="drop" id="drop">
+      <input type="file" id="fileInput" accept=".step,.stp" hidden>
+      <strong id="dropTitle">Choose a STEP file</strong>
+      <span id="dropHint">or drag it here</span>
+    </label>
+    <p class="facts" id="plateFacts" hidden></p>
+
+    <div class="units" role="radiogroup" aria-label="Units">
+      <button type="button" data-units="in" class="on">in</button>
+      <button type="button" data-units="mm">mm</button>
+    </div>
+
+    <label class="field">Outer wall <input id="wall" type="number" step="any" min="0" value="0.1875"> <span class="frac" data-for="wall"></span></label>
+    <label class="field">Rib <input id="rib" type="number" step="any" min="0" value="0.1875"> <span class="frac" data-for="rib"></span></label>
+    <label class="field">Ring around holes <input id="boss" type="number" step="any" min="0" value="0.1875"> <span class="frac" data-for="boss"></span></label>
+    <label class="field">Tool radius <input id="corner" type="number" step="any" min="0" value="0.0625"> <span class="frac" data-for="corner"></span></label>
+
+    <div class="field">
+      Depth
+      <span class="seg" id="depthSeg">
+        <button type="button" data-depth="through" class="on">Through</button>
+        <button type="button" data-depth="blind">Blind</button>
+      </span>
+      <input id="depth" type="number" step="any" min="0" value="0.125" disabled aria-label="Blind depth">
+    </div>
+
+    <div class="field">
+      Pockets
+      <span class="seg" id="densitySeg">
+        <button type="button" data-density="dense">Small</button>
+        <button type="button" data-density="medium" class="on">Medium</button>
+        <button type="button" data-density="open">Big</button>
+      </span>
+    </div>
+
+    <label class="field">How many designs <input id="count" type="number" min="2" max="8" value="6"></label>
+
+    <button class="primary" id="goButton" disabled>Generate</button>
+    <p class="status" id="status" aria-live="polite"></p>
+  </aside>
+
+  <section>
+    <div class="preview">
+      <svg id="view" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
+      <p class="empty" id="empty">Your plate will show up here.</p>
+      <label class="toggle" id="originalToggle" hidden><input type="checkbox" id="showOriginal"> show original</label>
+    </div>
+    <p class="summary" id="summary"></p>
+
+    <ol class="cands" id="cands" hidden></ol>
+
+    <div class="actions" id="actions" hidden>
+      <span class="rate">
+        <button type="button" id="rateUp">I like this one</button>
+        <button type="button" id="rateDown">Not this one</button>
+        <span id="rated"></span>
+      </span>
+      <button class="primary" id="exportButton">Download STEP</button>
+    </div>
+
+    <div class="checks" id="checks" hidden>
+      <p id="checkSummary"></p>
+      <ul id="checkList"></ul>
+      <a id="download" hidden></a>
+    </div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

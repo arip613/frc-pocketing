@@ -40,7 +40,7 @@ from frcpocket.layout import candidateGraph, defaultGraph, makeLayout, removedFr
 from frcpocket.plate import PocketParams, loadPlateFromStep, plateFromRecord
 from frcpocket.projection import projectRealDesign
 from frcpocket.scorer import AestheticScorer
-from frcpocket.splits import goldIds, isHoldout, loadRecords
+from frcpocket.splits import drawingGoldWeight, goldIds, isHoldout, loadRecords, userTasteIds, userTasteWeight
 
 torch.set_num_threads(4)
 # Looks come first (the user's priority), structure and mass removal second. The floor
@@ -139,47 +139,62 @@ def imitationExamples(goldTrain):
         chosen = set(projection.layout.ribs)
         keep = torch.tensor([float(edge in chosen) for edge in graph.edges])
         widths = torch.tensor(projection.widthClass, dtype=torch.long)
-        examples.append(Example(encodeGraph(plate, params, graph), keep, widths, weight=imitationWeight))
+        weight = imitationWeight * (userTasteWeight if record["id"] in userTasteIds else 1.0)
+        if record.get("origin") == "drawing":
+            weight *= drawingGoldWeight
+        examples.append(Example(encodeGraph(plate, params, graph), keep, widths, weight=weight))
     return examples
 
 
-def gradedImitationExamples():
+def gradedImitationExamples(parallel=None, claudeGrades=True):
     """Designs graded 4 or 5 on the rating sheets, as imitation targets.
 
     Ribs are matched to this plate's candidate graph by their end points. Designs that
-    came from another graph (e.g. the truss baseline) are projected onto it instead, the
-    same way real designs are. Width labels of -1 mean "unknown" and are not trained on."""
+    came from another graph (e.g. the truss baseline, or polish-added ribs) are projected
+    onto it instead, the same way real designs are, which takes ~20 s each, so the work is
+    spread over processes. Width labels of -1 mean "unknown" and are not trained on."""
+    import multiprocessing
+    from concurrent.futures import ProcessPoolExecutor
+
     from frcpocket import ratingSheets
 
-    examples = []
-    for plate, rated in ratingSheets.loadSheetRatings().values():
+    jobs = []
+    for plate, rated in ratingSheets.loadSheetRatings(claudeGrades=claudeGrades).values():
         for params, pockets, ribs, grade, entry in rated:
             weight = next((weight for minGrade, weight in gradedImitationWeights if grade >= minGrade), None)
-            if weight is None:
-                continue
-            graph = defaultGraph(plate, params)
-            nodeIndex = {tuple(np.round(node.point, 6)): k for k, node in enumerate(graph.nodes)}
-            lookup = {edge: k for k, edge in enumerate(graph.edges)}
-            keep = torch.zeros(len(graph.edges))
-            widths = torch.full((len(graph.edges),), -1, dtype=torch.long)
-            ribWidths = entry.get("ribWidths") or [None] * len(ribs)
-            matched = True
-            for (a, b), width in zip(ribs, ribWidths):
-                i, j = nodeIndex.get(tuple(np.round(a, 6))), nodeIndex.get(tuple(np.round(b, 6)))
-                edge = tuple(sorted((i, j))) if i is not None and j is not None else None
-                if edge not in lookup:
-                    matched = False
-                    break
-                keep[lookup[edge]] = 1.0
-                if width is not None:
-                    widths[lookup[edge]] = int(np.argmin([abs(width - factor) for factor in (1.0, 1.6, 2.4)]))
-            if not matched:
-                projection = projectRealDesign(plate, params, pockets, graph)
-                chosen = set(projection.layout.ribs)
-                keep = torch.tensor([float(edge in chosen) for edge in graph.edges])
-                widths = torch.tensor(projection.widthClass, dtype=torch.long)
-            examples.append(Example(encodeGraph(plate, params, graph), keep, widths, weight=weight))
-    return examples
+            if weight is not None:
+                jobs.append((plate, params, pockets, ribs, entry.get("ribWidths"), weight))
+    workers = parallel or max(1, min(6, (os.cpu_count() or 2)))
+    if workers <= 1 or len(jobs) < 8:
+        return [gradedExample(*job) for job in jobs]
+    with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context("spawn")) as pool:
+        return list(pool.map(gradedExample, *zip(*jobs), chunksize=4))
+
+
+def gradedExample(plate, params, pockets, ribs, ribWidths, weight):
+    graph = defaultGraph(plate, params)
+    nodeIndex = {tuple(np.round(node.point, 6)): k for k, node in enumerate(graph.nodes)}
+    lookup = {edge: k for k, edge in enumerate(graph.edges)}
+    keep = torch.zeros(len(graph.edges))
+    widths = torch.full((len(graph.edges),), -1, dtype=torch.long)
+    ribs = ribs or []
+    ribWidths = ribWidths or [None] * len(ribs)
+    matched = bool(ribs)  # designs saved without their ribs (the model-set picks) are projected below
+    for (a, b), width in zip(ribs, ribWidths):
+        i, j = nodeIndex.get(tuple(np.round(a, 6))), nodeIndex.get(tuple(np.round(b, 6)))
+        edge = tuple(sorted((i, j))) if i is not None and j is not None else None
+        if edge not in lookup:
+            matched = False
+            break
+        keep[lookup[edge]] = 1.0
+        if width is not None:
+            widths[lookup[edge]] = int(np.argmin([abs(width - factor) for factor in (1.0, 1.6, 2.4)]))
+    if not matched:
+        projection = projectRealDesign(plate, params, pockets, graph)
+        chosen = set(projection.layout.ribs)
+        keep = torch.tensor([float(edge in chosen) for edge in graph.edges])
+        widths = torch.tensor(projection.widthClass, dtype=torch.long)
+    return Example(encodeGraph(plate, params, graph), keep, widths, weight=weight)
 
 
 def fit(model, examples, epochs, lr=2e-3):
@@ -207,7 +222,12 @@ class Judge:
     the native mesher costs one candidate instead of the whole run."""
 
     def __init__(self, scorerPath, workers=4, useFea=True):
-        self.scorer = AestheticScorer(scorerPath)
+        if str(scorerPath).endswith(".json"):
+            from frcpocket.taste import TasteScorer
+
+            self.scorer = TasteScorer(scorerPath)  # people's taste model (taste.py) in place of the scorer
+        else:
+            self.scorer = AestheticScorer(scorerPath)
         self.workers = workers
         self.useFea = useFea
         self.pool = None
@@ -315,10 +335,20 @@ def validationPlates(validation, testPlateDir, rng, limit=None):
 _workerJudge = None
 
 
-def initWorker(scorerPath, useFea):
+def setLinearMass(weight):
+    """Training only (--linear-mass): reward material removed linearly, weight x removed,
+    instead of capping the reward at targetRemoved. Every rater picks the lighter of two
+    designs about 3 times in 4, and with the cap the rounds drift towards heavier plates."""
+    global massWeight, targetRemoved
+    massWeight, targetRemoved = weight, 1.0
+
+
+def initWorker(scorerPath, useFea, linearMass=None):
     """Each round worker keeps its own scorer (and FEA pool, if used) for the whole run."""
     global _workerJudge
     torch.set_num_threads(1)
+    if linearMass is not None:
+        setLinearMass(linearMass)
     _workerJudge = Judge(scorerPath, workers=1, useFea=useFea)
 
 
@@ -436,11 +466,13 @@ def train(args):
     np.random.seed(args.seed)
     goldTrain, inputs, validation = loadPlates(args.plates)
     print(f"plates: {len(goldTrain)} gold train, {len(inputs)} training inputs, {len(validation)} validation", flush=True)
+    if args.linear_mass is not None:
+        setLinearMass(args.linear_mass)
     judge = Judge(args.scorer, workers=args.workers, useFea=args.fea)
     roundPool = None
     if args.parallel > 1:
         roundPool = ProcessPoolExecutor(max_workers=args.parallel, mp_context=multiprocessing.get_context("spawn"),
-                                        initializer=initWorker, initargs=(args.scorer, args.fea))
+                                        initializer=initWorker, initargs=(args.scorer, args.fea, args.linear_mass))
         print(f"spreading each round over {args.parallel} processes", flush=True)
 
     def evaluate(model):
@@ -454,7 +486,7 @@ def train(args):
 
     model = RibGnn()
     imitation = imitationExamples(goldTrain)
-    graded = gradedImitationExamples()
+    graded = gradedImitationExamples(parallel=args.parallel, claudeGrades=not args.no_claude_grades)
     print(f"imitation: {len(imitation)} gold, {len(graded)} graded 4-5 on rating sheets", flush=True)
     imitation += graded
     logPath = outDir / "trainingLog.json"
@@ -576,6 +608,9 @@ def buildParser():
     parser.add_argument("--parallel", type=int, default=max(1, min(6, (os.cpu_count() or 2) - 2)),
                         help="processes to spread each round's plates over (1 = sequential)")
     parser.add_argument("--fea", action="store_true", help="run FEA inside the training loop (slow)")
+    parser.add_argument("--no-claude-grades", action="store_true", help="train only on the user's and experts' sheet grades")
+    parser.add_argument("--linear-mass", type=float, default=None,
+                        help="score rounds with this weight x material removed, without the 40%% cap")
     parser.add_argument("--val-limit", type=int, default=12, help="non-gold validation plates per round")
     parser.add_argument("--resume-round", type=int, default=None, help="continue from models/generator_round<N>.pt")
     parser.add_argument("--resume-log", default=None, help="JSON list of earlier round metrics")

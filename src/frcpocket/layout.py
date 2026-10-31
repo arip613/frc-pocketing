@@ -69,7 +69,7 @@ class Layout:
     ribWidths: dict = field(default_factory=dict)  # edge -> width (in); missing = params.ribIn
 
     def ribWidth(self, edge, params):
-        return max(self.ribWidths.get(edge, params.ribIn), params.ribIn)
+        return params.ribWidthFor(self.ribWidths.get(edge))
 
 
 def polygons(geometry):
@@ -165,7 +165,7 @@ def candidateGraph(plate, params, anchorSpacing=None, extraNeighbors=4, interior
         Node(*featureCenter(feature).coords[0], kind="feature", featureIndex=index, featureKind=featureKind(feature))
         for index, feature in enumerate(plate.features)
     ]
-    bosses = [feature.buffer(params.boss, quad_segs=arcSegments) for feature in plate.features]
+    bosses = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
     unionBoss = unary_union(bosses) if bosses else None
     for anchor in anchorPoints(plate, params, spacing, plate.features):
         # A feature whose boss already covers this stretch of wall needs no anchor there.
@@ -259,8 +259,8 @@ def ribBand(graph, edge, width):
 def buildPockets(plate, params, graph, ribs, ribWidths=None):
     ribWidths = ribWidths or {}
     inner = plate.outline.buffer(-params.wallIn, quad_segs=arcSegments)
-    keep = [feature.buffer(params.boss, quad_segs=arcSegments) for feature in plate.features]
-    keep += [ribBand(graph, edge, max(ribWidths.get(edge, params.ribIn), params.ribIn)) for edge in ribs]
+    keep = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
+    keep += [ribBand(graph, edge, params.ribWidthFor(ribWidths.get(edge))) for edge in ribs]
     raw = inner.difference(unary_union(keep)) if keep else inner
     return finishRegions(polygons(raw), params)
 
@@ -276,8 +276,30 @@ def finishRegions(regions, params):
     return enforcePocketGaps(pockets, params)
 
 
+# Inside corners at least 1.3x the tool radius (the usual machining rule: a corner equal to
+# the tool radius buries the cutter at full engagement; docs/pocketingResearch.md).
+minFilletFactor = 1.3
+
+_inscribedCache = {}
+
+
 def inscribedRadius(region, iterations=6):
-    """Radius of the largest disk inside region (binary search on inward offsets)."""
+    """Radius of the largest disk inside region (binary search on inward offsets).
+
+    Cached by geometry: polish rebuilds a design hundreds of times and most pockets come
+    back unchanged."""
+    key = (region.wkb, iterations)
+    cached = _inscribedCache.get(key)
+    if cached is not None:
+        return cached
+    if len(_inscribedCache) > 50000:
+        _inscribedCache.clear()
+    radius = _inscribedRadius(region, iterations)
+    _inscribedCache[key] = radius
+    return radius
+
+
+def _inscribedRadius(region, iterations):
     low, high = 0.0, math.sqrt(region.area / math.pi)
     for _ in range(iterations):
         middle = (low + high) / 2
@@ -290,8 +312,10 @@ def inscribedRadius(region, iterations=6):
 
 def filletRadius(region, params):
     """Soft-corner radius for one pocket region: a fraction of its size, clamped."""
+    if params.tightCorners:
+        return minFilletFactor * params.cornerRadiusIn
     style = params.filletFraction * inscribedRadius(region)
-    return max(params.cornerRadiusIn, min(params.maxFilletIn, style))
+    return max(minFilletFactor * params.cornerRadiusIn, min(params.maxFilletIn, style))
 
 
 def toolOpening(region, radius):
@@ -398,7 +422,7 @@ def holeGraph(plate, params):
         Node(*featureCenter(feature).coords[0], kind="feature", featureIndex=index, featureKind=featureKind(feature))
         for index, feature in enumerate(plate.features)
     ]
-    bosses = [feature.buffer(params.boss, quad_segs=arcSegments) for feature in plate.features]
+    bosses = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
     unionBoss = unary_union(bosses) if bosses else None
     minGap = 2.5 * params.ribIn
 
@@ -505,7 +529,7 @@ def sparseJunctions(plate, params, nodes, step):
     angle = math.radians(geom2d.principalAngle(plate.outline))
     reach = math.dist(*np.reshape(plate.outline.bounds, (2, 2)))
     taken = np.array([node.point for node in nodes]) if nodes else np.zeros((0, 2))
-    bossZone = unary_union([feature.buffer(params.boss + params.ribIn) for feature in plate.features]) if plate.features else None
+    bossZone = unary_union([feature.buffer(params.ringFor(feature) + params.ribIn) for feature in plate.features]) if plate.features else None
     rowStep = step * math.sqrt(3) / 2
     points = []
     for row in range(-int(reach / rowStep) - 1, int(reach / rowStep) + 2):
