@@ -17,6 +17,8 @@ stood out (user feedback, comparing real | generated plates):
             uneven little cells down; he rewards even pocket sizes)
             (a single rib, or an X of two crossing ribs in a large squarish or
             triangular pocket)
+  holes     every hole off the outer wall is held by at least two ribs (the user's rule);
+            holes whose bosses overlap count as one, and holes on the wall need none
 
 Every rib the pass adds is a straight segment realized in the layout's candidate graph
 (snapped to an existing node, or a new wall point, a T-junction on an existing rib, or a
@@ -62,6 +64,8 @@ smallFactor = 0.5  # pockets below this many typical pockets are merged into a n
 mergeSolidity = 0.85  # a merged pocket must stay this close to convex
 mergeMinGain = 0.005  # least drop in the spread of log pocket areas worth a merge
 mergeTries = 6  # fully check only the few merges that even out pocket sizes the most
+minHoleRibs = 2  # ribs every hole off the outer wall is held by (the user's rule)
+holeTries = 6  # fully check only the few cheapest ribs per missing one
 
 
 @dataclass
@@ -895,6 +899,89 @@ class Polisher:
             design, layout = best[1], best[2]
         return design, layout, f"merge: {', '.join(notes)}" if notes else ""
 
+    def holeIslands(self):
+        """Holes whose bosses overlap, one solid island each, leaving out islands on the outer
+        wall (the wall already holds them)."""
+        count = len(self.plate.features)
+        parent = list(range(count))
+
+        def find(index):
+            while parent[index] != index:
+                parent[index] = parent[parent[index]]
+                index = parent[index]
+            return index
+
+        for a in range(count):
+            for b in range(a + 1, count):
+                if self.bosses[a].intersects(self.bosses[b]):
+                    parent[find(a)] = find(b)
+        islands = {}
+        for index in range(count):
+            islands.setdefault(find(index), []).append(index)
+        # On the wall: the boss reaches the wall band, or the gap is too narrow for a pocket.
+        reach = self.params.ribIn + 2 * self.params.cornerRadiusIn
+        inner = self.inner.buffer(-reach, quad_segs=arcSegments)
+        return [members for members in islands.values() if all(inner.contains(self.bosses[i]) for i in members)]
+
+    def islandRibs(self, design, members):
+        """Ribs leaving an island (ribs between two of its own holes don't hold it)."""
+        nodes = {self.featureNode(design, member) for member in members} - {None}
+        return sum(1 for i, j in design.ribs if (i in nodes) != (j in nodes))
+
+    def anchorHoles(self, design, layout):
+        """Add ribs until every hole off the outer wall is held by at least minHoleRibs.
+
+        A new rib runs from the hole straight across a neighbouring pocket to a point on its
+        far side (another hole, a rib, a rib junction or the wall), and must leave pieces
+        worth cutting with no thin wedge. The cheapest few are fully checked."""
+        params = self.params
+        notes = []
+        for members in self.holeIslands():
+            while self.islandRibs(design, members) < minHoleRibs:
+                island = unary_union([self.bosses[member] for member in members])
+                options = []
+                for pocket in layout.pockets:
+                    if pocket.distance(island) > 1.5 * params.ribIn + params.cornerRadiusIn:
+                        continue
+                    targets = self.ports(design, pocket)
+                    for member in members:
+                        start = self.featureNode(design, member)
+                        if start is None:
+                            continue
+                        origin = design.graph.nodes[start].point
+                        for point, port in targets:
+                            target = design.graph.nodes[port[1]].featureIndex if port[0] == "feature" else None
+                            if target in members:
+                                continue
+                            segment = LineString([origin, point])
+                            partners = (design.segment(port[1]),) if port[0] == "rib" else ()
+                            if not self.segmentClear(design, segment, {member, target} - {None}, partners):
+                                continue
+                            if not (self.meetsWide(design, origin, point, ("feature", start))
+                                    and self.meetsWide(design, point, origin, port)):
+                                continue
+                            pieces = self.splitPieces(pocket, [segment], params.ribIn)
+                            if len(pieces) < 2 or any(piece.area < self.minPiece
+                                                      or designFeatures.sharpestCorner(piece) < linkMinCornerDegrees
+                                                      for piece in pieces):
+                                continue
+                            options.append((self.pieceCost(pieces), segment.length, segment))
+                added = False
+                for _, _, segment in sorted(options, key=lambda option: option[:2])[:holeTries]:
+                    trial = self.addSegments(design.copy(), self.orbit(segment), params.ribIn)
+                    built, _ = self.build(trial)
+                    if self.accept(trial, built, (design, layout)) and self.islandRibs(trial, members) > self.islandRibs(design, members):
+                        design, layout, added = trial, built, True
+                        break
+                if not added:
+                    break
+                notes.append(f"{members[0]}")
+        return design, layout, f"held holes {', '.join(notes)}" if notes else ""
+
+    def holeShortfall(self, design):
+        """Islands off the wall still held by fewer than minHoleRibs ribs."""
+        return sum(1 for members in self.holeIslands() if self.islandRibs(design, members) < minHoleRibs)
+
     # ---------- driver ----------------------------------------------------------------
 
     def run(self, layout, skip=()):
@@ -912,7 +999,9 @@ class Polisher:
                  ("huggers", self.dropHuggers), ("merge", self.mergeSmall), ("split", self.splitLarge),
                  ("symmetry", self.symmetrize),
                  # Symmetrizing can drop ribs and re-open big pockets; split those (in orbits).
-                 ("split", self.splitLarge)]
+                 ("split", self.splitLarge),
+                 # Last, so no later step drops a rib a hole needs.
+                 ("holes", self.anchorHoles)]
         for name, step in steps:
             if name in skip:
                 continue
