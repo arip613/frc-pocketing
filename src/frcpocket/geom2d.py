@@ -6,6 +6,7 @@ All functions here work in inches unless a name says otherwise.
 import math
 
 import numpy as np
+import shapely
 from shapely import affinity
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
@@ -37,14 +38,31 @@ def isCircleLoop(loop, polygon):
     return loop.get("nLines", 0) == 0 and circularity(polygon) > 0.97
 
 
+def inscribedWidth(geometry):
+    """Diameter of the largest circle that fits inside the shape (shapely >= 2.1)."""
+    return 2 * shapely.maximum_inscribed_circle(geometry, tolerance=0.002).length
+
+
 def isSlotLoop(loop, polygon):
-    # Two straight sides and rounded ends (the ends may be split into several arcs).
-    if loop.get("nLines", 0) > 2 or len(loop.get("arcRadii", [])) < 2:
+    """Straight or curved slot: constant width w, so area = w*P/2 - pi*w^2/4, and
+    semicircular ends, so no arc is much tighter than w/2. A rounded-triangle or
+    kidney pocket of the same size fails one of the two tests."""
+    radii = loop.get("arcRadii", [])
+    if loop.get("nLines", 0) > 2 or len(radii) < 2:
         return False
-    rotatedRect = polygon.minimum_rotated_rectangle
-    xs, ys = rotatedRect.exterior.coords.xy
-    sides = sorted({round(math.dist((xs[i], ys[i]), (xs[i + 1], ys[i + 1])), 6) for i in range(4)})
-    return sides[0] <= slotMaxWidthIn
+    width = inscribedWidth(polygon)
+    if width > slotMaxWidthIn:
+        return False
+    constantWidthArea = width * polygon.length / 2 - math.pi * width**2 / 4
+    if abs(polygon.area - constantWidthArea) > 0.03 * polygon.area:
+        return False
+    return min(radii) > 0.4 * width
+
+
+def fillsEnclosingCircle(polygon, minFill=0.85):
+    """A bore with a keyway, flat or notch still fills most of its enclosing circle."""
+    radius = shapely.minimum_bounding_radius(polygon)
+    return radius > 0 and polygon.area >= minFill * math.pi * radius**2
 
 
 def straightRuns(polygon, minLength=0.1, maxTurnDegrees=1.0):
@@ -103,11 +121,24 @@ def classifyLoop(loop, polygon):
         return "hole"
     if isShaftBore(polygon):
         return "hole"
-    if loop.get("nLines", 0) < 2 and circularity(polygon) > 0.85:
+    if loop.get("nLines", 0) < 2 and circularity(polygon) > 0.85 and fillsEnclosingCircle(polygon):
         return "hole"  # big round-ish bore, e.g. a bearing or a pass-through
     if len(loop.get("arcRadii", [])) < 3:
-        return "hole"  # sharp-cornered cutout (tube pass-through, motor window), not a routed pocket
+        # Sharp-cornered: a window that fills its bounding rectangle (tube pass-through, motor
+        # window) or a concave cut (L-shaped clearance, logo) stays; triangles, hexagons and
+        # other convex sharp cuts are lightening pockets.
+        if polygon.area > 0.9 * polygon.minimum_rotated_rectangle.area or polygon.area < 0.95 * polygon.convex_hull.area:
+            return "hole"
     return "pocket"
+
+
+def isBandLike(outline, inner, thicknessIn):
+    """Belts, rings and bent loops: one opening takes over half the outline and the material
+    left is a thin band (its widest point under 1.25x the extrusion thickness)."""
+    if not inner or max(polygon.area for polygon in inner) < 0.5 * outline.area:
+        return False
+    material = outline.difference(unary_union(inner))
+    return material.is_empty or inscribedWidth(material) < 1.25 * (thicknessIn or 0.25)
 
 
 def principalAngle(polygon):
