@@ -40,8 +40,12 @@ class Pocketer:
         and the scorer and the structural floor pick among all their designs."""
         from frcpocket.generator import RibGenerator
 
+        from frcpocket.truss import TrussEngine
+
         paths = [generatorPath] if isinstance(generatorPath, (str, Path)) else list(generatorPath)
-        self.generators = [RibGenerator(path) for path in paths if Path(path).exists()]
+        # "truss" is the relaxed-truss engine (truss.py); anything else is a trained RibGenerator.
+        self.generators = [TrussEngine() if str(path) == "truss" else RibGenerator(path)
+                           for path in paths if str(path) == "truss" or Path(path).exists()]
         self.generator = self.generators[0] if self.generators else None
         self.judge = Judge(scorerPath, workers=workers)
 

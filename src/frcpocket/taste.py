@@ -36,7 +36,8 @@ expertRatingsPath = Path("data/curation/expertRatings.jsonl")
 expertPairsPath = Path("data/curation/expertPairs.jsonl")
 looksScorerPath = "models/aestheticScorer.pt"
 featureNames = designFeatures.featureNames + ["looks"]
-pickRounds = ("p1", "p2")  # the user's model-set picks (favourite 5, the rest 3)
+pickRounds = ("p1", "p2", "p4")  # the user's model-set picks (favourite 5, the rest 3)
+keptRounds = ("k1",)  # a plate the user kept (5) against our designs for the same plate (3)
 userGradeGap = 1.0  # within-plate grade gaps that count as a preference
 expertRatingGap = 2  # on his 1-9 scale
 folds = 5
@@ -73,8 +74,10 @@ def preferences(entries):
         designId = f"sheet:{roundName}:{sheet}:{candidate}"
         if designId in entries:
             user.append((designId, grade))
-    addGraded("user grades", [x for x in user if x[0].split(":")[1] not in pickRounds], userGradeGap)
-    addGraded("user picks", [x for x in user if x[0].split(":")[1] in pickRounds], userGradeGap)
+    roundOf = lambda designId: designId.split(":")[1]
+    addGraded("user grades", [x for x in user if roundOf(x[0]) not in pickRounds + keptRounds], userGradeGap)
+    addGraded("user picks", [x for x in user if roundOf(x[0]) in pickRounds], userGradeGap)
+    addGraded("user kept", [x for x in user if roundOf(x[0]) in keptRounds], userGradeGap)
     byRater = defaultdict(list)
     for line in expertRatingsPath.read_text().splitlines():
         rating = json.loads(line)
