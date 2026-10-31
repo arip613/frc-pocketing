@@ -159,7 +159,8 @@ class CombinedPocketer:
 
     On 18 plates where the user picked their favourite of the four marathon sets' designs
     (live, e1, u1, m1), the lightest design was the pick on 10, the live ranking's choice
-    on 5, and a random one would be on about 4.7."""
+    on 5, and a random one would be on about 4.7. On 7 fresh plates picked blind after
+    that rule was set, the lightest was the pick on 6, the live ranking's on 0 (random 1.8)."""
 
     def __init__(self, modelSets, workers=2):
         self.pocketers = [Pocketer(generatorPath, scorerPath, workers=workers) for generatorPath, scorerPath in modelSets]
