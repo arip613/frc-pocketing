@@ -33,9 +33,13 @@ ribStyles = ((30.0, 0), (40.0, 0), (40.0, 4))
 
 class Pocketer:
     def __init__(self, generatorPath=defaultGeneratorPath, scorerPath=defaultScorerPath, workers=2):
+        """generatorPath may also be a list of generators: each proposes for every plate,
+        and the scorer and the structural floor pick among all their designs."""
         from frcpocket.generator import RibGenerator
 
-        self.generator = RibGenerator(generatorPath) if Path(generatorPath).exists() else None
+        paths = [generatorPath] if isinstance(generatorPath, (str, Path)) else list(generatorPath)
+        self.generators = [RibGenerator(path) for path in paths if Path(path).exists()]
+        self.generator = self.generators[0] if self.generators else None
         self.judge = Judge(scorerPath, workers=workers)
 
     def candidates(self, plate, params, count=6, proposals=16, seed=0, polish=None, relax=True):
@@ -63,10 +67,10 @@ class Pocketer:
     def _candidates(self, plate, params, count, proposals, seed, polish):
         polish = polishPass.enabled if polish is None else polish
         layouts = []
-        if self.generator is not None:
+        for generator in self.generators:
             for angle, cap in ribStyles:
                 styleParams = replace(params, minRibAngleDegrees=angle, maxHoleRibs=cap)
-                layouts += self.generator.propose(plate, styleParams, count=max(4, proposals // len(ribStyles)), seed=seed)
+                layouts += generator.propose(plate, styleParams, count=max(4, proposals // len(ribStyles)), seed=seed)
         baseline = trussBaseline(plate, params)
         ranked = self.judge.rank(plate, params, layouts, feaCount=max(count * 2, 6)) if layouts else []
         baselineRanked = self.judge.rank(plate, params, [baseline], feaCount=1)
