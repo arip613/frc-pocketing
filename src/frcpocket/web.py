@@ -24,7 +24,7 @@ from frcpocket.pocketer import Pocketer
 webDir = Path(__file__).parent / "webui"
 ratingsPath = Path("data/curation/ratings.jsonl")
 aluminiumLbPerIn3 = 0.0975  # 6061
-densityFactors = {"dense": 0.6, "medium": 1.0, "open": 1.5}
+densityFactors = {"dense": 0.8, "medium": 1.25, "open": 1.6}
 mmPerInch = 25.4
 
 app = FastAPI(title="Plate Pocketer")
@@ -53,7 +53,7 @@ class Rules(BaseModel):
     corner: float
     boss: float
     depth: float | None = None  # None = through
-    density: str = "dense"
+    density: str = "medium"
     count: int = 6
 
 
@@ -96,7 +96,7 @@ def generate(rules: Rules):
         raise HTTPException(400, "Wall, rib, corner and boss all have to be above zero.")
     params = PocketParams.fromUnits(rules.units, wall=rules.wall, rib=rules.rib, cornerRadius=rules.corner,
                                     depth=rules.depth, boss=rules.boss,
-                                    pocketSizeFactor=densityFactors.get(rules.density, 1.0))
+                                    pocketSizeFactor=densityFactors.get(rules.density, 1.25))
     if params.depthIn is not None and params.depthIn >= plate.thicknessIn:
         raise HTTPException(400, "Blind depth has to be less than the plate thickness.")
     started = time.time()

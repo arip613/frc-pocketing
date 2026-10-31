@@ -31,7 +31,7 @@ class PocketParams:
     """User-facing pocketing parameters, always stored in inches."""
 
     wallIn: float = 0.1875
-    ribIn: float = 0.125
+    ribIn: float = 0.1875  # 3/16 in: one width everywhere, so it has to carry the load alone
     cornerRadiusIn: float = 0.0625  # tool radius; every pocket corner gets at least this
     depthIn: float | None = None  # None = through; otherwise blind depth from the top face
     bossIn: float | None = None  # ring around each feature; None = the wall thickness
@@ -56,7 +56,8 @@ class PocketParams:
     uniformRibs: bool = True
     # Density: multiplies the gold-fitted typical pocket size the ML decodes toward
     # (below 1 = more ribs and smaller pockets, above 1 = fewer, bigger pockets).
-    pocketSizeFactor: float = 1.0
+    # 1.25: the CAD expert rated fewer, bigger, cleaner pockets highest (docs/pocketingResearch.md agrees).
+    pocketSizeFactor: float = 1.25
 
     @classmethod
     def fromUnits(cls, units, wall, rib, cornerRadius, depth=None, boss=None, **extra):

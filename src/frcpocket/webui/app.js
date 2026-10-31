@@ -7,7 +7,7 @@ const fields = ["wall", "rib", "boss", "corner", "depth"];
 const state = {
   units: "in",
   depth: "through",
-  density: "dense",
+  density: "medium",
   plate: null,
   job: null,
   pick: null,
