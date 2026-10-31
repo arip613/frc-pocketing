@@ -280,3 +280,4 @@
 {"id": "sheet:m3b:2d546bad45_21:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
 {"id": "sheet:m3:userPlate_outsidePlateR:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
 {"id": "sheet:m3:3f6bda2f97_94:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:0a48ec25fa_1:4", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:40:02+00:00", "note": "correction from the user: meant 3, not 1"}
