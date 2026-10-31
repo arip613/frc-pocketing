@@ -151,3 +151,29 @@ class Pocketer:
                        for other in (unary_union(item["layout"].pockets) for item in unique)):
                 unique.append(result)
         return unique
+
+
+class CombinedPocketer:
+    """Several model sets, each a (generator, scorer) pair: each designs the plate with its
+    own ranking, and their best sound designs are offered lightest first.
+
+    On 18 plates where the user picked their favourite of the four marathon sets' designs
+    (live, e1, u1, m1), the lightest design was the pick on 10, the live ranking's choice
+    on 5, and a random one would be on about 4.7."""
+
+    def __init__(self, modelSets, workers=2):
+        self.pocketers = [Pocketer(generatorPath, scorerPath, workers=workers) for generatorPath, scorerPath in modelSets]
+
+    def candidates(self, plate, params, count=6, **kwargs):
+        finalists, baselines = [], []
+        for index, pocketer in enumerate(self.pocketers):
+            for result in pocketer.candidates(plate, params, count=2, **kwargs):
+                result["modelSet"] = index
+                (finalists if result["source"] == "ML generator" else baselines).append(result)
+        unique = []
+        for result in sorted(finalists, key=lambda r: (not r["sound"], -r["removed"])):
+            pockets = unary_union(result["layout"].pockets)
+            if not any(pockets.intersection(other).area / max(pockets.union(other).area, 1e-9) > duplicateIoU
+                       for other in (unary_union(item["layout"].pockets) for item in unique)):
+                unique.append(result)
+        return unique[: max(1, count - 1)] + baselines[:1]

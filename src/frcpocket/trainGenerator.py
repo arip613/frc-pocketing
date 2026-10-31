@@ -177,8 +177,9 @@ def gradedExample(plate, params, pockets, ribs, ribWidths, weight):
     lookup = {edge: k for k, edge in enumerate(graph.edges)}
     keep = torch.zeros(len(graph.edges))
     widths = torch.full((len(graph.edges),), -1, dtype=torch.long)
+    ribs = ribs or []
     ribWidths = ribWidths or [None] * len(ribs)
-    matched = True
+    matched = bool(ribs)  # designs saved without their ribs (the model-set picks) are projected below
     for (a, b), width in zip(ribs, ribWidths):
         i, j = nodeIndex.get(tuple(np.round(a, 6))), nodeIndex.get(tuple(np.round(b, 6)))
         edge = tuple(sorted((i, j))) if i is not None and j is not None else None
