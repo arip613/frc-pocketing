@@ -69,7 +69,7 @@ class Layout:
     ribWidths: dict = field(default_factory=dict)  # edge -> width (in); missing = params.ribIn
 
     def ribWidth(self, edge, params):
-        return max(self.ribWidths.get(edge, params.ribIn), params.ribIn)
+        return params.ribWidthFor(self.ribWidths.get(edge))
 
 
 def polygons(geometry):
@@ -260,7 +260,7 @@ def buildPockets(plate, params, graph, ribs, ribWidths=None):
     ribWidths = ribWidths or {}
     inner = plate.outline.buffer(-params.wallIn, quad_segs=arcSegments)
     keep = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
-    keep += [ribBand(graph, edge, max(ribWidths.get(edge, params.ribIn), params.ribIn)) for edge in ribs]
+    keep += [ribBand(graph, edge, params.ribWidthFor(ribWidths.get(edge))) for edge in ribs]
     raw = inner.difference(unary_union(keep)) if keep else inner
     return finishRegions(polygons(raw), params)
 

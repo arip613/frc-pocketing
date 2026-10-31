@@ -178,7 +178,7 @@ class Polisher:
         return validator.minPairDistance(untrimmed, 2 * params.ribIn) >= params.ribIn - validator.lengthTolIn
 
     def width(self, design, edge):
-        return max(design.ribWidths.get(edge, self.params.ribIn), self.params.ribIn)
+        return self.params.ribWidthFor(design.ribWidths.get(edge))
 
     # ---------- geometry helpers -------------------------------------------------------
 

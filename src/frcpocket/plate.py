@@ -48,6 +48,8 @@ class PocketParams:
     # 104 at the median; holes carry 2 ribs on average and rarely more than 4.
     minRibAngleDegrees: float = 20.0
     maxHoleRibs: int = 0
+    # One rib width per plate: the user and their CAD experts don't like variable-width ribs.
+    uniformRibs: bool = True
     # Density: multiplies the gold-fitted typical pocket size the ML decodes toward
     # (below 1 = more ribs and smaller pockets, above 1 = fewer, bigger pockets).
     pocketSizeFactor: float = 1.0
@@ -69,6 +71,10 @@ class PocketParams:
         """Ring width kept around every hole. Its own setting: real FRC plates often use rings
         about half the wall (0.12 in rings with 0.25 in walls on the WCP and Team 221 plates)."""
         return self.bossIn if self.bossIn is not None else self.wallIn
+
+    def ribWidthFor(self, stored):
+        """Width a rib is cut at: the rib setting, or (only with uniformRibs off) its own wider width."""
+        return self.ribIn if self.uniformRibs or stored is None else max(stored, self.ribIn)
 
     def ringFor(self, feature):
         """Material kept between a pocket and this feature: the boss ring around holes, and
