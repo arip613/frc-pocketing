@@ -52,6 +52,7 @@ drawingGoldWeight = 0.4
 holdoutFiles = {
     "76fd2d183d", "f02eefd773",  # CAD gold: by source-file prefix of the plate id
     "userImg_example5", "userImg_example8",  # user examples without a near-twin in the set
+    "1bb1ce9e48",  # the Sim robot export: its 13 kept plates are the style test (rebuild from outline and holes)
 }
 ratingsPath = Path("data/curation/ratings.jsonl")
 extraRecordPaths = [Path("data/processed/userExamples.jsonl")]
