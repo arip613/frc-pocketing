@@ -10,6 +10,11 @@ Holes on the outer wall are part of the wall and get no node of their own.
 
     TrussEngine().propose(plate, params, count=4)  # same interface as RibGenerator.propose
 
+A second family, alignedTruss, draws what the user's regular kept plates do: rails along
+the plate's main direction (through each row of holes, more in between so the gaps match
+the kept pocket size) and rungs between them, alternating diagonals (a row of triangles)
+or square across (a row of rectangles).
+
 Pockets are built by layout.makeLayout from the rib segments, like every other design.
 """
 
@@ -17,7 +22,8 @@ import math
 
 import numpy as np
 from scipy.spatial import Delaunay, cKDTree
-from shapely.geometry import LineString, Point
+from shapely import affinity
+from shapely.geometry import LineString, MultiLineString, Point
 from shapely.ops import unary_union
 from shapely.prepared import prep
 
@@ -30,6 +36,9 @@ from frcpocket.plate import featureCenter
 # (Looked at on non-held-out kept plates: 0.8 crowds small plates with crumbs, and 80 degrees
 # merges too far, into a few big cells.)
 variants = ((1.0, 0.0), (1.3, 0.0), (1.6, 0.0), (0.9, 55.0), (1.1, 55.0), (1.35, 55.0))
+# Aligned rails and rungs: (rungs, pitch in kept pocket sizes).
+alignedVariants = (("diagonal", 0.8), ("diagonal", 1.1), ("diagonal", 1.5), ("square", 0.8), ("square", 1.2))
+holeRowTolerance = 0.2  # holes whose centres are this close across the rails share a rail (in)
 lloydIterations = 25
 sampleCount = 6000  # area samples for the relaxation
 wallReachFactor = 1.0  # a hole whose boss is within this many rib widths of the wall band is on the wall
@@ -55,6 +64,10 @@ class TrussEngine:
         layouts = []
         for factor, junctionDegrees in variants:
             layout = relaxedTruss(plate, params, factor, seed, junctionDegrees)
+            if layout is not None and layout.pockets:
+                layouts.append(layout)
+        for pattern, pitch in alignedVariants:
+            layout = alignedTruss(plate, params, pattern, pitch)
             if layout is not None and layout.pockets:
                 layouts.append(layout)
         return layouts
@@ -249,3 +262,93 @@ def straightenBends(nodes, edges):
         x, y = a + t * direction
         nodes[index] = Node(float(x), float(y), kind="interior")
     return nodes
+
+
+def keptPocketArea(plate, params):
+    scale = math.sqrt(plate.materialArea)
+    return keptPocketCoefficient * scale ** keptPocketExponent * params.pocketSizeFactor / defaultSizeFactor
+
+
+def mainAngle(plate):
+    """Direction of the plate's longest straight run: the long side of its smallest enclosing rectangle."""
+    corners = list(plate.outline.minimum_rotated_rectangle.exterior.coords)
+    sides = [(math.dist(a, b), math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))) for a, b in zip(corners, corners[1:])]
+    return max(sides)[1]
+
+
+def alignedTruss(plate, params, pattern="diagonal", pitch=1.0):
+    """Rails along the plate's main direction and rungs between them (see the module notes)."""
+    if not wallCenterline(plate, params):
+        return None
+    target = pitch * keptPocketArea(plate, params)
+    inner = plate.outline.buffer(-params.wallIn, quad_segs=arcSegments)
+    bosses = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
+    region = inner.difference(unary_union(bosses)) if bosses else inner
+    if region.is_empty:
+        return None
+    angle, centre = mainAngle(plate), plate.outline.centroid
+    local = lambda geometry: affinity.rotate(geometry, -angle, origin=centre)
+    world = lambda geometry: affinity.rotate(geometry, angle, origin=centre)
+    regionLocal = local(region)
+    minu, minv, maxu, maxv = regionLocal.bounds
+    # A triangle of base p and height h (diagonal rungs) or a p x h rectangle (square rungs)
+    # holds the target area with p = h.
+    height = math.sqrt((2 if pattern == "diagonal" else 1) * target) + params.ribIn
+    # Rails: through each row of two or more holes off the wall, then evenly between.
+    reach = inner.buffer(-params.ribIn)
+    centres = [local(featureCenter(feature)) for feature, boss in zip(plate.features, bosses) if reach.contains(boss)]
+    rows = []
+    for v in sorted(point.y for point in centres):
+        if rows and v - rows[-1][-1] < holeRowTolerance:
+            rows[-1].append(v)
+        else:
+            rows.append([v])
+    rails = [float(np.mean(row)) for row in rows if len(row) >= 2]
+    fixed = sorted({minv} | set(rails) | {maxv})
+    filled = []
+    for a, b in zip(fixed, fixed[1:]):
+        count = max(1, int(round((b - a) / height)))
+        filled += [a + k * (b - a) / count for k in range(count + 1)]
+    levels = sorted(set(round(v, 6) for v in filled))
+    span = (minu - height, maxu + height)
+    lines = [LineString([(span[0], v), (span[1], v)]) for v in levels[1:-1]]
+    # Rungs between neighbouring levels, on a pitch centred on the plate (symmetry).
+    centreU = local(centre).x
+    for a, b in zip(levels, levels[1:]):
+        gap = b - a
+        step = (2 * target / gap if pattern == "diagonal" else target / gap) + params.ribIn
+        first = centreU - math.ceil((centreU - span[0]) / step) * step
+        u = first
+        while u <= span[1]:
+            if pattern == "diagonal":
+                lines.append(LineString([(u, a), (u + step / 2, b)]))
+                lines.append(LineString([(u + step / 2, b), (u + step, a)]))
+            else:
+                lines.append(LineString([(u, a), (u, b)]))
+            u += step
+    # Into the plate, cut at holes, and noded where ribs cross, so ribs share junctions.
+    clipArea = inner.difference(unary_union(plate.features)) if plate.features else inner
+    clipped = world(unary_union(lines)).intersection(clipArea)
+    pieces = [geometry for geometry in getattr(clipped, "geoms", [clipped]) if geometry.geom_type == "LineString" and geometry.length > 1e-6]
+    noded = unary_union(pieces)
+    segments = []
+    for line in getattr(noded, "geoms", [noded]):
+        coords = list(line.coords)
+        segments += [(coords[k], coords[k + 1]) for k in range(len(coords) - 1)]
+    nodes, index = [], {}
+    boundary = clipArea.boundary
+
+    def nodeAt(point):
+        key = (round(point[0], 5), round(point[1], 5))
+        if key not in index:
+            onSolid = boundary.distance(Point(point)) < 1e-4  # ends on the wall or a boss: tied to solid
+            index[key] = len(nodes)
+            nodes.append(Node(point[0], point[1], kind="anchor" if onSolid else "interior"))
+        return index[key]
+
+    edges = sorted({tuple(sorted((nodeAt(a), nodeAt(b)))) for a, b in segments if math.dist(a, b) > 1e-4} - {(i, i) for i in range(len(index))})
+    edges = [edge for edge in edges if edge[0] != edge[1]]
+    if not edges:
+        return None
+    graph = CandidateGraph(nodes=nodes, edges=edges, isDelaunay=[True] * len(edges))
+    return makeLayout(plate, params, graph, edges, name=f"aligned-{pattern}{pitch:g}")
