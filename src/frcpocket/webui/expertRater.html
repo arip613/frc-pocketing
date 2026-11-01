@@ -212,9 +212,15 @@ function firstSection() {
   return DATA.sections && DATA.sections.length > 1 ? DATA.sections[0] : 0;
 }
 
-function show() {
+// The first section is done once none of its designs is still ahead (ratings carried over
+// from earlier pages sit at the start of the order, so this is not simply pos === first).
+function firstDone() {
   const first = firstSection();
-  $("milestone").hidden = !(first && state.pos === first && !state.milestoneSeen);
+  return first > 0 && state.order.slice(state.pos).every((k) => k >= first);
+}
+
+function show() {
+  $("milestone").hidden = !(firstDone() && !state.milestoneSeen);
   if (state.pos >= state.order.length) {
     $("rate").hidden = true;
     $("done").hidden = false;
@@ -247,7 +253,7 @@ function flash(text) {
 
 function rate(value) {
   if (state.pos >= state.order.length) return;
-  if (firstSection() && state.pos === firstSection()) state.milestoneSeen = true;
+  if (firstDone()) state.milestoneSeen = true;
   const item = DATA.items[state.order[state.pos]];
   state.ratings[item.i] = { r: value, ms: Math.round(performance.now() - shownAt) };
   state.history.push(state.pos);
@@ -259,7 +265,7 @@ function rate(value) {
 
 function skip() {
   if (state.pos >= state.order.length) return;
-  if (firstSection() && state.pos === firstSection()) state.milestoneSeen = true;
+  if (firstDone()) state.milestoneSeen = true;
   state.history.push(state.pos);
   state.pos++;
   flash("–");

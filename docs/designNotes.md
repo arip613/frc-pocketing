@@ -337,6 +337,15 @@ were never shown to him.
   chooser on his design-A rating (+0.05, 95% interval -0.30 to +0.39 over 56 plates). The
   gap to the best possible (1.2 points) is what the features miss. Round L2 runs it on the
   190 plates of L1 so his ratings can settle it.
+- **Round L2** (v5 + symmetry rule, no lightest-of-top-3, same plates, generators and
+  seed as L1): 189 plates have a design A. It is the live chooser's design A on 91 and
+  differs on 98; there it is live's B or C on 53 and a design live didn't show on 45. Where
+  they differ, v5's A removes more material on only 33 of 98. His ratings of both A designs
+  on those 98 plates settle it: 22 were already rated; the other 174 open his part 7+6 page
+  (`plate-rater-parts76.html`, which carries over his part 6 progress), ahead of the rest
+  of part 6. Round L2f holds v5's new A designs (45) and L1x the live A designs the part 6
+  filter left off (3); both are shown even below the filter, since each is what its
+  chooser would show first.
 
 ## Sources
 
