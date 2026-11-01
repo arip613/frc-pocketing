@@ -25,6 +25,10 @@ defaultGeneratorPath = (Path("models/generator.pt"), Path("models/marathon/e1/ge
                         Path("models/marathon/u1/generator.pt"), Path("models/marathon/m1/generator.pt"))
 defaultScorerPath = Path("models/marathon/v2/taste.json")
 duplicateIoU = 0.97
+# The design shown first is the lightest sound one among the scorer's top few. In the user's
+# blind picks (rounds p1, p2, p5: 43 plates) that rule matched their favourite 31 times, the
+# scorer's own first choice 24 and the lightest design overall 29.
+lightestOfTop = 3
 # Rib styles the generator proposes in (min rib-rib angle, max ribs per small hole; 0 = no
 # limit). Average grades on the rating sheets: round 1, 20 deg 3.26 and 40 deg / 4 ribs 3.25
 # (50 deg / 3 ribs 2.87); round 2, 40 deg 3.39, 40 deg / 4 ribs 3.31, 20 deg 3.16. Each wins
@@ -81,29 +85,35 @@ class Pocketer:
         baseline = trussBaseline(plate, params)
         ranked = self.judge.rank(plate, params, layouts, feaCount=max(count * 2, 6)) if layouts else []
         baselineRanked = self.judge.rank(plate, params, [baseline], feaCount=1)
-        chosen = []
+        want = count - (1 if baselineRanked else 0)
+        unique = []
         for result in ranked:
-            if len(chosen) >= count - (1 if baselineRanked else 0):
+            if len(unique) >= max(want, lightestOfTop):
                 break
             pockets = unary_union(result["layout"].pockets)
             duplicate = any(
                 pockets.intersection(other).area / max(pockets.union(other).area, 1e-9) > duplicateIoU
-                for other in (unary_union(item["layout"].pockets) for item in chosen)
+                for other in (unary_union(item["layout"].pockets) for item in unique)
             )
             if not duplicate:
                 result["source"] = "ML generator"
-                chosen.append(result)
+                unique.append(result)
+        top = [result for result in unique[:lightestOfTop] if self.sound(result)]
+        first = max(top, key=lambda result: result["removed"]) if top else (unique[0] if unique else None)
+        chosen = ([first] + [result for result in unique if result is not first])[:want] if first is not None else []
+        for rank, result in enumerate(chosen):
+            result["order"] = rank
         if polish and chosen:
             chosen = self.polished(plate, params, chosen)
         for result in baselineRanked:
             result["source"] = "truss baseline"
             chosen.append(result)
-        # One ranking across sources: sound designs first (looks-weighted utility), then any
-        # below the soundness floor, flagged so the UI can warn.
+        # Sound designs first: the ML designs in the order chosen above (lightest of the top few
+        # first), then the baseline; anything below the soundness floor last, flagged so the UI can warn.
         for result in chosen:
             known = result["stiffnessKept"] is not None
             result["sound"] = (not known) or isSound(result["stiffnessKept"], result["stressIncrease"])
-        return sorted(chosen, key=lambda result: (not result["sound"], -result["utility"]))
+        return sorted(chosen, key=lambda result: (not result["sound"], result.get("order", len(chosen)), -result["utility"]))
 
     @staticmethod
     def sound(result):
@@ -150,6 +160,8 @@ class Pocketer:
                 continue
             rescored[0]["source"] = result["source"]
             rescored[0]["polish"] = outcome.log
+            if "order" in result:
+                rescored[0]["order"] = result["order"]
             out.append(rescored[0])
         unique = []
         for result in out:
