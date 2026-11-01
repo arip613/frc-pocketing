@@ -279,6 +279,36 @@ were never shown to him.
   one, and a hole closer to the wall than a pocket could fit counts as on the wall. On the
   114 designs of the pick pages no hole was left hanging by one arm.
 
+## 12. Robots the user exported, their style, and what they pick
+
+- **Six Onshape robots, exported by hand** (STEP per robot, `data/processed_manual`). The
+  extractor first found 53 pocketed plates. Three parallel diagnoses found why, and the
+  fixes brought it to 195. Every solid of a file is now scanned, not just the first 400.
+  Bent sheet metal is read from its flat base. Plates with blind or floored pockets pass.
+  Rounded-triangle and kidney pockets are no longer taken for slots. Belts and rings are
+  dropped. The user kept 95 of the 191 shown (`data/curation/plateKeeper.json`). They are
+  gold weighted as the user's taste. The Sim robot's 13 are held out as the style test.
+- **Their style, measured** (kept against not kept, same robots). Pockets are dense:
+  0.67 per in² of material against 0.35. Pocket area is about 0.165 · S^1.05 in², with
+  S = √(material area). Ribs are thin and one width, about 0.156 in, with the wall and boss
+  rings the same. Open junctions are mostly 3-way, the smallest angle about 92°. Every hole
+  is engaged, with about 3 ribs per interior hole. Edge bolts get ribs more often than a
+  plain band. About 50% of the material is removed.
+- **Style test** (`styleTest.py`): rebuild the held-out kept plates from outline and holes.
+  The live tool matches pocket count and weight but not the layout (material IoU 0.55,
+  0.46 for an unpocketed plate).
+- **Truss engine** (`truss.py`, generator "truss", off by default). Its rib junctions are
+  free: relaxed even triangles, a version with sharp junction angles removed, and aligned
+  rails with diagonal or square rungs. It can draw layouts the fixed-point generator
+  cannot. In a blind round against the live tool's design (p5, 18 plates) the user picked
+  live 13 times and the truss engine 5, all of those on bigger plates. They never picked
+  the aligned rows.
+- **Choosers.** A looks scorer retrained with the kept plates as gold (s4) liked truss
+  designs and matched the user's p5 picks 6 of 18 times. The lightest design matched 13.
+  Across all three blind rounds (43 plates), the rule now live matched the user 31 times.
+  It shows the lightest sound design among the taste model's top three. The taste model's
+  own first choice matched 24 and the lightest overall 29.
+
 ## Sources
 
 See `data/sources.jsonl` for the per-item log (URL, timestamp, license, sha256,
