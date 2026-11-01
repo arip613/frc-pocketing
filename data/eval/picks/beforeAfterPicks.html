@@ -1,5 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;font-size:14px}[hidden]{display:none!important}img{max-width:100%}</style></head><body>
-<title>Before and After Picks</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;font-size:14px}[hidden]{display:none!important}</style></head><body><title>Before and After Picks</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -78,7 +77,7 @@ body.large .card svg { max-height: 460px; }
 <div class="intro">
   <div class="wrap">
     <h1>Before and After Picks</h1>
-    <p class="lede">Each plate shows up to three designs, shuffled, names hidden. Designs that came out the same share one card. Tap the one you would cut. Use “About the same” when none stands out. Show the names when you are done to see the tally.</p>
+    <p class="lede">Each plate shows up to three designs, shuffled, names hidden. Designs that came out the same share one card. Tap the one you would cut. Use “About the same” when none stands out. When you are done, type your name, press Export picks and send the file back.</p>
     <div class="tally" id="tally" hidden></div>
   </div>
 </div>
@@ -86,9 +85,13 @@ body.large .card svg { max-height: 460px; }
   <div class="wrap">
     <div class="controls">
       <span class="progress" id="progress">0 of 0 plates picked</span>
-      <label class="toggle"><input type="checkbox" id="reveal"> Show model names</label>
+      <label class="toggle" hidden><input type="checkbox" id="reveal"> Show model names</label>
       <label class="toggle"><input type="checkbox" id="large"> Larger drawings</label>
       <span class="save" id="save">Picks save in this browser.</span>
+      <input id="rater" type="text" placeholder="Your name" aria-label="Your name" style="font: inherit; font-size: 0.9rem; padding: 2px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--fg); width: 9em;">
+      <button type="button" id="export" class="same" style="background: var(--accent); color: var(--surface); border-color: var(--accent);">Export picks</button>
+      <button type="button" id="copy" class="same">Copy</button>
+      <span class="save" id="exportNote"></span>
     </div>
     <div class="bar" aria-hidden="true"><span id="barFill"></span></div>
   </div>
@@ -283,4 +286,31 @@ render();
   });
 })();
 </script>
-</body></html>
+
+<script>
+(() => {
+  const nameBox = document.getElementById("rater");
+  try { nameBox.value = localStorage.getItem("before-after-1.rater") || ""; } catch (e) {}
+  nameBox.addEventListener("input", () => { try { localStorage.setItem("before-after-1.rater", nameBox.value); } catch (e) {} });
+  function body() {
+    const list = PLATES.map(plate => ({ plate: plate.id, title: plate.title, choice: picks[plate.id] || null }));
+    return JSON.stringify({ kind: "blindPicks", page: "before-after-1", rater: nameBox.value.trim(), exportedAt: new Date().toISOString(),
+                            picked: list.filter(p => p.choice).length, picks: list }, null, 1);
+  }
+  document.getElementById("export").addEventListener("click", () => {
+    const blob = new Blob([body()], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    const who = (nameBox.value.trim() || "picks").replace(/[^A-Za-z0-9_-]+/g, "-");
+    link.download = `before-after-1-${who}-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 2000);
+    document.getElementById("exportNote").textContent = "Saved a file. Send it back.";
+  });
+  document.getElementById("copy").addEventListener("click", async () => {
+    const note = document.getElementById("exportNote");
+    try { await navigator.clipboard.writeText(body()); note.textContent = "Copied. Paste it into a message."; }
+    catch (e) { note.textContent = "Couldn't copy here; use Export picks."; }
+  });
+})();
+</script></body></html>
