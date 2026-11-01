@@ -1,17 +1,21 @@
-"""Taste model: what the user and the expert reward in a pocketed plate.
+"""Taste model: what the expert rewards in a pocketed plate.
 
 A linear model on the scorer's design features (designFeatures.describe) plus the
-scorer's own looks score, fitted only to people's within-plate preferences: the user's
-sheet grades and model-set picks (rounds p1, p2), and the expert's 1-9 ratings and A-vs-B
-picks. Claude's grades are left out (cross-validated, they made the scorer agree with the
-expert less). The user's and the expert's preferences carry equal total weight. It ranks
-designs of one plate, so only feature differences within a plate matter.
+scorer's own looks score, fitted to the expert's preferences only (the user's call, 2026-11-01:
+his taste is what matters): his 1-9 ratings, his A-vs-B picks, and his 1-9 ratings of the
+live tool's own output (round L1f), which form their own group with its own share of the
+weight (--live-share). Ratings are compared within a plate (a 2+ gap) and, with --cross-plate,
+across plates too (same rater). --people user,expert brings the user's grades and picks back
+(each person then carries equal weight). Claude's grades are never used.
+It ranks designs of one plate, so only feature differences within a plate matter.
 
-    python -I -m frcpocket.taste train --out models/marathon/v2/taste.json
+    python -I -m frcpocket.taste train --out models/marathon/v5/taste.json
 
 Training reports, per source, how often the model agrees with preferences on plates it
-did not see (5 folds by plate), next to the looks score alone, material removed alone and
-the live ranking. A taste .json can stand in for a scorer .pt anywhere a Judge takes one.
+did not see (5 folds by plate), next to the looks score alone, material removed alone, the
+old hand ranking and the live chooser; and the expert's average rating on design A: on live
+plates where he rated two or more of the designs shown, the one each ranking would put first.
+A taste .json can stand in for a scorer .pt anywhere a Judge takes one.
 """
 
 import argparse
@@ -38,6 +42,14 @@ looksScorerPath = "models/aestheticScorer.pt"
 featureNames = designFeatures.featureNames + ["looks"]
 pickRounds = ("p1", "p2", "p4", "p5", "p6")  # the user's blind picks (favourite 5, the rest 3)
 keptRounds = ("k1",)  # a plate the user kept (5) against our designs for the same plate (3)
+liveRounds = ("L1f",)  # the live tool's own designs, rated 1-9 by the expert
+# Chosen by his mean rating of the design shown first (design A), with taste scores held out by
+# plate, on the 56 plates where he rated 2+ designs: cross-plate comparisons ("live" or "all")
+# lowered it and lowered agreement with his within-plate preferences, so his live ratings count
+# within a plate, like his other ratings.
+liveShare = 0.0  # share of the total weight his live ratings carry (0: they count like his other ratings)
+people = ("expert",)  # whose preferences train the model
+crossPlate = "none"  # which of his ratings are also compared across plates: "none", "live" or "all"
 userGradeGap = 1.0  # within-plate grade gaps that count as a preference
 expertRatingGap = 2  # on his 1-9 scale
 folds = 5
@@ -55,8 +67,9 @@ def sheetEntries():
     return entries
 
 
-def preferences(entries):
-    """(better id, worse id, source) for every within-plate preference people stated."""
+def preferences(entries, who=None, across=None):
+    """(better id, worse id, source) for every preference the chosen people stated."""
+    who, across = who or people, across or crossPlate
     out = []
 
     def addGraded(source, graded, gap):
@@ -78,19 +91,28 @@ def preferences(entries):
     addGraded("user grades", [x for x in user if roundOf(x[0]) not in pickRounds + keptRounds], userGradeGap)
     addGraded("user picks", [x for x in user if roundOf(x[0]) in pickRounds], userGradeGap)
     addGraded("user kept", [x for x in user if roundOf(x[0]) in keptRounds], userGradeGap)
-    byRater = defaultdict(list)
+    byRater, liveByRater = defaultdict(list), defaultdict(list)
     for line in expertRatingsPath.read_text().splitlines():
         rating = json.loads(line)
         if rating["id"] in entries:
-            byRater[rating["rater"]].append((rating["id"], rating["rating"]))
+            target = liveByRater if roundOf(rating["id"]) in liveRounds else byRater
+            target[rating["rater"]].append((rating["id"], rating["rating"]))
+    def addAcross(source, rated):
+        for (a, ga), (b, gb) in itertools.combinations(rated, 2):
+            if abs(ga - gb) >= expertRatingGap:
+                out.append((a, b, source) if ga > gb else (b, a, source))
+
     for rated in byRater.values():
-        addGraded("expert ratings", rated, expertRatingGap)
+        (addAcross if across == "all" else lambda s, r: addGraded(s, r, expertRatingGap))("expert ratings", rated)
+    for rated in liveByRater.values():
+        (addAcross if across in ("all", "live") else lambda s, r: addGraded(s, r, expertRatingGap))("expert live", rated)
     for line in expertPairsPath.read_text().splitlines():
         pick = json.loads(line)
         if pick["winner"] in ("a", "b") and pick["a"] in entries and pick["b"] in entries:
             better, worse = (pick["a"], pick["b"]) if pick["winner"] == "a" else (pick["b"], pick["a"])
             out.append((better, worse, "expert picks"))
-    return [p for p in out if not isHoldout(entries[p[0]]["plateId"])]
+    out = [p for p in out if groupOf(p[2]).split()[0] in who]
+    return [p for p in out if not isHoldout(entries[p[0]]["plateId"]) and not isHoldout(entries[p[1]]["plateId"])]
 
 
 def plateOf(entry):
@@ -157,21 +179,76 @@ def foldOf(plateKey):
     return int(hashlib.sha1(plateKey.encode()).hexdigest(), 16) % folds
 
 
-def sourceWeights(sources):
-    """The user's and the expert's preferences carry equal total weight."""
-    person = np.array([source.split()[0] for source in sources])
-    weights = np.ones(len(sources))
-    for who in ("user", "expert"):
-        mask = person == who
-        if mask.any():
-            weights[mask] = 0.5 * len(sources) / mask.sum()
+def groupOf(source):
+    return "expert live" if source == "expert live" else source.split()[0]
+
+
+def sourceWeights(sources, share=None):
+    """His ratings of live designs carry `share` of the total weight; the other groups present
+    (the user, the expert's other ratings and picks) split the rest evenly. With share 0 his
+    live ratings count like his other ratings (one group)."""
+    share = liveShare if share is None else share
+    group = np.array([groupOf(source) for source in sources])
+    if share <= 0:
+        group[group == "expert live"] = "expert"
+    present = [g for g in ("user", "expert", "expert live") if (group == g).any()]
+    others = [g for g in present if g != "expert live"]
+    if not others:
+        shares = {"expert live": 1.0}
+    elif "expert live" not in present or share <= 0:
+        shares = {g: 1.0 for g in others}
+    else:
+        shares = {"expert live": share, **{g: (1 - share) / len(others) for g in others}}
+    total = sum(shares.values())
+    weights = np.zeros(len(sources))
+    for g, part in shares.items():
+        mask = group == g
+        weights[mask] = part / total * len(sources) / mask.sum()
     return weights
 
 
-def train(out, parallel=4, looksPath=looksScorerPath):
+def liveRatings(entries):
+    """plateKey -> [(designId, his mean rating)] for live designs (round L1f) he rated."""
+    ratings = defaultdict(list)
+    for line in expertRatingsPath.read_text().splitlines():
+        rating = json.loads(line)
+        if rating["id"] in entries and rating["id"].split(":")[1] in liveRounds and not isHoldout(entries[rating["id"]]["plateId"]):
+            ratings[rating["id"]].append(rating["rating"])
+    byPlate = defaultdict(list)
+    for designId, values in ratings.items():
+        byPlate[entries[designId]["plateKey"]].append((designId, float(np.mean(values))))
+    return byPlate
+
+
+def ratingOnA(byPlate, score):
+    """His mean rating of the design `score` ranks first, over plates with 2+ rated designs."""
+    picks = [max(designs, key=lambda item: score(item[0]))[1] for designs in byPlate.values() if len(designs) >= 2]
+    return round(float(np.mean(picks)), 2) if picks else None
+
+
+def ruleChecks(entries, prefs, rows):
+    """How often his within-plate preferences side with the lighter design, and on symmetric
+    plates (plate symmetry 0.9+, the live rule's threshold) with the more symmetric one."""
+    removed, shortfall = featureNames.index("removedFraction"), featureNames.index("symmetryShortfall")
+    within = [(a, b) for a, b, _ in prefs if entries[a]["plateKey"] == entries[b]["plateKey"]]
+    plateSym = {}
+    for a, _ in within:
+        key = entries[a]["plateKey"]
+        if key not in plateSym:
+            plateSym[key] = designFeatures.plateSymmetry(plateOf(entries[a]))
+    lighter = [rows[a][removed] > rows[b][removed] for a, b in within if abs(rows[a][removed] - rows[b][removed]) >= 0.02]
+    symmetric = [rows[a][shortfall] < rows[b][shortfall] for a, b in within
+                 if plateSym[entries[a]["plateKey"]] >= 0.9 and abs(rows[a][shortfall] - rows[b][shortfall]) >= 0.01]
+    share = lambda xs: (round(float(np.mean(xs)), 3) if xs else None, len(xs))
+    return {"lighter wins": share(lighter), "more symmetric wins (symmetric plates)": share(symmetric)}
+
+
+def train(out, parallel=4, looksPath=looksScorerPath, share=None, who=None, across=None):
     entries = sheetEntries()
-    prefs = preferences(entries)
-    ids = sorted({designId for a, b, _ in prefs for designId in (a, b)})
+    prefs = preferences(entries, who, across)
+    live = liveRatings(entries)
+    liveIds = {designId for designs in live.values() for designId, _ in designs}
+    ids = sorted({designId for a, b, _ in prefs for designId in (a, b)} | liveIds)
     print(f"{len(prefs)} preferences over {len(ids)} designs:",
           dict(sorted(defaultdict(int, {s: sum(p[2] == s for p in prefs) for s in {p[2] for p in prefs}}).items())), flush=True)
     rows = designMatrix(entries, ids, parallel, looksPath)
@@ -182,7 +259,8 @@ def train(out, parallel=4, looksPath=looksScorerPath):
     worse = np.stack([rows[b] for _, b, _ in prefs]) / scale
     differences = better - worse
     sources = [source for _, _, source in prefs]
-    foldIds = np.array([foldOf(entries[a]["plateKey"]) for a, _, _ in prefs])
+    foldA = np.array([foldOf(entries[a]["plateKey"]) for a, _, _ in prefs])
+    foldB = np.array([foldOf(entries[b]["plateKey"]) for _, b, _ in prefs])
     raw = lambda ids_, k: np.array([rows[i][k] for i in ids_])
     looksIndex, removedIndex = featureNames.index("looks"), featureNames.index("removedFraction")
     baselines = {
@@ -191,29 +269,53 @@ def train(out, parallel=4, looksPath=looksScorerPath):
         "live ranking": (0.7 * raw([a for a, _, _ in prefs], looksIndex) + 0.15 * np.minimum(raw([a for a, _, _ in prefs], removedIndex) / 0.4, 1)
                          > 0.7 * raw([b for _, b, _ in prefs], looksIndex) + 0.15 * np.minimum(raw([b for _, b, _ in prefs], removedIndex) / 0.4, 1)),
     }
-    report = {}
+    onA = {"live order (as shown)": ratingOnA(live, lambda d: -int(d.split(":")[-1])),
+           "lightest": ratingOnA(live, lambda d: rows[d][removedIndex]),
+           "best possible": ratingOnA(live, lambda d: next(r for ds in live.values() for i, r in ds if i == d))}
+    livePath = Path("models/marathon/v2/taste.json")  # the chooser live now, when it builds on the same looks scorer
+    if livePath.exists() and json.loads(livePath.read_text())["looksScorer"] == str(looksPath):
+        liveModel = json.loads(livePath.read_text())
+        liveScore = lambda ids_: np.stack([rows[i] for i in ids_]) / np.array(liveModel["scale"]) @ np.array(liveModel["weights"])
+        baselines["live taste (v2)"] = liveScore([a for a, _, _ in prefs]) > liveScore([b for _, b, _ in prefs])
+        onA["live taste (v2)"] = ratingOnA(live, lambda d: float(liveScore([d])[0]))
+    report, outOfFold = {}, {}
+    # A pair is held out when both its plates are in the fold; it trains only when neither is.
+    tested = np.zeros(len(prefs), dtype=bool)
     for penalty in penalties:
-        hits = np.zeros(len(prefs), dtype=bool)
+        hits, scored = np.zeros(len(prefs), dtype=bool), {}
         for fold in range(folds):
-            train_, test = foldIds != fold, foldIds == fold
-            w = fitLogistic(differences[train_], sourceWeights([s for s, t in zip(sources, train_) if t]), penalty)
+            train_, test = (foldA != fold) & (foldB != fold), (foldA == fold) & (foldB == fold)
+            w = fitLogistic(differences[train_], sourceWeights([s for s, t in zip(sources, train_) if t], share), penalty)
             hits[test] = differences[test] @ w > 0
-        report[penalty] = hits
+            tested |= test
+            scored.update({d: float(rows[d] / scale @ w) for d in liveIds if foldOf(entries[d]["plateKey"]) == fold})
+        report[penalty], outOfFold[penalty] = hits, scored
+    for hits in list(report.values()) + list(baselines.values()):
+        hits &= tested  # pairs never held out (their plates in different folds) don't count
     def bySource(hits):
-        return {source: round(float(hits[np.array(sources) == source].mean()), 3) for source in sorted(set(sources))}
+        return {source: round(float(hits[(np.array(sources) == source) & tested].mean()), 3) for source in sorted(set(sources))}
     def balanced(hits):
-        people = np.array([s.split()[0] for s in sources])
-        return round(float(np.mean([hits[people == who].mean() for who in ("user", "expert")])), 3)
+        group = np.array([groupOf(s) for s in sources])
+        if (liveShare if share is None else share) <= 0:
+            group[group == "expert live"] = "expert"
+        return round(float(np.mean([hits[(group == g) & tested].mean() for g in sorted(set(group))])), 3)
     best = max(penalties, key=lambda penalty: balanced(report[penalty]))
+    onA["taste model (held out)"] = ratingOnA(live, lambda d: outOfFold[best][d])
     summary = {"heldOut": {"taste model": {**bySource(report[best]), "balanced": balanced(report[best])},
                            **{name: {**bySource(h), "balanced": balanced(h)} for name, h in baselines.items()}},
-               "penalty": best, "preferences": len(prefs), "designs": len(ids)}
+               "ratingOnA": {"plates": sum(len(ds) >= 2 for ds in live.values()), **onA},
+               "rules": ruleChecks(entries, prefs, rows),
+               "penalty": best, "preferences": len(prefs), "designs": len(ids),
+               "people": list(who or people), "crossPlate": across or crossPlate}
     for name, row in summary["heldOut"].items():
         print(f"  {name:12s} {row}", flush=True)
-    weights = fitLogistic(differences, sourceWeights(sources), best)
+    print("  his rating on design A:", summary["ratingOnA"], flush=True)
+    print("  his within-plate preferences:", summary["rules"], flush=True)
+    weights = fitLogistic(differences, sourceWeights(sources, share), best)
     scores = ((matrix - mean) / scale) @ weights
     model = {"featureNames": featureNames, "mean": mean.tolist(), "scale": scale.tolist(), "weights": weights.tolist(),
-             "scoreSpread": float(scores.std() + 1e-6), "looksScorer": str(looksPath), "report": summary}
+             "scoreSpread": float(scores.std() + 1e-6), "looksScorer": str(looksPath), "report": summary,
+             "liveShare": liveShare if share is None else share}
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     Path(out).write_text(json.dumps(model, indent=1))
     order = np.argsort(-np.abs(weights))
@@ -243,11 +345,15 @@ class TasteScorer:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("action", choices=["train"])
-    parser.add_argument("--out", default="models/marathon/v2/taste.json")
+    parser.add_argument("--out", default="models/marathon/v5/taste.json")
     parser.add_argument("--parallel", type=int, default=4)
     parser.add_argument("--looks", default=looksScorerPath, help="looks scorer the model builds on")
+    parser.add_argument("--live-share", type=float, default=liveShare, help="weight share of the expert's live ratings")
+    parser.add_argument("--people", default=",".join(people), help="whose preferences train it: expert, or user,expert")
+    parser.add_argument("--cross-plate", default=crossPlate, choices=["none", "live", "all"],
+                        help="which of his ratings are also compared across plates")
     args = parser.parse_args()
-    train(args.out, args.parallel, args.looks)
+    train(args.out, args.parallel, args.looks, args.live_share, tuple(args.people.split(",")), args.cross_plate)
 
 
 if __name__ == "__main__":

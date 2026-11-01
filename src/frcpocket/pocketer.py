@@ -46,9 +46,12 @@ ribStyles = ((30.0, 0), (40.0, 0), (40.0, 4))
 
 
 class Pocketer:
-    def __init__(self, generatorPath=defaultGeneratorPath, scorerPath=defaultScorerPath, workers=2):
+    def __init__(self, generatorPath=defaultGeneratorPath, scorerPath=defaultScorerPath, workers=2,
+                 lightestOf=lightestOfTop, symmetryRule=True):
         """generatorPath may also be a list of generators: each proposes for every plate,
-        and the scorer and the structural floor pick among all their designs."""
+        and the scorer and the structural floor pick among all their designs. lightestOf is
+        how many of the scorer's top sound designs compete on weight for first place (1 = the
+        scorer's own first choice); symmetryRule turns the symmetric-plate rule on or off."""
         from frcpocket.generator import RibGenerator
 
         from frcpocket.truss import TrussEngine
@@ -59,6 +62,7 @@ class Pocketer:
                            for path in paths if str(path) == "truss" or Path(path).exists()]
         self.generator = self.generators[0] if self.generators else None
         self.judge = Judge(scorerPath, workers=workers)
+        self.lightestOf, self.symmetryRule = max(1, int(lightestOf)), symmetryRule
 
     def candidates(self, plate, params, count=6, proposals=16, seed=0, polish=None, relax=True):
         """Ranked, validated designs. polish=None follows polish.enabled (on by default).
@@ -95,7 +99,7 @@ class Pocketer:
         want = count - (1 if baselineRanked else 0)
         unique = []
         for result in ranked:
-            if len(unique) >= max(want, lightestOfTop):
+            if len(unique) >= max(want, self.lightestOf):
                 break
             pockets = unary_union(result["layout"].pockets)
             duplicate = any(
@@ -106,14 +110,14 @@ class Pocketer:
                 result["source"] = "ML generator"
                 result["scorerRank"] = len(unique)  # 0 = the scorer's own first choice
                 unique.append(result)
-        top = [result for result in unique[:max(lightestOfTop, symmetryPool)] if self.sound(result)]
-        plateSym = designFeatures.plateSymmetry(plate) if top else 0.0
+        top = [result for result in unique[:max(self.lightestOf, symmetryPool)] if self.sound(result)]
+        plateSym = designFeatures.plateSymmetry(plate) if top and self.symmetryRule else 0.0
         if plateSym >= symmetricPlate:
             for result in top:
                 result["symmetryShortfall"] = max(0.0, plateSym - geom2d.symmetryScore(plate.outline, result["layout"].pockets))
             best = min(result["symmetryShortfall"] for result in top)
             top = [result for result in top if result["symmetryShortfall"] <= best + symmetrySlack]
-        top = top[:lightestOfTop]
+        top = top[:self.lightestOf]
         first = max(top, key=lambda result: result["removed"]) if top else (unique[0] if unique else None)
         chosen = ([first] + [result for result in unique if result is not first])[:want] if first is not None else []
         for rank, result in enumerate(chosen):

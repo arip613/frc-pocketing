@@ -309,6 +309,35 @@ were never shown to him.
   It shows the lightest sound design among the taste model's top three. The taste model's
   own first choice matched 24 and the lightest overall 29.
 
+## 13. The expert's taste only (v5 chooser)
+
+- **The user's call (2026-11-01):** the expert's taste is what matters; the user's does
+  not count. The chooser is judged by his mean rating of design A, the design shown first.
+- **His ratings of the live tool's own output** (round L1f, page part 6, 63 of 378 so far):
+  mean 4.1 of 9. Design A 4.4 (28 rated), B 4.0, C 3.2. Across these designs the v2 taste
+  model's score does not track his rating (Spearman -0.09). His 7-9s have every hole tied
+  into ribs with bosses, ribs running hole to hole, fewer and rounder pockets. His 1-2s
+  have "cracked glass" layouts that ignore the holes, holes left in solid areas, long
+  slivers, over 60% removed, or pockets added to plates that already have dense hole rows.
+- **The rules, checked on his own preferences within a plate:** the lighter design wins
+  78% of 348 pairs (75% of 259 when both remove 35%+), and on symmetric plates the more
+  symmetric one wins 83% of 77.
+- **Design A, simulated** on the 56 plates where he rated 2+ designs, taste scores held
+  out by plate (`taste.py` reports the live-round part of this; all versions choose among
+  the designs he rated): the average design gets 3.10 and the best possible 5.12. The live
+  chooser (v2 taste, lightest of the top 3, symmetry rule) gets 3.82, in-sample, since v2
+  saw these ratings. The expert-only taste model (v5) gets 3.77; with the symmetry rule
+  3.88; with lightest-of-top-3 as well 3.89. So the symmetry rule helps (+0.11, +0.24 on
+  symmetric plates) and lightest-of-top-3 adds nothing once the model is his (+0.01).
+  The model already puts its largest weight on material removed. Comparing his ratings
+  across plates, of the live round or all rounds, lowered the score and the held-out
+  agreement, so they are compared within a plate only.
+- **v5** (`models/marathon/v5/taste.json`): trained on his ratings and pair picks only,
+  within a plate. With the symmetry rule and no lightest-of-top-3, it ties the live
+  chooser on his design-A rating (+0.05, 95% interval -0.30 to +0.39 over 56 plates). The
+  gap to the best possible (1.2 points) is what the features miss. Round L2 runs it on the
+  190 plates of L1 so his ratings can settle it.
+
 ## Sources
 
 See `data/sources.jsonl` for the per-item log (URL, timestamp, license, sha256,

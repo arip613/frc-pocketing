@@ -1,0 +1,323 @@
+{
+ "rater": "tpfhph0y",
+ "version": "6-eef56f",
+ "exportedAt": "2026-11-01T19:14:57.820Z",
+ "count": 63,
+ "ratings": [
+  {
+   "id": "sheet:L1f:d9da2eedc1_590:2",
+   "rating": 8,
+   "ms": 35489
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_1311:1",
+   "rating": 7,
+   "ms": 23999
+  },
+  {
+   "id": "sheet:L1f:756d63454b_758:2",
+   "rating": 3,
+   "ms": 15583
+  },
+  {
+   "id": "sheet:L1f:2d546bad45_21:1",
+   "rating": 2,
+   "ms": 7417
+  },
+  {
+   "id": "sheet:L1f:d9da2eedc1_590:1",
+   "rating": 4,
+   "ms": 12400
+  },
+  {
+   "id": "sheet:L1f:4e4608b20b_126:1",
+   "rating": 1,
+   "ms": 15100
+  },
+  {
+   "id": "sheet:L1f:c88f45e8da_28:3",
+   "rating": 4,
+   "ms": 12932
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_344:3",
+   "rating": 1,
+   "ms": 2400
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_344:2",
+   "rating": 2,
+   "ms": 1250
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_1399:1",
+   "rating": 7,
+   "ms": 195699
+  },
+  {
+   "id": "sheet:L1f:709accf60f_6:1",
+   "rating": 2,
+   "ms": 13228
+  },
+  {
+   "id": "sheet:L1f:d9da2eedc1_355:2",
+   "rating": 4,
+   "ms": 12333
+  },
+  {
+   "id": "sheet:L1f:d9da2eedc1_39:1",
+   "rating": 4,
+   "ms": 7650
+  },
+  {
+   "id": "sheet:L1f:userImg_example1:2",
+   "rating": 7,
+   "ms": 11067
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_1206:2",
+   "rating": 4,
+   "ms": 2867
+  },
+  {
+   "id": "sheet:L1f:756d63454b_39:1",
+   "rating": 2,
+   "ms": 7849
+  },
+  {
+   "id": "sheet:L1f:dwg2056_059f61d7d3_0:1",
+   "rating": 4,
+   "ms": 31099
+  },
+  {
+   "id": "sheet:L1f:d9da2eedc1_419:3",
+   "rating": 3,
+   "ms": 3984
+  },
+  {
+   "id": "sheet:L1f:70200006aa_0:1",
+   "rating": 1,
+   "ms": 3316
+  },
+  {
+   "id": "sheet:L1f:2d546bad45_21:2",
+   "rating": 5,
+   "ms": 24834
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_220:2",
+   "rating": 3,
+   "ms": 21750
+  },
+  {
+   "id": "sheet:L1f:d9da2eedc1_416:1",
+   "rating": 8,
+   "ms": 15316
+  },
+  {
+   "id": "sheet:L1f:d9da2eedc1_902:2",
+   "rating": 4,
+   "ms": 14900
+  },
+  {
+   "id": "sheet:L1f:c88f45e8da_873:3",
+   "rating": 2,
+   "ms": 4366
+  },
+  {
+   "id": "sheet:L1f:c1a1314165_85:2",
+   "rating": 3,
+   "ms": 38017
+  },
+  {
+   "id": "sheet:L1f:605b291675_333:2",
+   "rating": 4,
+   "ms": 9782
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_726:2",
+   "rating": 3,
+   "ms": 3618
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_1230:1",
+   "rating": 5,
+   "ms": 19316
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_1068:2",
+   "rating": 4,
+   "ms": 17700
+  },
+  {
+   "id": "sheet:L1f:d9da2eedc1_39:2",
+   "rating": 3,
+   "ms": 5584
+  },
+  {
+   "id": "sheet:L1f:32cba94e9e_0:1",
+   "rating": 2,
+   "ms": 20050
+  },
+  {
+   "id": "sheet:L1f:c88f45e8da_1478:3",
+   "rating": 2,
+   "ms": 6482
+  },
+  {
+   "id": "sheet:L1f:756d63454b_0:2",
+   "rating": 2,
+   "ms": 6699
+  },
+  {
+   "id": "sheet:L1f:a0d6ce54b8_2:1",
+   "rating": 5,
+   "ms": 4318
+  },
+  {
+   "id": "sheet:L1f:d9da2eedc1_956:1",
+   "rating": 4,
+   "ms": 6632
+  },
+  {
+   "id": "sheet:L1f:a0d6ce54b8_3:2",
+   "rating": 8,
+   "ms": 9150
+  },
+  {
+   "id": "sheet:L1f:dwg2056_19c56b1f8f_0:1",
+   "rating": 2,
+   "ms": 9967
+  },
+  {
+   "id": "sheet:L1f:c88f45e8da_1478:1",
+   "rating": 3,
+   "ms": 8283
+  },
+  {
+   "id": "sheet:L1f:605b291675_6:3",
+   "rating": 4,
+   "ms": 4599
+  },
+  {
+   "id": "sheet:L1f:e5214b486c_133:2",
+   "rating": 6,
+   "ms": 67280
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_781:1",
+   "rating": 6,
+   "ms": 2345
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_1392:3",
+   "rating": 8,
+   "ms": 6580
+  },
+  {
+   "id": "sheet:L1f:c88f45e8da_1442:1",
+   "rating": 5,
+   "ms": 57082
+  },
+  {
+   "id": "sheet:L1f:dwg2056_9a218da73a_0:1",
+   "rating": 4,
+   "ms": 6491
+  },
+  {
+   "id": "sheet:L1f:756d63454b_724:2",
+   "rating": 3,
+   "ms": 27379
+  },
+  {
+   "id": "sheet:L1f:f4ce281d0a_746:1",
+   "rating": 9,
+   "ms": 43416
+  },
+  {
+   "id": "sheet:L1f:2d546bad45_42:2",
+   "rating": 1,
+   "ms": 3434
+  },
+  {
+   "id": "sheet:L1f:c88f45e8da_425:1",
+   "rating": 3,
+   "ms": 4250
+  },
+  {
+   "id": "sheet:L1f:dwg2056_c6706fc6d4_0:1",
+   "rating": 7,
+   "ms": 18382
+  },
+  {
+   "id": "sheet:L1f:dwg2056_62f63ea322_0:2",
+   "rating": 4,
+   "ms": 7850
+  },
+  {
+   "id": "sheet:L1f:userImg_example1:1",
+   "rating": 7,
+   "ms": 14884
+  },
+  {
+   "id": "sheet:L1f:756d63454b_39:3",
+   "rating": 1,
+   "ms": 6083
+  },
+  {
+   "id": "sheet:L1f:0a48ec25fa_1:2",
+   "rating": 7,
+   "ms": 19500
+  },
+  {
+   "id": "sheet:L1f:dwg2056_681935e290_0:2",
+   "rating": 2,
+   "ms": 10816
+  },
+  {
+   "id": "sheet:L1f:d9da2eedc1_841:1",
+   "rating": 4,
+   "ms": 26983
+  },
+  {
+   "id": "sheet:L1f:d9da2eedc1_1054:1",
+   "rating": 4,
+   "ms": 18283
+  },
+  {
+   "id": "sheet:L1f:c88f45e8da_343:2",
+   "rating": 3,
+   "ms": 16817
+  },
+  {
+   "id": "sheet:L1f:d9da2eedc1_1357:1",
+   "rating": 8,
+   "ms": 11432
+  },
+  {
+   "id": "sheet:L1f:af54cef1ce_1399:2",
+   "rating": 4,
+   "ms": 6684
+  },
+  {
+   "id": "sheet:L1f:756d63454b_6:2",
+   "rating": 1,
+   "ms": 13434
+  },
+  {
+   "id": "sheet:L1f:756d63454b_297:3",
+   "rating": 4,
+   "ms": 33366
+  },
+  {
+   "id": "sheet:L1f:756d63454b_138:1",
+   "rating": 2,
+   "ms": 40933
+  },
+  {
+   "id": "sheet:L1f:userImg_example4:2",
+   "rating": 7,
+   "ms": 26300
+  }
+ ]
+}
