@@ -99,6 +99,8 @@ def collectItems(target, rounds=()):
             entry = json.loads(line)
             if isHoldout(entry.get("plateId") or entry["sheet"]):
                 continue
+            if entry.get("source") == "real (kept)":
+                continue  # round k1 repeats a real design next to ours; it is shown once, as real
             items.append({"id": f"sheet:{roundName}:{entry['sheet']}:{entry['candidate']}", "kind": "generated",
                           "plateId": entry.get("plateId") or entry["sheet"], "thicknessIn": entry.get("thicknessIn"),
                           "params": entry.get("params"), "outline": entry["outline"], "holes": entry["holes"],
