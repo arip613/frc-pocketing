@@ -87,9 +87,10 @@ def qualityCut(items):
     return kept
 
 
-def collectItems(target, rounds=()):
+def collectItems(target, rounds=(), real=True, cut=True):
     """Generated sheet candidates (every round, or only `rounds`) and real pocketed designs,
-    held-out excluded."""
+    held-out excluded. real=False leaves out real designs; cut=False shows every design as
+    generated (for rating the live tool exactly as it shows them)."""
     items = []
     for path in sorted(sheetRoot.glob("*/candidates.jsonl")):
         roundName = path.parent.name
@@ -105,13 +106,13 @@ def collectItems(target, rounds=()):
                           "plateId": entry.get("plateId") or entry["sheet"], "thicknessIn": entry.get("thicknessIn"),
                           "params": entry.get("params"), "outline": entry["outline"], "holes": entry["holes"],
                           "pockets": entry["pockets"]})
-    for record in loadRecords("data/processed/plates.jsonl"):
+    for record in loadRecords("data/processed/plates.jsonl") if real else []:
         if isHoldout(record["id"]) or not record.get("pockets"):
             continue
         items.append({"id": f"real:{record['id']}", "kind": "real", "plateId": record["id"],
                       "thicknessIn": record.get("thicknessIn"), "params": None, "outline": record["outline"],
                       "holes": record["holes"], "pockets": record["pockets"]})
-    items = qualityCut(items)
+    items = qualityCut(items) if cut else items
     rng = random.Random(7)
     generated = [item for item in items if item["kind"] == "generated"]
     real = [item for item in items if item["kind"] == "real"]
@@ -129,9 +130,9 @@ def earlierIds(part):
     return ids
 
 
-def build(target, part, rounds=()):
+def build(target, part, rounds=(), real=True, cut=True):
     shown = earlierIds(part)
-    items = [item for item in collectItems(target + len(shown), rounds) if item["id"] not in shown][:target]
+    items = [item for item in collectItems(target + len(shown), rounds, real, cut) if item["id"] not in shown][:target]
     outDir.mkdir(parents=True, exist_ok=True)
     with open(outDir / f"items_part{part}.jsonl", "w") as handle:
         for item in items:
@@ -223,9 +224,11 @@ def main():
     parser.add_argument("--fresh", action="store_true", help="combine: new save slot, nothing carried over")
     parser.add_argument("--out", default=None, help="combine: output file name")
     parser.add_argument("--rounds", default="", help="only generated designs from these sheet rounds, e.g. m1")
+    parser.add_argument("--no-real", action="store_true", help="build: leave out real designs")
+    parser.add_argument("--no-cut", action="store_true", help="build: show every generated design (no quality cut)")
     args = parser.parse_args()
     if args.action == "build":
-        build(args.count, args.part, tuple(filter(None, args.rounds.split(","))))
+        build(args.count, args.part, tuple(filter(None, args.rounds.split(","))), real=not args.no_real, cut=not args.no_cut)
     elif args.action == "rewrap":
         rewrap(args.part)
     elif args.action == "combine":
