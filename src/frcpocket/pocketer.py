@@ -16,19 +16,26 @@ from pathlib import Path
 
 from shapely.ops import unary_union
 
-from frcpocket import fea, polish as polishPass
+from frcpocket import designFeatures, fea, geom2d, polish as polishPass
 from frcpocket.baseline import trussBaseline
 from frcpocket.trainGenerator import Judge, coarseMeshFactor, isSound
 
 # v2: in blind picks on 8 new plates the user chose it over v1 on 5 of 5 plates where they differed.
+# The truss engine (truss.py) joined after round p6: where it changed the design shown, the user
+# took its design 2 times of 3.
 defaultGeneratorPath = (Path("models/generator.pt"), Path("models/marathon/e1/generator.pt"),
-                        Path("models/marathon/u1/generator.pt"), Path("models/marathon/m1/generator.pt"))
+                        Path("models/marathon/u1/generator.pt"), Path("models/marathon/m1/generator.pt"), "truss")
 defaultScorerPath = Path("models/marathon/v2/taste.json")
 duplicateIoU = 0.97
 # The design shown first is the lightest sound one among the scorer's top few. In the user's
 # blind picks (rounds p1, p2, p5: 43 plates) that rule matched their favourite 31 times, the
 # scorer's own first choice 24 and the lightest design overall 29.
 lightestOfTop = 3
+# On a symmetric plate the user passes over a lighter design that isn't symmetric (round p6,
+# Main #5): of the scorer's top few, only designs about as symmetric as the best one compete.
+symmetricPlate = 0.9  # plate symmetry (designFeatures.plateSymmetry) from which this applies
+symmetrySlack = 0.03  # shortfall allowed over the most symmetric of the top designs
+symmetryPool = 5  # how far down the scorer's ranking to look for a symmetric design
 # Rib styles the generator proposes in (min rib-rib angle, max ribs per small hole; 0 = no
 # limit). Average grades on the rating sheets: round 1, 20 deg 3.26 and 40 deg / 4 ribs 3.25
 # (50 deg / 3 ribs 2.87); round 2, 40 deg 3.39, 40 deg / 4 ribs 3.31, 20 deg 3.16. Each wins
@@ -99,7 +106,14 @@ class Pocketer:
                 result["source"] = "ML generator"
                 result["scorerRank"] = len(unique)  # 0 = the scorer's own first choice
                 unique.append(result)
-        top = [result for result in unique[:lightestOfTop] if self.sound(result)]
+        top = [result for result in unique[:max(lightestOfTop, symmetryPool)] if self.sound(result)]
+        plateSym = designFeatures.plateSymmetry(plate) if top else 0.0
+        if plateSym >= symmetricPlate:
+            for result in top:
+                result["symmetryShortfall"] = max(0.0, plateSym - geom2d.symmetryScore(plate.outline, result["layout"].pockets))
+            best = min(result["symmetryShortfall"] for result in top)
+            top = [result for result in top if result["symmetryShortfall"] <= best + symmetrySlack]
+        top = top[:lightestOfTop]
         first = max(top, key=lambda result: result["removed"]) if top else (unique[0] if unique else None)
         chosen = ([first] + [result for result in unique if result is not first])[:want] if first is not None else []
         for rank, result in enumerate(chosen):
