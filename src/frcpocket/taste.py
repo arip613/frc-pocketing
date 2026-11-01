@@ -114,11 +114,11 @@ def describeJob(styleReference, items):
     return [(designId, designFeatures.describe(plate, paramsOf(entry), pocketsOf(entry), symmetry)) for designId, entry in items]
 
 
-def designMatrix(entries, designIds, parallel=4):
-    """designId -> feature row (design features + looks), using the live scorer for looks."""
+def designMatrix(entries, designIds, parallel=4, looksPath=looksScorerPath):
+    """designId -> feature row (design features + looks), using a looks scorer (the live one by default)."""
     from frcpocket.scorer import AestheticScorer
 
-    looksScorer = AestheticScorer(looksScorerPath)  # also loads the gold style reference describe uses
+    looksScorer = AestheticScorer(looksPath)  # also loads the gold style reference describe uses
     byPlate = defaultdict(list)
     for designId in designIds:
         byPlate[entries[designId]["plateKey"]].append((designId, entries[designId]))
@@ -168,13 +168,13 @@ def sourceWeights(sources):
     return weights
 
 
-def train(out, parallel=4):
+def train(out, parallel=4, looksPath=looksScorerPath):
     entries = sheetEntries()
     prefs = preferences(entries)
     ids = sorted({designId for a, b, _ in prefs for designId in (a, b)})
     print(f"{len(prefs)} preferences over {len(ids)} designs:",
           dict(sorted(defaultdict(int, {s: sum(p[2] == s for p in prefs) for s in {p[2] for p in prefs}}).items())), flush=True)
-    rows = designMatrix(entries, ids, parallel)
+    rows = designMatrix(entries, ids, parallel, looksPath)
     matrix = np.stack([rows[designId] for designId in ids])
     scale = matrix.std(axis=0) + 1e-6
     mean = matrix.mean(axis=0)
@@ -213,7 +213,7 @@ def train(out, parallel=4):
     weights = fitLogistic(differences, sourceWeights(sources), best)
     scores = ((matrix - mean) / scale) @ weights
     model = {"featureNames": featureNames, "mean": mean.tolist(), "scale": scale.tolist(), "weights": weights.tolist(),
-             "scoreSpread": float(scores.std() + 1e-6), "looksScorer": looksScorerPath, "report": summary}
+             "scoreSpread": float(scores.std() + 1e-6), "looksScorer": str(looksPath), "report": summary}
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     Path(out).write_text(json.dumps(model, indent=1))
     order = np.argsort(-np.abs(weights))
@@ -245,8 +245,9 @@ def main():
     parser.add_argument("action", choices=["train"])
     parser.add_argument("--out", default="models/marathon/v2/taste.json")
     parser.add_argument("--parallel", type=int, default=4)
+    parser.add_argument("--looks", default=looksScorerPath, help="looks scorer the model builds on")
     args = parser.parse_args()
-    train(args.out, args.parallel)
+    train(args.out, args.parallel, args.looks)
 
 
 if __name__ == "__main__":
