@@ -97,6 +97,7 @@ class Pocketer:
             )
             if not duplicate:
                 result["source"] = "ML generator"
+                result["scorerRank"] = len(unique)  # 0 = the scorer's own first choice
                 unique.append(result)
         top = [result for result in unique[:lightestOfTop] if self.sound(result)]
         first = max(top, key=lambda result: result["removed"]) if top else (unique[0] if unique else None)
@@ -160,8 +161,9 @@ class Pocketer:
                 continue
             rescored[0]["source"] = result["source"]
             rescored[0]["polish"] = outcome.log
-            if "order" in result:
-                rescored[0]["order"] = result["order"]
+            for key in ("order", "scorerRank"):
+                if key in result:
+                    rescored[0][key] = result[key]
             out.append(rescored[0])
         unique = []
         for result in out:
