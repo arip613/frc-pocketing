@@ -170,13 +170,18 @@ def rewrap(part):
     print(f"rewrapped {out}")
 
 
-def combine(parts, fresh=False, outName=None):
+def combine(parts, fresh=False, outName=None, first=None):
     """One page with the designs of several parts (shuffled together); it picks up progress
-    the separate part pages saved in the same browser."""
+    the separate part pages saved in the same browser. `first` (design ids) puts those
+    designs in a first section of their own, ahead of everything else."""
     import re
     datas = [json.loads(re.search(r"const DATA = (\{.*?\});\n", (outDir / f"plate-rater-part{k}.html").read_text(),
                                   re.S).group(1)) for k in parts]
     items = [item for data in datas for item in data["items"]]
+    sections = [len(d["items"]) for d in datas]
+    if first:
+        items = [item for item in items if item["i"] in first] + [item for item in items if item["i"] not in first]
+        sections = [n for n in (sum(item["i"] in first for item in items), sum(item["i"] not in first for item in items)) if n]
     name = "".join(str(k) for k in parts)
     digest = hashlib.sha1("".join(item["i"] for item in items).encode()).hexdigest()[:6]
     # Earlier combined pages of the same parts (any order) hand over their saved progress too.
@@ -187,7 +192,7 @@ def combine(parts, fresh=False, outName=None):
     if fresh:  # its own save slot, and nothing carried over from earlier pages
         version, migrate = f"{name}-{digest}-{datetime.now(timezone.utc):%Y%m%d%H%M}", []
     # Parts in the order given, most useful first; the page shuffles within each.
-    data = json.dumps({"version": version, "migrate": migrate, "sections": [len(d["items"]) for d in datas],
+    data = json.dumps({"version": version, "migrate": migrate, "sections": sections,
                        "items": items}, separators=(",", ":"))
     out = outDir / (outName or f"plate-rater-parts{name}.html")
     page = templatePath.read_text().replace(", part __PART__", "").replace(' <span class="muted">· part __PART__</span>', "")
@@ -199,7 +204,10 @@ def ingest(paths):
     known = set()
     for path in outDir.glob("items_part*.jsonl"):
         known |= {json.loads(line)["id"] for line in path.open()}
-    added = 0
+    # A combined page exports the ratings it carried over from earlier parts too: those are skipped.
+    have = {(r["id"], r["rater"], r["rating"]) for r in map(json.loads, ratingsPath.read_text().splitlines())} \
+        if ratingsPath.exists() else set()
+    added = skipped = 0
     with open(ratingsPath, "a") as handle:
         for path in paths:
             export = json.loads(Path(path).read_text())
@@ -208,11 +216,15 @@ def ingest(paths):
             for entry in export["ratings"]:
                 if entry["id"] not in known or not 1 <= int(entry["rating"]) <= 9:
                     continue
+                if (entry["id"], rater, int(entry["rating"])) in have:
+                    skipped += 1
+                    continue
+                have.add((entry["id"], rater, int(entry["rating"])))
                 handle.write(json.dumps({"id": entry["id"], "rating": int(entry["rating"]), "rater": rater,
                                          "datasetVersion": export.get("version"),
                                          "ingested": datetime.now(timezone.utc).isoformat(timespec="seconds")}) + "\n")
                 added += 1
-    print(f"added {added} ratings to {ratingsPath}")
+    print(f"added {added} ratings to {ratingsPath}" + (f" ({skipped} already there)" if skipped else ""))
 
 
 def main():
@@ -223,6 +235,7 @@ def main():
     parser.add_argument("--part", type=int, default=1)
     parser.add_argument("--fresh", action="store_true", help="combine: new save slot, nothing carried over")
     parser.add_argument("--out", default=None, help="combine: output file name")
+    parser.add_argument("--first", default=None, help="combine: file of design ids (one per line) to show first")
     parser.add_argument("--rounds", default="", help="only generated designs from these sheet rounds, e.g. m1")
     parser.add_argument("--no-real", action="store_true", help="build: leave out real designs")
     parser.add_argument("--no-cut", action="store_true", help="build: show every generated design (no quality cut)")
@@ -232,7 +245,8 @@ def main():
     elif args.action == "rewrap":
         rewrap(args.part)
     elif args.action == "combine":
-        combine([int(k) for k in args.files], fresh=args.fresh, outName=args.out)
+        first = set(Path(args.first).read_text().split()) if args.first else None
+        combine([int(k) for k in args.files], fresh=args.fresh, outName=args.out, first=first)
     else:
         ingest(args.files)
 

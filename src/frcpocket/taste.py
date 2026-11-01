@@ -3,8 +3,8 @@
 A linear model on the scorer's design features (designFeatures.describe) plus the
 scorer's own looks score, fitted to the expert's preferences only (the user's call, 2026-11-01:
 his taste is what matters): his 1-9 ratings, his A-vs-B picks, and his 1-9 ratings of the
-live tool's own output (round L1f), which form their own group with its own share of the
-weight (--live-share). Ratings are compared within a plate (a 2+ gap) and, with --cross-plate,
+live tool's own output (rounds L1f and L1x; L2f holds the v5 chooser's), which form their
+own group with its own share of the weight (--live-share). Ratings are compared within a plate (a 2+ gap) and, with --cross-plate,
 across plates too (same rater). --people user,expert brings the user's grades and picks back
 (each person then carries equal weight). Claude's grades are never used.
 It ranks designs of one plate, so only feature differences within a plate matter.
@@ -42,7 +42,7 @@ looksScorerPath = "models/aestheticScorer.pt"
 featureNames = designFeatures.featureNames + ["looks"]
 pickRounds = ("p1", "p2", "p4", "p5", "p6")  # the user's blind picks (favourite 5, the rest 3)
 keptRounds = ("k1",)  # a plate the user kept (5) against our designs for the same plate (3)
-liveRounds = ("L1f",)  # the live tool's own designs, rated 1-9 by the expert
+liveRounds = ("L1f", "L1x", "L2f")  # the live tool's and the v5 chooser's designs, rated 1-9 by the expert
 # Chosen by his mean rating of the design shown first (design A), with taste scores held out by
 # plate, on the 56 plates where he rated 2+ designs: cross-plate comparisons ("live" or "all")
 # lowered it and lowered agreement with his within-plate preferences, so his live ratings count
@@ -208,7 +208,7 @@ def sourceWeights(sources, share=None):
 
 
 def liveRatings(entries):
-    """plateKey -> [(designId, his mean rating)] for live designs (round L1f) he rated."""
+    """plateKey -> [(designId, his mean rating)] for live designs (liveRounds) he rated."""
     ratings = defaultdict(list)
     for line in expertRatingsPath.read_text().splitlines():
         rating = json.loads(line)
@@ -269,7 +269,8 @@ def train(out, parallel=4, looksPath=looksScorerPath, share=None, who=None, acro
         "live ranking": (0.7 * raw([a for a, _, _ in prefs], looksIndex) + 0.15 * np.minimum(raw([a for a, _, _ in prefs], removedIndex) / 0.4, 1)
                          > 0.7 * raw([b for _, b, _ in prefs], looksIndex) + 0.15 * np.minimum(raw([b for _, b, _ in prefs], removedIndex) / 0.4, 1)),
     }
-    onA = {"live order (as shown)": ratingOnA(live, lambda d: -int(d.split(":")[-1])),
+    # The live tool's order: its A, B, C (rounds L1f, L1x); the v5 chooser's designs (L2f) come last.
+    onA = {"live order (as shown)": ratingOnA(live, lambda d: -int(d.split(":")[-1]) if d.split(":")[1] != "L2f" else -99),
            "lightest": ratingOnA(live, lambda d: rows[d][removedIndex]),
            "best possible": ratingOnA(live, lambda d: next(r for ds in live.values() for i, r in ds if i == d))}
     livePath = Path("models/marathon/v2/taste.json")  # the chooser live now, when it builds on the same looks scorer
