@@ -12,6 +12,11 @@ and part 2 later; design ids are the same in every part.
 
 Ingested ratings become rater "expert:<id>" entries in data/curation/expertRatings.jsonl,
 which the scorer reads like the user's own grades (see ratingSheets.loadSheetRatings).
+
+On request (O) the page shows the plate unpocketed next to the team's own pocketed design
+(data/processed/plates.jsonl); ratings given with that open carry "sawOriginal". He can
+also draw on a design (D): straight ribs he'd add and freehand marks, in plate inches,
+which ingest saves to data/curation/expertDrawings.jsonl.
 """
 
 import argparse
@@ -28,6 +33,7 @@ from frcpocket.splits import isHoldout, loadRecords
 outDir = Path("data/curation/expert")
 sheetRoot = Path("data/curation/sheets")
 ratingsPath = Path("data/curation/expertRatings.jsonl")
+drawingsPath = Path("data/curation/expertDrawings.jsonl")  # ribs he drew in, marks he made
 templatePath = Path(__file__).parent / "webui" / "expertRater.html"
 scorerPath = "models/marathon/r0/aestheticScorer.pt"
 # Slop filter: nobody should spend time on these.
@@ -121,6 +127,29 @@ def collectItems(target, rounds=(), real=True, cut=True):
     return real + generated
 
 
+def plateOf(itemId):
+    """The plate a page item is a design of: sheet:<round>:<plate>:<k> or real:<plate>."""
+    parts = itemId.split(":")
+    return ":".join(parts[2:-1]) if parts[0] == "sheet" else ":".join(parts[1:])
+
+
+def withOriginals(data):
+    """Add the teams' own pocketed designs (data/processed/plates.jsonl) of the page's plates,
+    which the page shows on request next to the unpocketed plate. Held-out plates never."""
+    plates = {plateOf(item["i"]) for item in data["items"]}
+    orig = {}
+    for record in loadRecords("data/processed/plates.jsonl"):
+        if record["id"] not in plates or isHoldout(record["id"]) or not (record.get("pockets") or record.get("blindPockets")):
+            continue
+        minX, minY, maxX, maxY = Polygon(record["outline"]).bounds
+        tolerance = 0.0015 * max(maxX - minX, maxY - minY)
+        orig[record["id"]] = {"o": compact(record["outline"], tolerance),
+                              "f": [compact(loop, tolerance * 0.5) for loop in record["holes"]],
+                              "p": [compact(loop, tolerance) for loop in record.get("pockets") or []],
+                              "b": [compact(loop, tolerance) for loop in record.get("blindPockets") or []]}
+    return dict(data, orig=orig)
+
+
 def earlierIds(part):
     ids = set()
     for k in range(1, part):
@@ -150,7 +179,7 @@ def build(target, part, rounds=(), real=True, cut=True):
                      "p": [compact(loop, tolerance) for loop in item["pockets"]]})
     # The page keys saved progress by version, so a changed design set starts fresh.
     digest = hashlib.sha1("".join(item["id"] for item in items).encode()).hexdigest()[:6]
-    data = json.dumps({"version": f"{part}-{digest}", "items": page}, separators=(",", ":"))
+    data = json.dumps(withOriginals({"version": f"{part}-{digest}", "items": page}), separators=(",", ":"))
     html = templatePath.read_text().replace("/*__DATA__*/null", data).replace("__PART__", str(part))
     out = outDir / f"plate-rater-part{part}.html"
     out.write_text(html)
@@ -165,7 +194,8 @@ def rewrap(part):
     same saved-progress key)."""
     import re
     out = outDir / f"plate-rater-part{part}.html"
-    data = re.search(r"const DATA = (\{.*?\});\n", out.read_text(), re.S).group(1)
+    data = json.loads(re.search(r"const DATA = (\{.*?\});\n", out.read_text(), re.S).group(1))
+    data = json.dumps(withOriginals(data), separators=(",", ":"))
     out.write_text(templatePath.read_text().replace("/*__DATA__*/null", data).replace("__PART__", str(part)))
     print(f"rewrapped {out}")
 
@@ -192,8 +222,8 @@ def combine(parts, fresh=False, outName=None, first=None):
     if fresh:  # its own save slot, and nothing carried over from earlier pages
         version, migrate = f"{name}-{digest}-{datetime.now(timezone.utc):%Y%m%d%H%M}", []
     # Parts in the order given, most useful first; the page shuffles within each.
-    data = json.dumps({"version": version, "migrate": migrate, "sections": sections,
-                       "items": items}, separators=(",", ":"))
+    data = json.dumps(withOriginals({"version": version, "migrate": migrate, "sections": sections,
+                                     "items": items}), separators=(",", ":"))
     out = outDir / (outName or f"plate-rater-parts{name}.html")
     page = templatePath.read_text().replace(", part __PART__", "").replace(' <span class="muted">· part __PART__</span>', "")
     out.write_text(page.replace("/*__DATA__*/null", data))
@@ -222,9 +252,31 @@ def ingest(paths):
                 have.add((entry["id"], rater, int(entry["rating"])))
                 handle.write(json.dumps({"id": entry["id"], "rating": int(entry["rating"]), "rater": rater,
                                          "datasetVersion": export.get("version"),
+                                         # he had the unpocketed plate and the team's original open
+                                         **({"sawOriginal": True} if entry.get("sawOriginal") else {}),
                                          "ingested": datetime.now(timezone.utc).isoformat(timespec="seconds")}) + "\n")
                 added += 1
     print(f"added {added} ratings to {ratingsPath}" + (f" ({skipped} already there)" if skipped else ""))
+    # Drawings: strokes in plate inches, in the design's own frame. "rib" is a straight line
+    # where he'd add a rib (3/16 in on the page), "mark" a freehand mark (circling a problem).
+    have = {(r["id"], r["rater"], json.dumps(r["strokes"])) for r in map(json.loads, drawingsPath.read_text().splitlines())} \
+        if drawingsPath.exists() else set()
+    drawn = 0
+    with open(drawingsPath, "a") as handle:
+        for path in paths:
+            export = json.loads(Path(path).read_text())
+            rater = "expert:" + (export.get("rater") or Path(path).stem).strip().lower().replace(" ", "_")
+            for entry in export.get("drawings") or []:
+                key = (entry["id"], rater, json.dumps(entry["strokes"]))
+                if entry["id"] not in known or not entry["strokes"] or key in have:
+                    continue
+                have.add(key)
+                handle.write(json.dumps({"id": entry["id"], "rater": rater, "strokes": entry["strokes"],
+                                         "datasetVersion": export.get("version"),
+                                         "ingested": datetime.now(timezone.utc).isoformat(timespec="seconds")}) + "\n")
+                drawn += 1
+    if drawn:
+        print(f"added {drawn} drawings to {drawingsPath}")
 
 
 def main():

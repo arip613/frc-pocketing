@@ -66,8 +66,28 @@
   .stage svg { width: 100%; height: 100%; display: block; }
   .plate { fill: var(--plate); stroke: var(--edge); stroke-width: 1; vector-effect: non-scaling-stroke; }
   .cut { fill: #fff; stroke: var(--edge); stroke-width: 1; vector-effect: non-scaling-stroke; }
-  .size { position: absolute; left: 12px; bottom: 8px; font-size: 13px; color: var(--muted); }
-  .flash { position: absolute; right: 14px; top: 10px; font-size: 22px; font-weight: 700; opacity: 0; transition: opacity 0.4s; }
+  .size { position: absolute; left: 12px; bottom: 8px; font-size: 13px; color: var(--muted); pointer-events: none; }
+  .flash { position: absolute; right: 14px; top: 10px; font-size: 22px; font-weight: 700; opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+
+  /* tools: the unpocketed plate and the team's original, and drawing on the design */
+  .wrap.wide { max-width: 1240px; }
+  .tools { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+  .tools .plain { padding: 5px 10px; font-size: 14px; }
+  .tools .plain.on { background: var(--text); border-color: var(--text); color: #fff; }
+  .kbd { display: inline-block; margin-left: 4px; padding: 0 5px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; color: var(--muted); background: #fff; }
+  .plain.on .kbd { color: var(--text); }
+  .drawTools { display: inline-flex; gap: 6px; flex-wrap: wrap; align-items: center; padding-left: 6px; border-left: 1px solid var(--line); }
+  .viewer { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .viewer.withSide { grid-template-columns: 2fr 1fr; }
+  .side { display: grid; grid-template-rows: 1fr 1fr; gap: 10px; height: min(62vh, 560px); min-height: 280px; }
+  .mini { position: relative; background: #fff; border: 1px solid var(--line); border-radius: 6px; min-height: 0; }
+  .mini svg { width: 100%; height: 100%; display: block; }
+  .cap { position: absolute; left: 10px; top: 6px; font-size: 12px; color: var(--muted); pointer-events: none; }
+  .none { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--muted); }
+  .blind { fill: #c9d0d5; stroke: var(--edge); stroke-width: 1; stroke-dasharray: 3 2; vector-effect: non-scaling-stroke; }
+  .stage.drawing svg { cursor: crosshair; touch-action: none; }
+  .rib { stroke: #e07b00; stroke-opacity: 0.9; stroke-linecap: round; fill: none; }
+  .mark { stroke: #d0212a; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; fill: none; vector-effect: non-scaling-stroke; }
   .flash.on { opacity: 1; transition: none; }
 
   .keys { display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; margin-top: 14px; }
@@ -96,6 +116,10 @@
     .keys { grid-template-columns: repeat(9, 1fr); gap: 4px; }
     .keys button { padding: 12px 0; font-size: 16px; }
   }
+  @media (max-width: 760px) {
+    .viewer.withSide { grid-template-columns: 1fr; }
+    .side { grid-template-rows: none; grid-template-columns: 1fr 1fr; height: 30vh; min-height: 160px; }
+  }
 </style>
 </head>
 <body>
@@ -109,6 +133,8 @@
       <li>Judge the pocketing, not the plate outline or the hole layout. Those are fixed.</li>
       <li>Go with your gut. A couple of seconds per plate is plenty.</li>
       <li>Keys: <b>1–9</b> to rate, <b>S</b> to skip, <b>Backspace</b> to undo.</li>
+      <li><b>O</b> (or the button above the plate) shows the plate with no pockets next to the team's own pocketed version, where there is one.</li>
+      <li><b>D</b> lets you draw on the design when something is missing: drag to add a rib, or switch to the marker to circle a problem. Drawings are saved with your ratings and come back in the export.</li>
       <li>Your progress is saved in this browser. You can stop and export at any point, even after 50.</li>
       <li id="priority" hidden></li>
     </ul>
@@ -125,10 +151,26 @@
     </div>
     <div class="bar"><span id="bar"></span></div>
     <p class="milestone" id="milestone" hidden></p>
-    <div class="stage">
-      <svg id="view" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
-      <span class="size" id="size"></span>
-      <span class="flash" id="flash"></span>
+    <div class="tools">
+      <button class="plain" id="origBtn">Unpocketed + original<span class="kbd">O</span></button>
+      <button class="plain" id="drawBtn">Draw<span class="kbd">D</span></button>
+      <span class="drawTools" id="drawTools" hidden>
+        <button class="plain pen on" data-pen="rib" title="Drag a straight line where a rib should go">Rib<span class="kbd">R</span></button>
+        <button class="plain pen" data-pen="mark" title="Draw freehand to circle or point at a problem">Marker<span class="kbd">M</span></button>
+        <button class="plain" id="undoLine">Undo line</button>
+        <button class="plain" id="clearLines">Clear</button>
+      </span>
+    </div>
+    <div class="viewer" id="viewer">
+      <div class="stage" id="stage">
+        <svg id="view" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
+        <span class="size" id="size"></span>
+        <span class="flash" id="flash"></span>
+      </div>
+      <div class="side" id="side" hidden>
+        <div class="mini"><svg id="bare" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg><span class="cap">No pockets</span></div>
+        <div class="mini"><svg id="orig" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg><span class="cap">Team's original</span><span class="none" id="noOrig" hidden>No pocketed original on file</span></div>
+      </div>
     </div>
     <div class="keys" id="keys"></div>
     <div class="scale"><span>1 · send it back</span><span>9 · cut it as is</span></div>
@@ -200,6 +242,7 @@ function migrated() {
 
 let state = load() || migrated() || { rater: Math.random().toString(36).slice(2, 10), order: shuffledOrder(), pos: 0, ratings: {}, history: [] };
 if (!state.rater) state.rater = Math.random().toString(36).slice(2, 10);
+if (!state.drawings) state.drawings = {};
 let shownAt = 0;
 
 function pathOf(flat) {
@@ -227,21 +270,156 @@ function show() {
     return;
   }
   const item = DATA.items[state.order[state.pos]];
-  const xs = [], ys = [];
-  for (let k = 0; k < item.o.length; k += 2) { xs.push(item.o[k]); ys.push(-item.o[k + 1]); }
-  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
-  const pad = Math.max(x1 - x0, y1 - y0) * 0.05;
-  const svg = $("view");
-  svg.setAttribute("viewBox", `${x0 - pad} ${y0 - pad} ${x1 - x0 + 2 * pad} ${y1 - y0 + 2 * pad}`);
-  let inner = `<path class="plate" d="${pathOf(item.o)}"/>`;
-  for (const loop of item.f) inner += `<path class="cut" d="${pathOf(loop)}"/>`;
-  for (const loop of item.p) inner += `<path class="cut" d="${pathOf(loop)}"/>`;
-  svg.innerHTML = inner;
+  drawPlate($("view"), item.o, item.f, item.p, [], '<g id="ink"></g>');
+  renderInk();
+  showSide(item);
   $("size").textContent = `${item.w} × ${item.h} in` + (item.t ? `, ${item.t} in thick` : "");
   const done = Object.keys(state.ratings).length;
   $("count").textContent = `${done} rated · ${state.order.length - state.pos} left`;
   $("bar").style.width = (100 * state.pos / state.order.length) + "%";
   shownAt = performance.now();
+}
+
+// One plate drawing: outline, holes, through pockets and blind pockets (dashed), in an svg.
+function drawPlate(svg, outline, holes, pockets, blind, extra) {
+  const xs = [], ys = [];
+  for (let k = 0; k < outline.length; k += 2) { xs.push(outline[k]); ys.push(-outline[k + 1]); }
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const pad = Math.max(x1 - x0, y1 - y0) * 0.05;
+  svg.setAttribute("viewBox", `${x0 - pad} ${y0 - pad} ${x1 - x0 + 2 * pad} ${y1 - y0 + 2 * pad}`);
+  let inner = `<path class="plate" d="${pathOf(outline)}"/>`;
+  for (const loop of blind) inner += `<path class="blind" d="${pathOf(loop)}"/>`;
+  for (const loop of holes) inner += `<path class="cut" d="${pathOf(loop)}"/>`;
+  for (const loop of pockets) inner += `<path class="cut" d="${pathOf(loop)}"/>`;
+  svg.innerHTML = inner + (extra || "");
+}
+
+// --- the unpocketed plate and the team's own pocketed design, on request
+const ORIG = DATA.orig || {};
+let sideOpen = false;  // whether the side panel was open at some point while this design was up
+
+function plateOf(id) {
+  const parts = id.split(":");
+  return parts[0] === "sheet" ? parts.slice(2, -1).join(":") : parts.slice(1).join(":");
+}
+
+function showSide(item) {
+  const open = !!state.showOrig;
+  $("side").hidden = !open;
+  $("viewer").classList.toggle("withSide", open);
+  document.querySelector(".wrap").classList.toggle("wide", open);
+  $("origBtn").classList.toggle("on", open);
+  if (!open) return;
+  sideOpen = true;
+  drawPlate($("bare"), item.o, item.f, [], []);
+  // a real design is its own original, so only generated designs get one
+  const orig = item.i.startsWith("sheet:") ? ORIG[plateOf(item.i)] : null;
+  $("noOrig").hidden = !!orig;
+  if (orig) drawPlate($("orig"), orig.o, orig.f, orig.p, orig.b || []);
+  else $("orig").innerHTML = "";
+}
+
+function toggleOrig() {
+  state.showOrig = !state.showOrig;
+  save();
+  if (state.pos < state.order.length) showSide(DATA.items[state.order[state.pos]]);
+}
+
+// --- drawing on the design: ribs (straight, 3/16 in wide) and a freehand marker
+const RIB_IN = 0.1875;
+let drawOn = false, pen = "rib", stroke = null;
+
+function currentId() {
+  return state.pos < state.order.length ? DATA.items[state.order[state.pos]].i : null;
+}
+
+function strokesOf(id) {
+  state.drawings = state.drawings || {};
+  return state.drawings[id] || [];
+}
+
+function inkPath(s) {
+  let d = "";
+  for (let k = 0; k < s.p.length; k += 2) d += (k ? "L" : "M") + s.p[k] + " " + (-s.p[k + 1]);
+  return s.k === "rib" ? `<path class="rib" stroke-width="${RIB_IN}" d="${d}"/>` : `<path class="mark" d="${d}"/>`;
+}
+
+function renderInk() {
+  const ink = document.getElementById("ink");
+  if (!ink) return;
+  const id = currentId();
+  ink.innerHTML = (id ? strokesOf(id) : []).concat(stroke ? [stroke] : []).map(inkPath).join("");
+}
+
+function setDraw(on) {
+  drawOn = on;
+  $("drawBtn").classList.toggle("on", on);
+  $("drawTools").hidden = !on;
+  $("stage").classList.toggle("drawing", on);
+}
+
+function setPen(name) {
+  pen = name;
+  document.querySelectorAll(".pen").forEach((b) => b.classList.toggle("on", b.dataset.pen === name));
+}
+
+function toPlate(e) {
+  const point = new DOMPoint(e.clientX, e.clientY).matrixTransform($("view").getScreenCTM().inverse());
+  return [Math.round(point.x * 1000) / 1000, Math.round(-point.y * 1000) / 1000];
+}
+
+function viewSpan() {
+  const box = $("view").viewBox.baseVal;
+  return Math.max(box.width, box.height);
+}
+
+$("view").addEventListener("pointerdown", (e) => {
+  if (!drawOn || !currentId()) return;
+  e.preventDefault();
+  $("view").setPointerCapture(e.pointerId);
+  stroke = { k: pen, p: toPlate(e) };
+});
+$("view").addEventListener("pointermove", (e) => {
+  if (!stroke) return;
+  const [x, y] = toPlate(e);
+  if (stroke.k === "rib") {
+    stroke.p = stroke.p.slice(0, 2).concat([x, y]);
+  } else {
+    const n = stroke.p.length;
+    if (Math.hypot(x - stroke.p[n - 2], y - stroke.p[n - 1]) > viewSpan() * 0.004) stroke.p.push(x, y);
+  }
+  renderInk();
+});
+function endStroke() {
+  if (!stroke) return;
+  const s = stroke;
+  stroke = null;
+  const n = s.p.length;
+  const long = n >= 4 && Math.hypot(s.p[n - 2] - s.p[0], s.p[n - 1] - s.p[1]) > viewSpan() * 0.01;
+  if (long || (s.k === "mark" && n >= 6)) {
+    const id = currentId();
+    state.drawings[id] = strokesOf(id).concat([s]);
+    save();
+  }
+  renderInk();
+}
+$("view").addEventListener("pointerup", endStroke);
+$("view").addEventListener("pointercancel", endStroke);
+
+function undoLine() {
+  const id = currentId();
+  if (!id || !strokesOf(id).length) return;
+  state.drawings[id] = strokesOf(id).slice(0, -1);
+  save();
+  renderInk();
+}
+
+function clearLines() {
+  const id = currentId();
+  if (!id || !strokesOf(id).length) return;
+  delete state.drawings[id];
+  save();
+  renderInk();
 }
 
 function flash(text) {
@@ -256,6 +434,8 @@ function rate(value) {
   if (firstDone()) state.milestoneSeen = true;
   const item = DATA.items[state.order[state.pos]];
   state.ratings[item.i] = { r: value, ms: Math.round(performance.now() - shownAt) };
+  if (sideOpen || state.showOrig) state.ratings[item.i].o = 1;
+  sideOpen = false;
   state.history.push(state.pos);
   state.pos++;
   flash(value);
@@ -268,6 +448,7 @@ function skip() {
   if (firstDone()) state.milestoneSeen = true;
   state.history.push(state.pos);
   state.pos++;
+  sideOpen = false;
   flash("–");
   save();
   show();
@@ -276,6 +457,8 @@ function skip() {
 function undo() {
   if (!state.history.length) return;
   state.pos = state.history.pop();
+  const undone = state.ratings[DATA.items[state.order[state.pos]].i];
+  sideOpen = !!(undone && undone.o);  // he has seen the original of this one already
   delete state.ratings[DATA.items[state.order[state.pos]].i];
   $("done").hidden = true;
   $("rate").hidden = false;
@@ -284,9 +467,12 @@ function undo() {
 }
 
 function exportRatings() {
-  const ratings = Object.entries(state.ratings).map(([id, v]) => ({ id, rating: v.r, ms: v.ms }));
+  const ratings = Object.entries(state.ratings).map(([id, v]) => Object.assign({ id, rating: v.r, ms: v.ms }, v.o ? { sawOriginal: true } : {}));
+  // strokes in plate inches (the designs' own frame): ribs are 2-point lines, marks freehand
+  const drawings = Object.entries(state.drawings || {}).filter(([, strokes]) => strokes.length).map(([id, strokes]) => ({
+    id, strokes: strokes.map((s) => ({ kind: s.k, points: s.p.reduce((out, v, k) => (k % 2 ? out[out.length - 1].push(v) : out.push([v]), out), []) })) }));
   const body = JSON.stringify({ rater: state.rater, version: DATA.version, exportedAt: new Date().toISOString(),
-                                count: ratings.length, ratings }, null, 1);
+                                count: ratings.length, ratings, drawings }, null, 1);
   const blob = new Blob([body], { type: "application/json" });
   const link = document.createElement("a");
   const stamp = new Date().toISOString().slice(0, 10);
@@ -326,6 +512,11 @@ $("go").addEventListener("click", () => {
   show();
 });
 $("undo").addEventListener("click", undo);
+$("origBtn").addEventListener("click", toggleOrig);
+$("drawBtn").addEventListener("click", () => setDraw(!drawOn));
+document.querySelectorAll(".pen").forEach((b) => b.addEventListener("click", () => setPen(b.dataset.pen)));
+$("undoLine").addEventListener("click", undoLine);
+$("clearLines").addEventListener("click", clearLines);
 $("skip").addEventListener("click", skip);
 $("export").addEventListener("click", exportRatings);
 $("export2").addEventListener("click", exportRatings);
@@ -336,6 +527,10 @@ document.addEventListener("keydown", (e) => {
   }
   if (e.key >= "1" && e.key <= "9") rate(+e.key);
   else if (e.key === "s" || e.key === "S" || e.key === "0") skip();
+  else if (e.key === "o" || e.key === "O") toggleOrig();
+  else if (e.key === "d" || e.key === "D") setDraw(!drawOn);
+  else if (drawOn && (e.key === "r" || e.key === "R")) setPen("rib");
+  else if (drawOn && (e.key === "m" || e.key === "M")) setPen("mark");
   else if (e.key === "Backspace" || e.key === "z" || e.key === "Z") { e.preventDefault(); undo(); }
 });
 </script>
