@@ -15,8 +15,9 @@ which the scorer reads like the user's own grades (see ratingSheets.loadSheetRat
 
 On request (O) the page shows the plate unpocketed next to the team's own pocketed design
 (data/processed/plates.jsonl); ratings given with that open carry "sawOriginal". He can
-also draw on a design (D): straight ribs he'd add and freehand marks, in plate inches,
-which ingest saves to data/curation/expertDrawings.jsonl.
+also edit a design by hand (D): add straight ribs, erase material (the generator's ribs
+included) with a round brush, or leave freehand marks, all in plate inches. Ingest saves
+the strokes to data/curation/expertDrawings.jsonl; editedPockets() rebuilds his version.
 """
 
 import argparse
@@ -230,6 +231,28 @@ def combine(parts, fresh=False, outName=None, first=None):
     print(f"{len(items)} designs, {out} {out.stat().st_size / 1e6:.1f} MB")
 
 
+def editedPockets(outline, holes, pockets, strokes):
+    """The design as he left it after drawing on it: strokes are applied in order, a "rib"
+    adds material (inside the plate, holes stay holes), a "cut" (the eraser) removes it,
+    and a "mark" is only a note. Returns the pockets as shapely polygons."""
+    from shapely.geometry import LineString, Point
+    from shapely.ops import unary_union
+
+    plate = Polygon(outline).buffer(0)
+    for loop in holes:
+        plate = plate.difference(Polygon(loop).buffer(0))
+    material = plate.difference(unary_union([Polygon(loop).buffer(0) for loop in pockets]))
+    for stroke in strokes:
+        if stroke["kind"] not in ("rib", "cut"):
+            continue
+        points = [tuple(point) for point in stroke["points"]]
+        line = LineString(points) if len(set(points)) > 1 else Point(points[0])
+        paint = line.buffer(stroke.get("width", 0.1875) / 2)
+        material = material.union(paint.intersection(plate)) if stroke["kind"] == "rib" else material.difference(paint)
+    removed = plate.difference(material)
+    return [part for part in getattr(removed, "geoms", [removed]) if part.area > 1e-4]
+
+
 def ingest(paths):
     known = set()
     for path in outDir.glob("items_part*.jsonl"):
@@ -257,8 +280,9 @@ def ingest(paths):
                                          "ingested": datetime.now(timezone.utc).isoformat(timespec="seconds")}) + "\n")
                 added += 1
     print(f"added {added} ratings to {ratingsPath}" + (f" ({skipped} already there)" if skipped else ""))
-    # Drawings: strokes in plate inches, in the design's own frame. "rib" is a straight line
-    # where he'd add a rib (3/16 in on the page), "mark" a freehand mark (circling a problem).
+    # Drawings: strokes in plate inches, in the design's own frame, in the order drawn. "rib" is
+    # a straight line where he'd add a rib, "cut" an eraser stroke (material he'd remove; both
+    # carry their width), "mark" a freehand mark (circling a problem). See editedPockets().
     have = {(r["id"], r["rater"], json.dumps(r["strokes"])) for r in map(json.loads, drawingsPath.read_text().splitlines())} \
         if drawingsPath.exists() else set()
     drawn = 0

@@ -86,7 +86,11 @@
   .none { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--muted); }
   .blind { fill: #c9d0d5; stroke: var(--edge); stroke-width: 1; stroke-dasharray: 3 2; vector-effect: non-scaling-stroke; }
   .stage.drawing svg { cursor: crosshair; touch-action: none; }
-  .stage.drawing.erasing svg { cursor: cell; }
+  .stage.drawing.erasing svg { cursor: none; }
+  .erased { stroke: #fff; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .brushRing { fill: none; stroke: var(--edge); stroke-width: 1; stroke-dasharray: 3 2; vector-effect: non-scaling-stroke; pointer-events: none; }
+  .brushSize { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--muted); }
+  .brushSize .plain { padding: 3px 8px; }
   .rib { stroke: #e07b00; stroke-opacity: 0.9; stroke-linecap: round; fill: none; }
   .mark { stroke: #d0212a; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; fill: none; vector-effect: non-scaling-stroke; }
   .flash.on { opacity: 1; transition: none; }
@@ -135,7 +139,7 @@
       <li>Go with your gut. A couple of seconds per plate is plenty.</li>
       <li>Keys: <b>1–9</b> to rate, <b>S</b> to skip, <b>Backspace</b> to undo.</li>
       <li><b>O</b> (or the button above the plate) shows the plate with no pockets next to the team's own pocketed version, where there is one.</li>
-      <li><b>D</b> lets you draw on the design when something is missing: drag to add a rib, use the marker to circle a problem, or the eraser to take a line back out. Drawings are saved with your ratings and come back in the export.</li>
+      <li><b>D</b> lets you fix the design by hand: <b>Add rib</b> (drag a straight line), <b>Eraser</b> (paint over material to cut it away, such as a rib the tool shouldn't have made; <b>[</b> and <b>]</b> change its size), or the <b>Marker</b> to circle a problem. Drawings are saved with your ratings and come back in the export.</li>
       <li>Your progress is saved in this browser. You can stop and export at any point, even after 50.</li>
       <li id="priority" hidden></li>
     </ul>
@@ -156,10 +160,11 @@
       <button class="plain" id="origBtn">Unpocketed + original<span class="kbd">O</span></button>
       <button class="plain" id="drawBtn">Draw<span class="kbd">D</span></button>
       <span class="drawTools" id="drawTools" hidden>
-        <button class="plain pen on" data-pen="rib" title="Drag a straight line where a rib should go">Rib<span class="kbd">R</span></button>
+        <button class="plain pen on" data-pen="rib" title="Drag a straight line where a rib should go">Add rib<span class="kbd">R</span></button>
+        <button class="plain pen" data-pen="cut" title="Paint over material to cut it away, e.g. a rib that shouldn't be there">Eraser<span class="kbd">E</span></button>
+        <span class="brushSize" id="brushSize" hidden><button class="plain" id="brushDown" title="Smaller eraser">−<span class="kbd">[</span></button><span id="brushLabel">0.25 in</span><button class="plain" id="brushUp" title="Bigger eraser">+<span class="kbd">]</span></button></span>
         <button class="plain pen" data-pen="mark" title="Draw freehand to circle or point at a problem">Marker<span class="kbd">M</span></button>
-        <button class="plain pen" data-pen="eraser" title="Click or drag over a line to erase it">Eraser<span class="kbd">E</span></button>
-        <button class="plain" id="undoLine">Undo line</button>
+        <button class="plain" id="undoLine">Undo stroke</button>
         <button class="plain" id="clearLines">Clear</button>
       </span>
     </div>
@@ -272,7 +277,7 @@ function show() {
     return;
   }
   const item = DATA.items[state.order[state.pos]];
-  drawPlate($("view"), item.o, item.f, item.p, [], '<g id="ink"></g>');
+  drawPlate($("view"), item.o, item.f, item.p, [], editLayers(item.o));
   renderInk();
   showSide(item);
   $("size").textContent = `${item.w} × ${item.h} in` + (item.t ? `, ${item.t} in thick` : "");
@@ -327,9 +332,14 @@ function toggleOrig() {
   if (state.pos < state.order.length) showSide(DATA.items[state.order[state.pos]]);
 }
 
-// --- drawing on the design: ribs (straight, 3/16 in wide) and a freehand marker
+// --- editing the design. Strokes are paint, applied in the order drawn:
+// "rib" adds material (a straight line, 3/16 in wide), "cut" removes it (the eraser: a
+// round brush, so dragging along a rib the tool made takes that rib out, and it also takes
+// back part of a rib he drew), "mark" is a freehand note on top. Rib and cut paint stays
+// inside the plate outline.
 const RIB_IN = 0.1875;
-let drawOn = false, pen = "rib", stroke = null;
+const BRUSH_SIZES = [0.125, 0.1875, 0.25, 0.375, 0.5, 0.75, 1.0];  // eraser widths, inches
+let drawOn = false, pen = "rib", stroke = null, brush = 2;
 
 function currentId() {
   return state.pos < state.order.length ? DATA.items[state.order[state.pos]].i : null;
@@ -343,14 +353,24 @@ function strokesOf(id) {
 function inkPath(s) {
   let d = "";
   for (let k = 0; k < s.p.length; k += 2) d += (k ? "L" : "M") + s.p[k] + " " + (-s.p[k + 1]);
-  return s.k === "rib" ? `<path class="rib" stroke-width="${RIB_IN}" d="${d}"/>` : `<path class="mark" d="${d}"/>`;
+  if (s.p.length === 2) d += "L" + s.p[0] + " " + (-s.p[1]);  // a dab: a dot with round caps
+  if (s.k === "mark") return `<path class="mark" d="${d}"/>`;
+  return `<path class="${s.k === "cut" ? "erased" : "rib"}" stroke-width="${s.w || RIB_IN}" d="${d}"/>`;
 }
 
 function renderInk() {
-  const ink = document.getElementById("ink");
+  const ink = document.getElementById("ink"), marks = document.getElementById("marks");
   if (!ink) return;
   const id = currentId();
-  ink.innerHTML = (id ? strokesOf(id) : []).concat(stroke ? [stroke] : []).map(inkPath).join("");
+  const strokes = (id ? strokesOf(id) : []).concat(stroke ? [stroke] : []);
+  ink.innerHTML = strokes.filter((s) => s.k !== "mark").map(inkPath).join("");
+  marks.innerHTML = strokes.filter((s) => s.k === "mark").map(inkPath).join("");
+}
+
+// The design's svg layers for editing: paint clipped to the outline, marks, the brush preview.
+function editLayers(outline) {
+  return `<defs><clipPath id="plateClip"><path d="${pathOf(outline)}"/></clipPath></defs>` +
+    `<g id="ink" clip-path="url(#plateClip)"></g><g id="marks"></g><circle id="brushRing" class="brushRing" r="0" cx="0" cy="0"/>`;
 }
 
 function setDraw(on) {
@@ -358,12 +378,20 @@ function setDraw(on) {
   $("drawBtn").classList.toggle("on", on);
   $("drawTools").hidden = !on;
   $("stage").classList.toggle("drawing", on);
+  hideBrush();
 }
 
 function setPen(name) {
   pen = name;
-  $("stage").classList.toggle("erasing", name === "eraser");
+  $("stage").classList.toggle("erasing", name === "cut");
+  $("brushSize").hidden = name !== "cut";
   document.querySelectorAll(".pen").forEach((b) => b.classList.toggle("on", b.dataset.pen === name));
+  hideBrush();
+}
+
+function setBrush(step) {
+  brush = Math.max(0, Math.min(BRUSH_SIZES.length - 1, brush + step));
+  $("brushLabel").textContent = BRUSH_SIZES[brush] + " in";
 }
 
 function toPlate(e) {
@@ -376,51 +404,31 @@ function viewSpan() {
   return Math.max(box.width, box.height);
 }
 
-// --- the eraser: removes every line it touches (click on one, or drag across several)
-let erasing = false;
-
-function distanceToStroke(s, x, y) {
-  if (s.p.length < 4) return Math.hypot(x - s.p[0], y - s.p[1]);
-  let best = Infinity;
-  for (let k = 0; k + 3 < s.p.length; k += 2) {
-    const ax = s.p[k], ay = s.p[k + 1], bx = s.p[k + 2], by = s.p[k + 3];
-    const dx = bx - ax, dy = by - ay, len2 = dx * dx + dy * dy;
-    const t = len2 ? Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / len2)) : 0;
-    best = Math.min(best, Math.hypot(x - ax - t * dx, y - ay - t * dy));
-  }
-  return best;
+function showBrush(e) {
+  const ring = document.getElementById("brushRing");
+  if (!ring) return;
+  if (!drawOn || pen !== "cut" || e.pointerType === "touch") { ring.setAttribute("r", 0); return; }
+  const [x, y] = toPlate(e);
+  ring.setAttribute("cx", x);
+  ring.setAttribute("cy", -y);
+  ring.setAttribute("r", BRUSH_SIZES[brush] / 2);
 }
 
-function eraseAt(e) {
-  const id = currentId();
-  const strokes = strokesOf(id);
-  if (!strokes.length) return;
-  const [x, y] = toPlate(e);
-  const reach = viewSpan() * 0.012;
-  const keep = strokes.filter((s) => distanceToStroke(s, x, y) > reach + (s.k === "rib" ? RIB_IN / 2 : 0));
-  if (keep.length === strokes.length) return;
-  if (keep.length) state.drawings[id] = keep;
-  else delete state.drawings[id];
-  save();
-  renderInk();
+function hideBrush() {
+  const ring = document.getElementById("brushRing");
+  if (ring) ring.setAttribute("r", 0);
 }
 
 $("view").addEventListener("pointerdown", (e) => {
   if (!drawOn || !currentId()) return;
   e.preventDefault();
   $("view").setPointerCapture(e.pointerId);
-  if (pen === "eraser") {
-    erasing = true;
-    eraseAt(e);
-    return;
-  }
   stroke = { k: pen, p: toPlate(e) };
+  if (pen === "cut") stroke.w = BRUSH_SIZES[brush];
+  renderInk();
 });
 $("view").addEventListener("pointermove", (e) => {
-  if (erasing) {
-    eraseAt(e);
-    return;
-  }
+  showBrush(e);
   if (!stroke) return;
   const [x, y] = toPlate(e);
   if (stroke.k === "rib") {
@@ -431,14 +439,15 @@ $("view").addEventListener("pointermove", (e) => {
   }
   renderInk();
 });
+$("view").addEventListener("pointerleave", hideBrush);
 function endStroke() {
-  erasing = false;
   if (!stroke) return;
   const s = stroke;
   stroke = null;
   const n = s.p.length;
   const long = n >= 4 && Math.hypot(s.p[n - 2] - s.p[0], s.p[n - 1] - s.p[1]) > viewSpan() * 0.01;
-  if (long || (s.k === "mark" && n >= 6)) {
+  // a rib needs a real drag; the eraser also takes a single dab; a mark needs a few points
+  if (long || s.k === "cut" || (s.k === "mark" && n >= 6)) {
     const id = currentId();
     state.drawings[id] = strokesOf(id).concat([s]);
     save();
@@ -452,6 +461,7 @@ function undoLine() {
   const id = currentId();
   if (!id || !strokesOf(id).length) return;
   state.drawings[id] = strokesOf(id).slice(0, -1);
+  if (!state.drawings[id].length) delete state.drawings[id];
   save();
   renderInk();
 }
@@ -512,7 +522,7 @@ function exportRatings() {
   const ratings = Object.entries(state.ratings).map(([id, v]) => Object.assign({ id, rating: v.r, ms: v.ms }, v.o ? { sawOriginal: true } : {}));
   // strokes in plate inches (the designs' own frame): ribs are 2-point lines, marks freehand
   const drawings = Object.entries(state.drawings || {}).filter(([, strokes]) => strokes.length).map(([id, strokes]) => ({
-    id, strokes: strokes.map((s) => ({ kind: s.k, points: s.p.reduce((out, v, k) => (k % 2 ? out[out.length - 1].push(v) : out.push([v]), out), []) })) }));
+    id, strokes: strokes.map((s) => ({ kind: s.k, ...(s.k === "mark" ? {} : { width: s.w || RIB_IN }), points: s.p.reduce((out, v, k) => (k % 2 ? out[out.length - 1].push(v) : out.push([v]), out), []) })) }));
   const body = JSON.stringify({ rater: state.rater, version: DATA.version, exportedAt: new Date().toISOString(),
                                 count: ratings.length, ratings, drawings }, null, 1);
   const blob = new Blob([body], { type: "application/json" });
@@ -559,6 +569,8 @@ $("drawBtn").addEventListener("click", () => setDraw(!drawOn));
 document.querySelectorAll(".pen").forEach((b) => b.addEventListener("click", () => setPen(b.dataset.pen)));
 $("undoLine").addEventListener("click", undoLine);
 $("clearLines").addEventListener("click", clearLines);
+$("brushDown").addEventListener("click", () => setBrush(-1));
+$("brushUp").addEventListener("click", () => setBrush(1));
 $("skip").addEventListener("click", skip);
 $("export").addEventListener("click", exportRatings);
 $("export2").addEventListener("click", exportRatings);
@@ -573,7 +585,9 @@ document.addEventListener("keydown", (e) => {
   else if (e.key === "d" || e.key === "D") setDraw(!drawOn);
   else if (drawOn && (e.key === "r" || e.key === "R")) setPen("rib");
   else if (drawOn && (e.key === "m" || e.key === "M")) setPen("mark");
-  else if (drawOn && (e.key === "e" || e.key === "E")) setPen("eraser");
+  else if (drawOn && (e.key === "e" || e.key === "E")) setPen("cut");
+  else if (drawOn && e.key === "[") setBrush(-1);
+  else if (drawOn && e.key === "]") setBrush(1);
   else if (e.key === "Backspace" || e.key === "z" || e.key === "Z") { e.preventDefault(); undo(); }
 });
 </script>
