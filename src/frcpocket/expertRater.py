@@ -6,6 +6,7 @@ pocketed plates, shuffled together and never labelled. Held-out plates are never
 
     python -I -m frcpocket.expertRater build --part 1   # -> data/curation/expert/
     python -I -m frcpocket.expertRater ingest <ratings.json> [...]
+    python -I -m frcpocket.expertRater edits   # round E1 from his hand edits
 
 Each part holds only designs that no earlier part showed, so a rater can do part 1 now
 and part 2 later; design ids are the same in every part.
@@ -253,6 +254,45 @@ def editedPockets(outline, holes, pockets, strokes):
     return [part for part in getattr(removed, "geoms", [removed]) if part.area > 1e-4]
 
 
+def buildEdits():
+    """Round E1: his hand-edited designs (rebuilt from his strokes, pocket corners filleted
+    like any pocket), each naming the design it was edited from, so the taste model can
+    learn that his version beats the original."""
+    rows = {}
+    for path in sorted(sheetRoot.glob("*/candidates.jsonl")):
+        if path.parent.name == "E1":
+            continue
+        for line in path.open():
+            entry = json.loads(line)
+            rows[f"sheet:{path.parent.name}:{entry['sheet']}:{entry['candidate']}"] = entry
+    out, perPlate, islands = [], {}, 0
+    for line in drawingsPath.read_text().splitlines() if drawingsPath.exists() else []:
+        drawing = json.loads(line)
+        original = rows.get(drawing["id"])
+        if original is None or not any(stroke["kind"] in ("rib", "cut") for stroke in drawing["strokes"]):
+            continue
+        radius = (original.get("params") or {}).get("cornerRadiusIn", 0.0625)
+        pockets = []
+        for pocket in editedPockets(original["outline"], original["holes"], original["pockets"], drawing["strokes"]):
+            rounded = pocket.buffer(-radius).buffer(radius) if radius > 0 else pocket
+            for part in getattr(rounded, "geoms", [rounded]):
+                if part.area > 1e-3:
+                    islands += len(part.interiors)
+                    pockets.append([[round(x, 4), round(y, 4)] for x, y in part.exterior.coords])
+        outline = Polygon(original["outline"])
+        material = outline.area - sum(Polygon(loop).area for loop in original["holes"])
+        perPlate[original["sheet"]] = perPlate.get(original["sheet"], 0) + 1
+        out.append(dict(original, candidate=perPlate[original["sheet"]], source="expert edit", editOf=drawing["id"],
+                        editedBy=drawing["rater"], pockets=pockets, ribs=None, ribWidths=None,
+                        removed=round(sum(Polygon(loop).area for loop in pockets) / material, 3)))
+    folder = sheetRoot / "E1"
+    folder.mkdir(parents=True, exist_ok=True)
+    with open(folder / "candidates.jsonl", "w") as handle:
+        for entry in out:
+            handle.write(json.dumps(entry) + "\n")
+    print(f"{len(out)} edited designs -> {folder / 'candidates.jsonl'}" + (f" ({islands} islands dropped)" if islands else ""))
+
+
 def ingest(paths):
     known = set()
     for path in outDir.glob("items_part*.jsonl"):
@@ -305,7 +345,7 @@ def ingest(paths):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("action", choices=["build", "rewrap", "combine", "ingest"])
+    parser.add_argument("action", choices=["build", "rewrap", "combine", "ingest", "edits"])
     parser.add_argument("files", nargs="*")
     parser.add_argument("--count", type=int, default=1000)
     parser.add_argument("--part", type=int, default=1)
@@ -323,6 +363,8 @@ def main():
     elif args.action == "combine":
         first = set(Path(args.first).read_text().split()) if args.first else None
         combine([int(k) for k in args.files], fresh=args.fresh, outName=args.out, first=first)
+    elif args.action == "edits":
+        buildEdits()
     else:
         ingest(args.files)
 

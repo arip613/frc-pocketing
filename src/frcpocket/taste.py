@@ -1,11 +1,12 @@
 """Taste model: what the expert rewards in a pocketed plate.
 
 A linear model on the scorer's design features (designFeatures.describe) plus the
-scorer's own looks score, fitted to the expert's preferences only (the user's call, 2026-11-01:
-his taste is what matters): his 1-9 ratings, his A-vs-B picks, and his 1-9 ratings of the
-live tool's own output (rounds L1f and L1x; L2f holds the v5 chooser's), which form their
-own group with its own share of the weight (--live-share). Ratings are compared within a plate (a 2+ gap) and, with --cross-plate,
-across plates too (same rater). --people user,expert brings the user's grades and picks back
+scorer's own looks score, fitted to the expert's preferences only (the user's call,
+2026-11-01: his taste is what matters): his 1-9 ratings, his A-vs-B picks, his hand edits
+(round E1: each beats the design he edited), and his 1-9 ratings of the live tool's own
+output (rounds L1f and L1x; L2f holds the v5 chooser's), which form their own group with
+its own share of the weight (--live-share). Ratings are compared within a plate (a 2+
+gap) and, with --cross-plate, across plates too (same rater). --people user,expert brings the user's grades and picks back
 (each person then carries equal weight). Claude's grades are never used.
 It ranks designs of one plate, so only feature differences within a plate matter.
 
@@ -111,6 +112,10 @@ def preferences(entries, who=None, across=None):
         if pick["winner"] in ("a", "b") and pick["a"] in entries and pick["b"] in entries:
             better, worse = (pick["a"], pick["b"]) if pick["winner"] == "a" else (pick["b"], pick["a"])
             out.append((better, worse, "expert picks"))
+    # His hand edits (round E1, expertRater edits): his version beats the design he edited.
+    for designId, entry in entries.items():
+        if designId.startswith("sheet:E1:") and entry.get("editOf") in entries:
+            out.append((designId, entry["editOf"], "expert edits"))
     out = [p for p in out if groupOf(p[2]).split()[0] in who]
     return [p for p in out if not isHoldout(entries[p[0]]["plateId"]) and not isHoldout(entries[p[1]]["plateId"])]
 

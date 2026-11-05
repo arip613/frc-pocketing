@@ -3,8 +3,8 @@
 Used by the UI and the evaluation. Candidates come from the trained ML generators (v2:
 the live generator and the marathon e1, u1 and m1 generators, each proposing) and the
 truss baseline, which is always included and labelled so the two can be compared. Each
-generator proposes in each rib style, and the taste model (taste.py, fitted to the user's
-and the expert's preferences) picks among them. Every candidate shown has passed the
+generator proposes in each rib style, and the taste model (taste.py, fitted to the expert's
+ratings, picks and hand edits only) picks among them. Every candidate shown has passed the
 validator. The v1 setup was models/generator.pt with models/aestheticScorer.pt.
 
 ML designs then go through the polish pass (polish.py: symmetry, hole-to-hole links,
@@ -25,12 +25,17 @@ from frcpocket.trainGenerator import Judge, coarseMeshFactor, isSound
 # took its design 2 times of 3.
 defaultGeneratorPath = (Path("models/generator.pt"), Path("models/marathon/e1/generator.pt"),
                         Path("models/marathon/u1/generator.pt"), Path("models/marathon/m1/generator.pt"), "truss")
-defaultScorerPath = Path("models/marathon/v2/taste.json")
+# v6 (2026-11-05): the expert's taste only (his ratings, pair picks and hand edits). In round
+# L2 the expert-only chooser (v5) against the v2 chooser, on his design-A ratings over the 98
+# plates where they differed: 5.82 vs 5.48 (+0.34, 95% -0.14 to +0.83); v6 adds his latest
+# 426 ratings and 27 edits and ties v5 held out. v2 was models/marathon/v2/taste.json.
+defaultScorerPath = Path("models/marathon/v6/taste.json")
 duplicateIoU = 0.97
-# The design shown first is the lightest sound one among the scorer's top few. In the user's
-# blind picks (rounds p1, p2, p5: 43 plates) that rule matched their favourite 31 times, the
-# scorer's own first choice 24 and the lightest design overall 29.
-lightestOfTop = 3
+# How many of the scorer's top sound designs compete on weight for first place; 1 = the
+# scorer's own first choice. The user's blind picks once favoured the lightest of the top 3,
+# but the expert's ratings don't: it added nothing on top of his taste model (+0.01), and in
+# round L2 the lighter of the two A designs was rated higher on 36 plates, lower on 39.
+lightestOfTop = 1
 # On a symmetric plate the user passes over a lighter design that isn't symmetric (round p6,
 # Main #5): of the scorer's top few, only designs about as symmetric as the best one compete.
 symmetricPlate = 0.9  # plate symmetry (designFeatures.plateSymmetry) from which this applies
@@ -127,8 +132,8 @@ class Pocketer:
         for result in baselineRanked:
             result["source"] = "truss baseline"
             chosen.append(result)
-        # Sound designs first: the ML designs in the order chosen above (lightest of the top few
-        # first), then the baseline; anything below the soundness floor last, flagged so the UI can warn.
+        # Sound designs first: the ML designs in the order chosen above (the scorer's order,
+        # after the symmetric-plate rule), then the baseline; anything below the soundness floor last, flagged so the UI can warn.
         for result in chosen:
             known = result["stiffnessKept"] is not None
             result["sound"] = (not known) or isSound(result["stiffnessKept"], result["stressIncrease"])

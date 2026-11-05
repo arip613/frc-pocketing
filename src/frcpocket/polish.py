@@ -9,7 +9,8 @@ stood out (user feedback, comparing real | generated plates):
             hole-to-hole rib (bearing to bearing, bearing to bolt)
   blobs     big solid regions with no pocket ruin the look; they are opened up and
             re-split into pockets of the plate's usual size
-  split     pockets much bigger than the design's typical pocket are split by ribs
+  split     pockets much bigger than the design's typical pocket, or long ones (the expert
+            adds a rib across those by hand), are split by ribs
   huggers   ribs running just beside a wall or big cutout are dropped, so the pocket next
             to them reaches the wall instead of stopping short of it
   merge     a pocket much smaller than the design's typical pocket loses the rib it shares
@@ -46,7 +47,12 @@ enabled = True  # the shared generation path (Pocketer, rating sheets) polishes 
 # Pocket size: "typical" is the design's own median pocket, held near the gold size.
 typicalClip = (0.7, 1.3)  # typical pocket area, in gold reference areas for this plate size
 splitCapFactor = 1.8  # pockets above this many typical pockets get split
-splitElongation = 3.0  # and long pockets above this elongation, if at least a typical pocket big
+splitElongation = 3.0  # pockets longer than this count as slots (the gold limit)
+# Long pockets at least a typical pocket big get split from this elongation. The expert's
+# hand edits (2026-11-05) point to 2.2: the pockets he split with a rib were long (median
+# 2.1) and big for their plate; 2.2 caught half of them, with about half its picks his.
+# Kept at 3.0 until a test round on his edited plates shows 2.2 doesn't break designs.
+splitTriggerElongation = 3.0
 slotElongation = 3.5  # or this long at any size
 minPieceFactor = 0.3  # no link leaves a piece below this many typical pockets
 splitPieceFactor = 0.45  # and no split or X a piece below this many
@@ -395,7 +401,7 @@ class Polisher:
         elongation = elongationOf(pocket)
         if pocket.area > self.typical or elongation > slotElongation:
             # long slots read badly at any size (the expert scored long pockets down)
-            need = max(need, elongation / splitElongation)
+            need = max(need, elongation / splitTriggerElongation)
         return need
 
     def slots(self, layout):
