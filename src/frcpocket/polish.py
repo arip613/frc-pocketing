@@ -18,6 +18,9 @@ stood out (user feedback, comparing real | generated plates):
             uneven little cells down; he rewards even pocket sizes)
             (a single rib, or an X of two crossing ribs in a large squarish or
             triangular pocket)
+  anchor    (off by default) ribs meeting in open plate move onto a nearby hole, or are taken
+            out and the pocket re-split with ribs that end at holes or the wall (the expert's
+            hand-drawn ribs end at holes; his lowest plates carry the most free junctions)
   holes     no hole hangs off a single rib (the user's rule): a hole off the outer wall
             held by one rib gets a second; holes whose bosses overlap count as one, a hole
             with no rib sits in solid plate, and holes on the wall need none

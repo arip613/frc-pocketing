@@ -416,6 +416,46 @@ The user: use his ratings any way we can (they took him two hours). So:
 - **Revert:** `pocketer.defaultScorerPath` back to `models/marathon/v2/taste.json`,
   `pocketer.lightestOfTop = 3`, `polish.splitTriggerElongation = 3.0`.
 
+## 16. What his low ratings share: ribs meeting in open plate (2026-11-05)
+
+Half of his 772 ratings are 1-3. What they share, from his data alone:
+
+- **Within a plate the features are weak.** Against his rating centred per plate, no design
+  feature passes |r| 0.17 (strongest: pocket size and width away from gold, the biggest solid
+  region, the looks score). The chooser already uses these.
+- **Most of the spread is between plates** (56% of the variance of his live ratings). Plates
+  with little hole area score lowest (Spearman +0.33 with the plate's hole share; median 4% on
+  plates rated 3 or less against 14% on plates rated 6 or more).
+- **Free junctions:** ribs that meet in open plate, away from any hole or the wall (counted
+  from the Voronoi diagram of the pocket, hole and wall boundaries: a web node whose
+  neighbours are all pockets). His mean rating by count: none 4.82, 1-2 3.71, 3-5 3.48,
+  6 or more 2.76 (r -0.25 over all his ratings). Within a plate it is flat (r +0.01): every
+  design the tool makes for an open plate has them, so the chooser can't avoid them.
+- **The teams' originals** of the plates he rated lowest have half the tool's free junctions
+  (1.2 against 2.4 per design); on his top plates the two match (0.7 against 0.6).
+- **His own hand-drawn ribs** end at a hole 68 times, at the wall 14, on another rib 5 and in
+  open plate once (88 ends, 27 edits).
+- Pocket size is not it: the tool's median pocket is as near the gold size on his low
+  plates as on his high ones, and as near as the teams' originals.
+- The new split trigger (section 15) adds a few: free junctions per design A went 1.62
+  (L2) to 1.84 (L3).
+
+Where they come from: the generator's candidate graph has a lattice of free junctions on
+plates whose holes are far apart (`layout.sparseJunctions`, so the decoder can cut cells of
+the gold size), the truss engine places free junctions by design, and polish splits may end
+a rib on another rib (a T).
+
+What was built (all off by default):
+
+- `polish.anchorJunctions`: a polish step that moves a free junction onto a hole within a
+  typical pocket width, or takes its ribs out and re-splits with ribs that end at holes or
+  the wall (kept only if valid, with fewer free junctions, no new oversized pocket and, for
+  the re-split, no longer or more bent pockets than before). On low-rated plates it changed
+  about 4 designs in 10 and removed 1-3 free junctions where it did: a partial fix. The
+  re-split without the pocket guard left long bent pockets that his taste model scored down.
+- `layout.latticeJunctions = False` and `polish.anchoredSplits = True`, with the truss engine
+  left out: a hole-anchored mode in which every rib runs between holes and wall points.
+
 ## Sources
 
 See `data/sources.jsonl` for the per-item log (URL, timestamp, license, sha256,
