@@ -9,7 +9,7 @@ across plates too (same rater). --people user,expert brings the user's grades an
 (each person then carries equal weight). Claude's grades are never used.
 It ranks designs of one plate, so only feature differences within a plate matter.
 
-    python -I -m frcpocket.taste train --out models/marathon/v5/taste.json
+    python -I -m frcpocket.taste train --out models/marathon/v6/taste.json
 
 Training reports, per source, how often the model agrees with preferences on plates it
 did not see (5 folds by plate), next to the looks score alone, material removed alone, the
@@ -273,12 +273,15 @@ def train(out, parallel=4, looksPath=looksScorerPath, share=None, who=None, acro
     onA = {"live order (as shown)": ratingOnA(live, lambda d: -int(d.split(":")[-1]) if d.split(":")[1] != "L2f" else -99),
            "lightest": ratingOnA(live, lambda d: rows[d][removedIndex]),
            "best possible": ratingOnA(live, lambda d: next(r for ds in live.values() for i, r in ds if i == d))}
-    livePath = Path("models/marathon/v2/taste.json")  # the chooser live now, when it builds on the same looks scorer
-    if livePath.exists() and json.loads(livePath.read_text())["looksScorer"] == str(looksPath):
-        liveModel = json.loads(livePath.read_text())
-        liveScore = lambda ids_: np.stack([rows[i] for i in ids_]) / np.array(liveModel["scale"]) @ np.array(liveModel["weights"])
-        baselines["live taste (v2)"] = liveScore([a for a, _, _ in prefs]) > liveScore([b for _, b, _ in prefs])
-        onA["live taste (v2)"] = ratingOnA(live, lambda d: float(liveScore([d])[0]))
+    # Earlier choosers on the same looks scorer: v2 (live now) and v5 (expert only, round L2).
+    for name, earlierPath in (("live taste (v2)", Path("models/marathon/v2/taste.json")),
+                              ("taste v5", Path("models/marathon/v5/taste.json"))):
+        if earlierPath == Path(out) or not earlierPath.exists() or json.loads(earlierPath.read_text())["looksScorer"] != str(looksPath):
+            continue
+        model = json.loads(earlierPath.read_text())
+        score = lambda ids_, model=model: np.stack([rows[i] for i in ids_]) / np.array(model["scale"]) @ np.array(model["weights"])
+        baselines[name] = score([a for a, _, _ in prefs]) > score([b for _, b, _ in prefs])
+        onA[name] = ratingOnA(live, lambda d, score=score: float(score([d])[0]))
     report, outOfFold = {}, {}
     # A pair is held out when both its plates are in the fold; it trains only when neither is.
     tested = np.zeros(len(prefs), dtype=bool)
@@ -346,7 +349,7 @@ class TasteScorer:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("action", choices=["train"])
-    parser.add_argument("--out", default="models/marathon/v5/taste.json")
+    parser.add_argument("--out", default="models/marathon/v6/taste.json")
     parser.add_argument("--parallel", type=int, default=4)
     parser.add_argument("--looks", default=looksScorerPath, help="looks scorer the model builds on")
     parser.add_argument("--live-share", type=float, default=liveShare, help="weight share of the expert's live ratings")

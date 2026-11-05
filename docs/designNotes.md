@@ -347,6 +347,48 @@ were never shown to him.
   filter left off (3); both are shown even below the filter, since each is what its
   chooser would show first.
 
+## 14. Round L2 result: v5 vs live on his design-A ratings (2026-11-05)
+
+He rated all 426 designs on the part 7+6 page in one sitting, from a different browser
+(rater expert:befrf1yi, so part 6 was rated again from scratch), and edited 27 designs by
+hand.
+
+- **Design A, live vs v5**, on the 98 plates where the two choosers show different A
+  designs (his latest session, every one rated): live 5.48, v5 5.82, **+0.34 (95% interval
+  -0.14 to +0.83)**; v5 better on 43, worse on 34, tied on 21 (sign test p = 0.36). Over all
+  184 rated plates: live 5.22, v5 5.40. Where v5 picked live's own B or C design: +0.51 (53
+  plates); where it picked a design live never showed: +0.13 (45).
+- **With the team's original open:** 205 of the 426 ratings were given with that panel
+  open (he left it open from rating 138 on). On the 80 deciding plates where neither A was
+  rated with it open, v5 and live tie (+0.11, 30 better, 31 worse). So v5 is at least as
+  good as live, not clearly better.
+- **His repeatability:** the 63 designs he rated twice (part 6, then again here) agree
+  only loosely: Pearson 0.38, mean gap 1.9 points, the same rating on 15. A real
+  difference of a third of a point needs about 100 plates to show.
+- **Weight:** between the two A designs, the lighter one was rated higher on 36 of 96
+  plates, lower on 39 (mean -0.26); where v5 chose the heavier design it did better (+0.44
+  on 63 plates). Over all his within-plate pairs the lighter design still wins 74% (441),
+  so weight matters between a good and a poor design, not between two good ones. Dropping
+  lightest-of-top-3 holds.
+- **v6** (`models/marathon/v6/taste.json`): retrained on all his data (714 preferences;
+  the live-design pairs grew from 63 ratings to 489). Cross-validation picked a much
+  stronger penalty (10 vs 1), as his ratings are noisy, so the weights are smaller; the
+  strongest terms are removedFraction +0.76, meanConvexity +0.46, logMeanPocketArea +0.40,
+  symmetryShortfall -0.39, elongatedFraction +0.37, pocketSizeVsGold -0.37, holesEngaged
+  +0.36. Simulated design A (held out by plate, choosing among his rated designs): v6
+  5.12, v5 5.09, v2 4.99, the live tool's own order 5.21, the best possible 6.31. With
+  the symmetry rule, v6 is +0.15 over live (-0.17 to +0.46) on 168 plates. Not tested in a
+  live round.
+- **His edits** (27 designs, mostly ones he rated 5-8): ribs added on 24 (44 ribs),
+  material erased on 9, pocket count up on 22, removed share 46% -> 45%. The pockets he
+  split with a rib are long (perimeter²/4πA 1.79 vs 1.40 for the ones he left alone)
+  and large for their plate (1.42x the plate's median pocket area vs 1.00x; 24% of them
+  over 2x vs 3% of the rest), not wide (inscribed width 0.71 vs 0.80 in). So designs
+  he likes often lose points to one or two long, oversized pockets.
+- **Where the room is:** every chooser lands within noise of the others (4.5-5.4) and the
+  best design on each plate averages 6.2-6.3, part of which is noise in his ratings. The
+  rest has to come from the designs: splitting long oversized pockets the way he does.
+
 ## Sources
 
 See `data/sources.jsonl` for the per-item log (URL, timestamp, license, sha256,
