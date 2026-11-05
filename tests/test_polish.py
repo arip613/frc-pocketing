@@ -1,11 +1,11 @@
 """Polish pass guarantees on synthetic plates: valid output, symmetry, blobs opened up,
-facing bosses linked."""
+facing bosses linked, free rib junctions moved onto a hole."""
 
 from shapely.geometry import Point, box
 
 from frcpocket import geom2d, polish, validator
 from frcpocket.generator import fillJunkPockets
-from frcpocket.layout import candidateGraph, defaultGraph, makeLayout
+from frcpocket.layout import Node, candidateGraph, defaultGraph, makeLayout
 from frcpocket.plate import Plate, PocketParams, featureCenter
 
 params = PocketParams()
@@ -95,3 +95,30 @@ def test_validator_holds_and_failed_steps_revert():
     refused = polish.polishLayout(plate, params, layout, structuralCheck=lambda pockets: False)
     assert not refused.changed and refused.layout is layout
     assert all("reverted" in line for line in refused.log)
+
+
+def test_free_junction_moves_onto_a_hole(monkeypatch):
+    monkeypatch.setattr(polish, "anchorJunctions", True)
+    holes = [Point(x, y).buffer(0.1005, quad_segs=16) for x in (0.5, 7.5) for y in (0.5, 3.5)]
+    holes.append(Point(4.0, 1.6).buffer(0.25, quad_segs=32))
+    plate = Plate(outline=box(0, 0, 8, 4), features=holes, thicknessIn=0.25)
+    graph = defaultGraph(plate, params)
+    featureNode = {node.featureIndex: k for k, node in enumerate(graph.nodes) if node.kind == "feature"}
+    # Five ribs meet in open plate 0.65 in above the middle hole's boss.
+    graph.nodes.append(Node(4.0, 2.5, kind="interior"))
+    junction = len(graph.nodes) - 1
+    ribs = []
+    for feature in range(5):
+        edge = tuple(sorted((featureNode[feature], junction)))
+        graph.edges.append(edge)
+        graph.isDelaunay.append(False)
+        ribs.append(edge)
+    layout = fillJunkPockets(plate, params, makeLayout(plate, params, graph, ribs))
+    assert isValid(plate, layout)
+    checker = polish.Polisher(plate, params, layout)
+    assert checker.freeJunctions(polish.Design(layout.graph, layout.ribs, layout.ribWidths)) == [junction]
+    others = ("symmetry", "links", "blobs", "huggers", "merge", "split", "holes")
+    result = polish.polishLayout(plate, params, layout, skip=others)
+    assert result.changed and isValid(plate, result.layout), result.log
+    after = polish.Polisher(plate, params, result.layout)
+    assert not after.freeJunctions(polish.Design(result.layout.graph, result.layout.ribs, result.layout.ribWidths)), result.log
