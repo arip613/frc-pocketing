@@ -406,6 +406,13 @@ The user: use his ratings any way we can (they took him two hours). So:
   edited plates (v5 chooser, against round L2) design A changed on 6, with fewer long
   pockets (-0.58 per plate), 0.6% less material removed and every design still sound.
   Thin truss wedges smaller than a typical pocket are left alone, as before.
+- **Round L3 (the switched setup, partial):** `data/curation/sheets/L3` holds the live
+  setup's designs for 161 of the 190 round-L2 plates (the run hit the 2-hour limit;
+  `versionRound.py` resumes from there). Every design A is sound. Against L2's A: changed
+  on 78 plates, +0.9 pockets and -0.29 long pockets per plate, removed share level.
+  On the 94 plates where L3's A matches a design he has rated: L1 5.20, L2 5.43,
+  L3 5.34 (L3 - L1 +0.13, 95% -0.17 to +0.43). The other 67 A designs are new (mostly
+  the extra splits) and unrated, so the split change itself has no rating yet.
 - **Revert:** `pocketer.defaultScorerPath` back to `models/marathon/v2/taste.json`,
   `pocketer.lightestOfTop = 3`, `polish.splitTriggerElongation = 3.0`.
 
