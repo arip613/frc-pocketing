@@ -48,11 +48,12 @@ enabled = True  # the shared generation path (Pocketer, rating sheets) polishes 
 typicalClip = (0.7, 1.3)  # typical pocket area, in gold reference areas for this plate size
 splitCapFactor = 1.8  # pockets above this many typical pockets get split
 splitElongation = 3.0  # pockets longer than this count as slots (the gold limit)
-# Long pockets at least a typical pocket big get split from this elongation. The expert's
-# hand edits (2026-11-05) point to 2.2: the pockets he split with a rib were long (median
-# 2.1) and big for their plate; 2.2 caught half of them, with about half its picks his.
-# Kept at 3.0 until a test round on his edited plates shows 2.2 doesn't break designs.
-splitTriggerElongation = 3.0
+# Long pockets at least a typical pocket big get split from this elongation (was 3.0). From
+# the expert's hand edits (2026-11-05): the pockets he split with a rib were long (median
+# 2.1) and big for their plate; 2.2 caught half of them, with about half its picks his. On
+# 12 of his edited plates it changed design A on 6 (long pockets -0.58 per plate, removed
+# -0.6%), every design still sound.
+splitTriggerElongation = 2.2
 slotElongation = 3.5  # or this long at any size
 minPieceFactor = 0.3  # no link leaves a piece below this many typical pockets
 splitPieceFactor = 0.45  # and no split or X a piece below this many

@@ -389,6 +389,26 @@ hand.
   best design on each plate averages 6.2-6.3, part of which is noise in his ratings. The
   rest has to come from the designs: splitting long oversized pockets the way he does.
 
+## 15. Live switched to his taste (2026-11-05)
+
+The user: use his ratings any way we can (they took him two hours). So:
+
+- **Chooser:** live now uses **v6** (`models/marathon/v6/taste.json`), trained only on his
+  ratings, pair picks and hand edits; **lightest-of-top-3 is off** (`lightestOfTop = 1`);
+  the symmetric-plate rule stays. The round L2 test above backs the expert-only chooser
+  (v5 +0.34 over v2 on design A); v6 adds his latest ratings and edits and ties v5 held out.
+- **His edits as data:** round E1 (`expertRater edits`) holds his 27 edited designs rebuilt
+  from his strokes; the taste model counts each as beating the design he edited. Held out,
+  v6 sides with his edit 78% of the time (removed share alone: 15%, since he mostly adds
+  ribs).
+- **Splitting long pockets:** polish now splits long pockets from elongation 2.2 (was 3.0;
+  `polish.splitTriggerElongation`), fitted to the pockets he split by hand. On 12 of his
+  edited plates (v5 chooser, against round L2) design A changed on 6, with fewer long
+  pockets (-0.58 per plate), 0.6% less material removed and every design still sound.
+  Thin truss wedges smaller than a typical pocket are left alone, as before.
+- **Revert:** `pocketer.defaultScorerPath` back to `models/marathon/v2/taste.json`,
+  `pocketer.lightestOfTop = 3`, `polish.splitTriggerElongation = 3.0`.
+
 ## Sources
 
 See `data/sources.jsonl` for the per-item log (URL, timestamp, license, sha256,
