@@ -390,6 +390,9 @@ spokeStepDegrees = 30  # spoke candidates around big bores, every this many degr
 rhythmFactor = 1.5  # wall points between holes are about this many target pocket widths apart
 bigBoreDiameterIn = 0.5
 junctionClearance = 0.8  # a free junction stays this many lattice steps from any hole or wall point
+# Off: no free-junction lattice, so ribs run only between holes and wall points (the
+# hole-anchored mode; see docs/designNotes.md section 16).
+latticeJunctions = True
 spineJunctions = False  # add rib junctions halfway between neighbouring holes (where truss ribs meet)
 spineMinGap = 4.0  # ... only across a gap between the holes' bosses at least this many rib widths
 
@@ -499,7 +502,7 @@ def holeGraph(plate, params):
     firstAnchor = len(nodes)
     nodes += [Node(point.x, point.y, kind="anchor") for point, _ in anchors]
     junctionStep = step * math.sqrt(params.pocketSizeFactor)
-    junctions = sparseJunctions(plate, params, nodes, junctionStep)
+    junctions = sparseJunctions(plate, params, nodes, junctionStep) if latticeJunctions else []
     nodes += [Node(point.x, point.y, kind="interior") for point in junctions]
     if spineJunctions:
         nodes += [Node(point.x, point.y, kind="interior", featureKind="spine")

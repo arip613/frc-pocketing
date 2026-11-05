@@ -81,6 +81,7 @@ anchorJunctions = False  # off until checked on real plates (see docs/designNote
 anchorReachFactor = 1.0  # a free junction moves onto a hole boss within this many typical pocket widths
 anchorTries = 2  # holes tried per junction, nearest first
 anchorBudget = 10  # full builds per design at most (each rebuilds and validates the design)
+anchoredSplits = False  # on: every split rib runs from a hole or the wall to a hole or the wall (hole-anchored mode)
 
 
 @dataclass
@@ -671,7 +672,8 @@ class Polisher:
                 break
             pocket = max(candidates, key=self.overCap)
             accepted = False
-            for cost, segments, label, _ in self.splitOptions(design, pocket, allowCross, anchoredOnly)[:4]:
+            for cost, segments, label, _ in self.splitOptions(design, pocket, allowCross and not anchoredSplits,
+                                                              anchoredOnly or anchoredSplits)[:4]:
                 images = [image for segment in segments for image in self.orbit(segment)]
                 trial = self.addSegments(design.copy(), images, self.params.ribIn)
                 built, _ = self.build(trial)
