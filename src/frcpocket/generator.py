@@ -15,8 +15,10 @@ probability and a width class. Decoding turns those into a clean, valid layout:
 The 2D layout is then validated and cut with exact geometry like any other design.
 """
 
+import json
 import math
 from dataclasses import dataclass
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -52,6 +54,9 @@ sliverFraction = 1.0  # slivers up to this many typical gold pockets in area get
 stripElongation = 3.0
 stripWidthFraction = 0.65
 stripBoundShare = 0.6  # share of the outline that runs along the wall or a boss, not a rib
+# Strips and slivers at least this wide are cut anyway: the user wants the material along
+# walls and cutouts pocketed whenever a cutter fits cleanly (3/8 in = 3x a 1/8 in end mill).
+keepWidthIn = 0.375
 
 
 @dataclass
@@ -217,7 +222,7 @@ def connectFloatingFeatures(plate, params, graph, chosen, probabilities, edgeMir
     """
     import heapq
 
-    bosses = [feature.buffer(params.boss, quad_segs=8) for feature in plate.features]
+    bosses = [feature.buffer(params.ringFor(feature), quad_segs=8) for feature in plate.features]
     inner = plate.outline.buffer(-params.wallIn, quad_segs=8)
     wallTouching = {index for index, boss in enumerate(bosses) if not inner.contains(boss)}
     featureNodes = {node.featureIndex: index for index, node in enumerate(graph.nodes) if node.kind == "feature"}
@@ -406,7 +411,7 @@ def fillJunkPockets(plate, params, layout):
 
     referenceArea = designFeatures.referencePocketArea(scale) * params.pocketSizeFactor
     kept = [pocket for pocket, radius in zip(layout.pockets, radii)
-            if pocket.area >= crumb and not isSliver(pocket) and not isStrip(pocket, radius)]
+            if pocket.area >= crumb and (2 * radius >= keepWidthIn or not (isSliver(pocket) or isStrip(pocket, radius)))]
     if len(kept) == len(layout.pockets):
         return layout
     return Layout(graph=layout.graph, ribs=layout.ribs, pockets=kept, name=layout.name, ribWidths=layout.ribWidths)
@@ -415,12 +420,12 @@ def fillJunkPockets(plate, params, layout):
 def boundShare(plate, params, pocket, samples=48):
     """Share of a pocket's outline that runs along the wall or a feature's boss (not a rib)."""
     ring = pocket.exterior
-    wallReach, bossReach = 1.25 * params.wallIn, 1.25 * params.boss
+    wallReach = 1.25 * params.wallIn
     near = 0
     for k in range(samples):
         point = ring.interpolate(k / samples, normalized=True)
         if plate.outline.exterior.distance(point) <= wallReach or any(
-                feature.distance(point) <= bossReach for feature in plate.features):
+                feature.distance(point) <= 1.25 * params.ringFor(feature) for feature in plate.features):
             near += 1
     return near / samples
 
@@ -630,14 +635,23 @@ def splitOversizedPockets(plate, params, graph, layout, probabilities, segments,
 class RibGenerator:
     """Loads trained weights and proposes layouts for a plate."""
 
-    def __init__(self, path=None, model=None):
+    def __init__(self, path=None, model=None, graph=None):
+        """graph: candidate-graph settings (layout.graphSettingNames) the model was trained
+        with; by default read from <path minus .pt>.graph.json beside the weights, if any."""
         self.model = model or RibGnn()
+        self.graph = dict(graph or {})
         if path is not None:
             self.model.load_state_dict(torch.load(path, weights_only=True))
+            sidecar = Path(path).with_suffix(".graph.json")
+            if graph is None and sidecar.exists():
+                self.graph = json.loads(sidecar.read_text())
         self.model.eval()
 
     def prepare(self, plate, params):
-        graph = defaultGraph(plate, params)
+        from frcpocket.layout import graphSettings
+
+        with graphSettings(self.graph):
+            graph = defaultGraph(plate, params)
         tensors = encodeGraph(plate, params, graph)
         return graph, tensors, mirrorMap(plate, graph)
 

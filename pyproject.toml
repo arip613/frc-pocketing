@@ -7,7 +7,7 @@ dependencies = [
     "cadquery>=2.5",
     "torch>=2.2",
     "scikit-fem>=10",
-    "shapely>=2.0",
+    "shapely>=2.1",
     "numpy",
     "scipy",
     "matplotlib",

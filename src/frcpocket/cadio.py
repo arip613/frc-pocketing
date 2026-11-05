@@ -19,7 +19,8 @@ minThicknessMm = 0.9
 maxThicknessMm = 20.0
 minAspect = 6.0  # smallest in-plane extent / thickness
 maxHeightRatio = 3.0  # bosses/standoffs may rise above the base plate, up to 3x its thickness
-prismVolumeTolerance = 0.2  # a pure prism's volume matches midArea * thickness within 20%
+prismVolumeRange = (0.6, 1.6)  # a flat plate's volume over midArea * thickness (blind or floored pockets and counterbores move it)
+maxFlangeVolumeRatio = 1.6  # bent sheet metal: volume over its base face area * thickness (hubs and blocks run higher)
 arcSegmentLengthMm = 0.5
 
 
@@ -96,6 +97,12 @@ def wireLoop(wire):
         else:
             if kind == "CIRCLE":
                 arcRadii.append(edge.radius())
+            else:
+                # B-spline fillets and the like: radius of the circle through start, middle and end.
+                a, b, c = (edge.positionAt(t) for t in (0.0, 0.5, 1.0))
+                cross = (b - a).cross(c - a).Length
+                if cross > 1e-9:
+                    arcRadii.append((b - a).Length * (c - b).Length * (a - c).Length / (2 * cross))
             count = max(4, int(math.ceil(edge.Length() / arcSegmentLengthMm)) + 1)
         edgePoints = [edge.positionAt(t) for t in np.linspace(0.0, 1.0, count)]
         if occEdge.Orientation() == TopAbs_REVERSED:
@@ -156,7 +163,7 @@ def extractPlate(solid):
     local = toPlateCoords(solid, plane)
     bb = local.BoundingBox()
     if bb.zlen > thickness * maxHeightRatio + 0.05:
-        return None  # a tube wall or bent flange, not a plate
+        return sheetMetalPlate(local, thickness)  # a bent flange (or a tube wall or hub, which this rejects)
     if min(bb.xlen, bb.ylen) < minAspect * thickness:
         return None
     midFace = midSectionFace(local, thickness)
@@ -164,7 +171,7 @@ def extractPlate(solid):
         return None
     prismVolume = midFace.Area() * thickness
     isPrism = bb.zlen <= thickness * 1.05 + 0.05
-    if isPrism and abs(local.Volume() - prismVolume) > prismVolumeTolerance * local.Volume():
+    if isPrism and not (prismVolumeRange[0] * prismVolume <= local.Volume() <= prismVolumeRange[1] * prismVolume):
         return None
     if not isPrism and not (0.8 * prismVolume <= local.Volume() <= 2.0 * prismVolume):
         return None
@@ -179,4 +186,28 @@ def extractPlate(solid):
         "bottomLoops": bottomLoops,
         "volumeMm3": local.Volume(),
         "hasRaisedFeatures": not isPrism,
+    }
+
+
+def sheetMetalPlate(local, thickness):
+    """The flat base of a bent sheet-metal part: its largest face on the plate's top surface,
+    when the flanges are small (volume close to that face times the thickness)."""
+    topFaces = zFaces(local, thickness)
+    if not topFaces:
+        return None
+    base = max(topFaces, key=lambda face: face.Area())
+    if local.Volume() > maxFlangeVolumeRatio * base.Area() * thickness:
+        return None
+    bb = base.BoundingBox()
+    if min(bb.xlen, bb.ylen) < minAspect * thickness:
+        return None
+    outer, through = faceLoops(base)
+    return {
+        "thicknessMm": thickness,
+        "outer": outer,
+        "through": through,
+        "topLoops": [],
+        "bottomLoops": [],
+        "volumeMm3": local.Volume(),
+        "hasRaisedFeatures": True,
     }

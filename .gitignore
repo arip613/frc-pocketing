@@ -5,6 +5,8 @@ logs/
 # Scraped CAD and forum data: mostly unlicensed third-party content, keep it local.
 data/raw/
 data/processed/cache/
+data/processed_new/
+data/processed_wcp/
 
 # Superseded model checkpoints and per-round weights
 models/archive_*/
@@ -13,3 +15,7 @@ models/generator_round*.pt
 models_run*_backup/
 .pytest_cache/
 .DS_Store
+
+# Agent worktrees
+.claude/worktrees/
+models/marathon/*/generator_round*.pt

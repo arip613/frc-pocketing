@@ -3,7 +3,8 @@
 It checks only the final geometry (plate + pockets), never how a layout was produced,
 so ML output gets no special treatment.
 
-  1. wall     every pocket stays >= wall thickness from the plate perimeter
+  1. wall     every pocket stays >= wall thickness from the plate perimeter, and from
+              the edge of every big non-round cutout (window, slot, notch)
   2. bosses   every feature keeps a ring >= the boss setting wide (the wall thickness
               unless set separately), and the material
               is one connected piece, so no boss floats and no feature sits in a pocket
@@ -23,6 +24,7 @@ from shapely.ops import unary_union
 from shapely.strtree import STRtree
 
 from frcpocket.layout import arcSegments, isWorthCutting, polygons
+from frcpocket.plate import isOpening
 
 lengthTolIn = 1e-3  # 0.001 in: well under machining tolerance, above float/arc noise
 areaTolIn2 = 2e-4
@@ -110,13 +112,22 @@ def validateLayout(plate, params, pockets, checkCorners=True):
     report.add("1 wall", not outside and minWall >= params.wallIn - lengthTolIn, minWall, params.wallIn,
                f"{len(outside)} pocket(s) leave the plate" if outside else "")
 
-    # Rule 2: bosses around every feature, connected material.
-    minBoss = float("inf")
+    # Big cutouts are walls too (rule 1); every other feature keeps its boss ring (rule 2).
+    minBoss = minCutoutWall = float("inf")
     if features and pockets:
         featureTree = STRtree(features)
+        reach = 2 * max(params.boss, params.wallIn)
         for pocket in pockets:
-            for index in featureTree.query(pocket.buffer(params.boss * 2)):
-                minBoss = min(minBoss, pocket.distance(features[index]))
+            for index in featureTree.query(pocket.buffer(reach)):
+                distance = pocket.distance(features[index])
+                if isOpening(features[index]):
+                    minCutoutWall = min(minCutoutWall, distance)
+                else:
+                    minBoss = min(minBoss, distance)
+    cutoutWall = max(params.boss, params.wallIn)
+    report.add("1 wall at cutouts", minCutoutWall >= cutoutWall - lengthTolIn, minCutoutWall, cutoutWall)
+
+    # Rule 2: bosses around every feature, connected material.
     material = plate.material.difference(unary_union(pockets)) if pockets else plate.material
     pieces = polygons(material)
     floating = len([piece for piece in pieces if piece.area > areaTolIn2])
@@ -174,7 +185,7 @@ def validateSolid(plate, params, resultSolid, expectedRemovedMm3, relTol=1e-3):
     # Around every feature and along the wall the solid must be untouched.
     scale = 25.4
     keepZone = unary_union(
-        [feature.buffer(params.boss / 2, quad_segs=arcSegments) for feature in plate.features]
+        [feature.buffer(params.ringFor(feature) / 2, quad_segs=arcSegments) for feature in plate.features]
         + [plate.outline.difference(plate.outline.buffer(-params.wallIn / 2, quad_segs=arcSegments))]
     )
     thicknessMm = plate.cad.thicknessMm

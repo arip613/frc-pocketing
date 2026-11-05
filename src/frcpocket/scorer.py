@@ -138,12 +138,12 @@ def uiRatingSets(seed, ratingsPath=Path("data/curation/ratings.jsonl"), perKind=
     return sets
 
 
-def sheetSetItems(seed, records, perKind=1, weight=2.0):
+def sheetSetItems(seed, records, perKind=1, weight=2.0, claudeGrades=True):
     """Job arguments for every graded plate on the rating sheets (ratingSheets.py)."""
     from frcpocket import ratingSheets
 
     items = []
-    for key, (plate, rated) in sorted(ratingSheets.loadSheetRatings().items()):
+    for key, (plate, rated) in sorted(ratingSheets.loadSheetRatings(claudeGrades=claudeGrades).items()):
         plateId = rated[0][4]["plateId"]
         real = records[plateId]["pockets"] if plateId in records else []
         graded = [(params, pockets, grade) for params, pockets, _, grade, _ in rated]
@@ -173,10 +173,10 @@ def sheetSetJob(key, plateId, plate, graded, real, seed, perKind, weight):
     )
 
 
-def isHeldOutSheet(key):
+def isHeldOutSheet(key, fold=0):
     """One graded plate in five is held out, by plate key, to measure how well the scorer
-    learned the grader's eye."""
-    return int(key, 16) % 5 == 0
+    learned the grader's eye. fold (0-4) picks which fifth, for cross-validation."""
+    return int(key, 16) % 5 == fold
 
 
 def priorSetItems(seed, platesPath, count=30, weight=0.3):
@@ -349,7 +349,7 @@ class AestheticScorer:
         return torch.sigmoid((self.logits(plate, params, designs, plateSym) - mean) / std).numpy()
 
 
-def train(outPath, platesPath, seed=0, perKind=4, cnnEpochs=25, parallel=1):
+def train(outPath, platesPath, seed=0, perKind=4, cnnEpochs=25, parallel=1, claudeGrades=True, sheetFold=0):
     rng = np.random.default_rng(seed)
     torch.manual_seed(seed)
     records = {record["id"]: record for record in loadRecords(platesPath)}
@@ -360,13 +360,13 @@ def train(outPath, platesPath, seed=0, perKind=4, cnnEpochs=25, parallel=1):
          for plateId in gold if not isHoldout(plateId)]))
     print(f"gold style reference: {designFeatures.styleReference}", flush=True)
     built = runPlateJobs({
-        "sheets": (sheetSetJob, sheetSetItems(seed, records)),
+        "sheets": (sheetSetJob, sheetSetItems(seed, records, claudeGrades=claudeGrades)),
         "goldTrain": (goldSetJob, [(records[plateId], seed, perKind) for plateId in gold if not isHoldout(plateId)]),
         "goldTest": (goldSetJob, [(records[plateId], seed, perKind) for plateId in gold if isHoldout(plateId)]),
         "prior": (priorSetJob, priorSetItems(seed, platesPath)),
     }, parallel)
-    sheetTrain = [plateSet for key, plateSet in built["sheets"] if not isHeldOutSheet(key)]
-    sheetHeld = [plateSet for key, plateSet in built["sheets"] if isHeldOutSheet(key)]
+    sheetTrain = [plateSet for key, plateSet in built["sheets"] if not isHeldOutSheet(key, sheetFold)]
+    sheetHeld = [plateSet for key, plateSet in built["sheets"] if isHeldOutSheet(key, sheetFold)]
     trainSets = built["goldTrain"] + uiRatingSets(seed) + sheetTrain + [s for s in built["prior"] if s is not None]
     testSets = built["goldTest"]
     goldTestCount = len(testSets)

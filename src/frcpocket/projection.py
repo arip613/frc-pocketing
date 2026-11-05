@@ -17,6 +17,7 @@ ribWidthClasses = (1.0, 1.6, 2.4)  # multiples of the minimum rib width
 coverageThreshold = 0.85
 minExplained = 0.5  # a picked rib's free band must be at least this much real rib material
 maxSpill = 0.2  # and may run over at most this much of the real pockets
+alignTolerance = 0.5  # real ribs this far (in rib widths) off a candidate's centre line still count as on it (46 gold plates: median match 0.687 -> 0.697, 19 better, 4 worse)
 
 
 @dataclass
@@ -29,7 +30,7 @@ class Projection:
 
 def alwaysKept(plate, params):
     inner = plate.outline.buffer(-params.wallIn, quad_segs=arcSegments)
-    bosses = [feature.buffer(params.boss, quad_segs=arcSegments) for feature in plate.features]
+    bosses = [feature.buffer(params.ringFor(feature), quad_segs=arcSegments) for feature in plate.features]
     return unary_union([plate.outline.difference(inner), *bosses])
 
 
@@ -51,11 +52,18 @@ def projectRealDesign(plate, params, realPockets, graph=None, maxRibs=400):
     realMaterial = plate.material.difference(realUnion) if realUnion is not None else plate.material
     ribMaterial = realMaterial.difference(kept)
     uncovered = ribMaterial
-    bands = {}
+    bands, reach, core = {}, {}, {}
+    tolerance = alignTolerance * params.ribIn
     for edge in graph.edges:
         segment = graph.segment(edge)
         for classIndex, factor in enumerate(ribWidthClasses):
-            bands[edge, classIndex] = segment.buffer(params.ribIn * factor / 2, cap_style="flat")
+            half = params.ribIn * factor / 2
+            bands[edge, classIndex] = segment.buffer(half, cap_style="flat")
+            # A real rib drawn a little off the candidate's line is still that rib: real
+            # material within the tolerance explains the band, and only the band's core
+            # counts as running over a real pocket.
+            reach[edge, classIndex] = segment.buffer(half + tolerance, cap_style="flat") if tolerance else bands[edge, classIndex]
+            core[edge, classIndex] = segment.buffer(max(half - tolerance, 0.5 * half), cap_style="flat") if tolerance else bands[edge, classIndex]
     chosen, widthClassOf = [], {}
     for _ in range(maxRibs):
         best, bestGain = None, 0.0
@@ -65,8 +73,8 @@ def projectRealDesign(plate, params, realPockets, graph=None, maxRibs=400):
             free = band.difference(kept)
             if free.area < 1e-6:
                 continue
-            explains = free.intersection(uncovered).area
-            spills = free.intersection(realUnion).area if realUnion is not None else 0.0
+            explains = min(reach[edge, classIndex].difference(kept).intersection(uncovered).area, free.area)
+            spills = core[edge, classIndex].difference(kept).intersection(realUnion).area if realUnion is not None else 0.0
             if explains < minExplained * free.area or spills > maxSpill * free.area:
                 continue
             gain = explains - 3 * spills
@@ -81,7 +89,7 @@ def projectRealDesign(plate, params, realPockets, graph=None, maxRibs=400):
             continue
         chosen.append(edge)
         widthClassOf[edge] = classIndex
-        uncovered = uncovered.difference(bands[best].buffer(params.ribIn * 0.25))
+        uncovered = uncovered.difference(reach[best].buffer(params.ribIn * 0.25))
     widths = {edge: params.ribIn * ribWidthClasses[widthClassOf[edge]] for edge in chosen}
     layout = makeLayout(plate, params, graph, chosen, name="projectedReal", ribWidths=widths)
     builtMaterial = plate.material.difference(unary_union(layout.pockets)) if layout.pockets else plate.material

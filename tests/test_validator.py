@@ -116,3 +116,18 @@ def test_boss_ring_is_its_own_setting():
     thinRing = validateLayout(plate, PocketParams(bossIn=0.125), [pocket])
     assert not [r for r in default.results if r.rule == "2 bosses"][0].passed
     assert thinRing.passed, thinRing.summary()
+
+
+def test_big_cutout_keeps_the_wall_even_with_thin_bosses():
+    # A window's edge is a wall: a pocket 0.15 in from it fails even with a 0.125 in boss
+    # ring, while the same gap to a round hole only owes the ring.
+    window = box(1.0, 1.0, 2.5, 3.0)
+    pocket = box(2.65, 1.0, 4.5, 3.0).buffer(-0.1).buffer(0.1)
+    thinRing = PocketParams(bossIn=0.125)
+    plate = Plate(outline=box(0, 0, 6, 4), features=[window], thicknessIn=0.25)
+    report = validator.validateLayout(plate, thinRing, [pocket])
+    assert "1 wall at cutouts" in {result.rule for result in report.failures}
+    hole = Point(1.75, 2.0).buffer(0.75, quad_segs=32)
+    plate = Plate(outline=box(0, 0, 6, 4), features=[hole], thicknessIn=0.25)
+    pocket = box(2.65, 1.0, 4.5, 3.0).buffer(-0.1).buffer(0.1)
+    assert validator.validateLayout(plate, thinRing, [pocket]).passed

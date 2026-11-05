@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plate Rater, part __PART__</title>
+<style>
+  :root {
+    --bg: #fafaf8;
+    --text: #222;
+    --muted: #777;
+    --line: #ddd;
+    --plate: #9aa5ad;
+    --edge: #3a444b;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  button, input { font: inherit; color: inherit; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 20px 20px 32px; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+
+  /* start */
+  .start p { max-width: 640px; }
+  .start ul { padding-left: 20px; max-width: 640px; }
+  .start label { display: block; margin: 18px 0 6px; font-weight: 600; }
+  .start input { width: 260px; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; background: #fff; }
+  .primary {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 5px;
+    background: var(--text);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .primary:disabled { background: #ccc; cursor: default; }
+  .plain {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+  }
+  .plain:hover { border-color: #999; }
+
+  /* rating */
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .bar { height: 4px; background: #e6e6e2; border-radius: 2px; margin: 10px 0 14px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--text); width: 0; }
+  .stage {
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    height: min(62vh, 560px);
+    min-height: 280px;
+  }
+  .stage svg { width: 100%; height: 100%; display: block; }
+  .plate { fill: var(--plate); stroke: var(--edge); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cut { fill: #fff; stroke: var(--edge); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .size { position: absolute; left: 12px; bottom: 8px; font-size: 13px; color: var(--muted); pointer-events: none; }
+  .flash { position: absolute; right: 14px; top: 10px; font-size: 22px; font-weight: 700; opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+
+  /* tools: the unpocketed plate and the team's original, and drawing on the design */
+  .wrap.wide { max-width: 1240px; }
+  .tools { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+  .tools .plain { padding: 5px 10px; font-size: 14px; }
+  .tools .plain.on { background: var(--text); border-color: var(--text); color: #fff; }
+  .kbd { display: inline-block; margin-left: 4px; padding: 0 5px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; color: var(--muted); background: #fff; }
+  .plain.on .kbd { color: var(--text); }
+  .drawTools { display: inline-flex; gap: 6px; flex-wrap: wrap; align-items: center; padding-left: 6px; border-left: 1px solid var(--line); }
+  .viewer { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .viewer.withSide { grid-template-columns: 2fr 1fr; }
+  .side { display: grid; grid-template-rows: 1fr 1fr; gap: 10px; height: min(62vh, 560px); min-height: 280px; }
+  .mini { position: relative; background: #fff; border: 1px solid var(--line); border-radius: 6px; min-height: 0; }
+  .mini svg { width: 100%; height: 100%; display: block; }
+  .cap { position: absolute; left: 10px; top: 6px; font-size: 12px; color: var(--muted); pointer-events: none; }
+  .none { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--muted); }
+  .blind { fill: #c9d0d5; stroke: var(--edge); stroke-width: 1; stroke-dasharray: 3 2; vector-effect: non-scaling-stroke; }
+  .stage.drawing svg { cursor: crosshair; touch-action: none; }
+  .stage.drawing.erasing svg { cursor: none; }
+  .erased { stroke: #fff; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .brushRing { fill: none; stroke: var(--edge); stroke-width: 1; stroke-dasharray: 3 2; vector-effect: non-scaling-stroke; pointer-events: none; }
+  .brushSize { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--muted); }
+  .brushSize .plain { padding: 3px 8px; }
+  .rib { stroke: #e07b00; stroke-opacity: 0.9; stroke-linecap: round; fill: none; }
+  .mark { stroke: #d0212a; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; fill: none; vector-effect: non-scaling-stroke; }
+  .flash.on { opacity: 1; transition: none; }
+
+  .keys { display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; margin-top: 14px; }
+  .keys button {
+    padding: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .keys button:hover { border-color: #888; background: #f4f4f1; }
+  .keys button:active { background: #e8e8e4; }
+  .scale { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
+  .row .spacer { flex: 1; }
+  .saved { font-size: 13px; color: var(--muted); }
+
+  .done { text-align: center; padding: 60px 0; }
+  .milestone { margin: 0 0 12px; padding: 10px 12px; background: #eef5ee; border: 1px solid #cfe3cf; border-radius: 5px; }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 14px 12px 24px; }
+    .stage { height: 52vh; }
+    .keys { grid-template-columns: repeat(9, 1fr); gap: 4px; }
+    .keys button { padding: 12px 0; font-size: 16px; }
+  }
+  @media (max-width: 760px) {
+    .viewer.withSide { grid-template-columns: 1fr; }
+    .side { grid-template-rows: none; grid-template-columns: 1fr 1fr; height: 30vh; min-height: 160px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="start" id="start">
+    <h1>Plate Rater <span class="muted">· part __PART__</span></h1>
+    <p>You'll see FRC plates with lightening pockets, one at a time. Some were designed by teams and vendors, some by a pocketing tool we're training. Rate each one on how good the pocketing is, the way you would if a teammate showed it to you in a design review.</p>
+    <ul>
+      <li><b>1</b> means you'd send it back. <b>9</b> means you'd cut it as is.</li>
+      <li>Judge the pocketing, not the plate outline or the hole layout. Those are fixed.</li>
+      <li>Go with your gut. A couple of seconds per plate is plenty.</li>
+      <li>Keys: <b>1–9</b> to rate, <b>S</b> to skip, <b>Backspace</b> to undo.</li>
+      <li><b>O</b> (or the button above the plate) shows the plate with no pockets next to the team's own pocketed version, where there is one.</li>
+      <li><b>D</b> lets you fix the design by hand: <b>Add rib</b> (drag a straight line), <b>Eraser</b> (paint over material to cut it away, such as a rib the tool shouldn't have made; <b>[</b> and <b>]</b> change its size), or the <b>Marker</b> to circle a problem. Drawings are saved with your ratings and come back in the export.</li>
+      <li>Your progress is saved in this browser. You can stop and export at any point, even after 50.</li>
+      <li id="priority" hidden></li>
+    </ul>
+    <div class="row">
+      <button class="primary" id="go">Start</button>
+      <span class="muted small" id="resume"></span>
+    </div>
+  </section>
+
+  <section id="rate" hidden>
+    <div class="top">
+      <h1>Plate Rater</h1>
+      <span class="muted" id="count"></span>
+    </div>
+    <div class="bar"><span id="bar"></span></div>
+    <p class="milestone" id="milestone" hidden></p>
+    <div class="tools">
+      <button class="plain" id="origBtn">Unpocketed + original<span class="kbd">O</span></button>
+      <button class="plain" id="drawBtn">Draw<span class="kbd">D</span></button>
+      <span class="drawTools" id="drawTools" hidden>
+        <button class="plain pen on" data-pen="rib" title="Drag a straight line where a rib should go">Add rib<span class="kbd">R</span></button>
+        <button class="plain pen" data-pen="cut" title="Paint over material to cut it away, e.g. a rib that shouldn't be there">Eraser<span class="kbd">E</span></button>
+        <span class="brushSize" id="brushSize" hidden><button class="plain" id="brushDown" title="Smaller eraser">−<span class="kbd">[</span></button><span id="brushLabel">0.25 in</span><button class="plain" id="brushUp" title="Bigger eraser">+<span class="kbd">]</span></button></span>
+        <button class="plain pen" data-pen="mark" title="Draw freehand to circle or point at a problem">Marker<span class="kbd">M</span></button>
+        <button class="plain" id="undoLine">Undo stroke</button>
+        <button class="plain" id="clearLines">Clear</button>
+      </span>
+    </div>
+    <div class="viewer" id="viewer">
+      <div class="stage" id="stage">
+        <svg id="view" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
+        <span class="size" id="size"></span>
+        <span class="flash" id="flash"></span>
+      </div>
+      <div class="side" id="side" hidden>
+        <div class="mini"><svg id="bare" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg><span class="cap">No pockets</span></div>
+        <div class="mini"><svg id="orig" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg><span class="cap">Team's original</span><span class="none" id="noOrig" hidden>No pocketed original on file</span></div>
+      </div>
+    </div>
+    <div class="keys" id="keys"></div>
+    <div class="scale"><span>1 · send it back</span><span>9 · cut it as is</span></div>
+    <div class="row">
+      <button class="plain" id="undo">Undo</button>
+      <button class="plain" id="skip">Skip</button>
+      <span class="spacer"></span>
+      <span class="saved" id="saved"></span>
+      <button class="primary" id="export">Export ratings</button>
+    </div>
+  </section>
+
+  <section class="done" id="done" hidden>
+    <h1>That's all of them. Thank you!</h1>
+    <p>Hit export and send the file back.</p>
+    <p><button class="primary" id="export2">Export ratings</button></p>
+  </section>
+
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const KEY = "plateRater.v" + DATA.version;
+const $ = (id) => document.getElementById(id);
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (_) { return null; }
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); $("saved").textContent = "saved"; } catch (_) { $("saved").textContent = "not saved (export soon)"; }
+}
+
+// One shuffled order per browser, kept across visits.
+// Shuffled within each section; sections keep their order (most useful first).
+function shuffledOrder() {
+  const sizes = DATA.sections || [DATA.items.length];
+  const order = [];
+  let start = 0;
+  for (const size of sizes) {
+    const part = [];
+    for (let k = start; k < start + size; k++) part.push(k);
+    for (let k = part.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [part[k], part[j]] = [part[j], part[k]];
+    }
+    order.push(...part);
+    start += size;
+  }
+  return order;
+}
+
+// A combined page picks up ratings saved by the separate part pages in this browser.
+function migrated() {
+  const ratings = {};
+  let rater = null;
+  for (const version of DATA.migrate || []) {
+    try {
+      const old = JSON.parse(localStorage.getItem("plateRater.v" + version));
+      if (old && old.ratings) { Object.assign(ratings, old.ratings); rater = rater || old.rater; }
+    } catch (_) { /* nothing saved */ }
+  }
+  if (!Object.keys(ratings).length) return null;
+  const done = DATA.items.map((item, k) => k).filter((k) => DATA.items[k].i in ratings);
+  const rest = shuffledOrder().filter((k) => !(DATA.items[k].i in ratings));
+  return { rater: rater || Math.random().toString(36).slice(2, 10), order: done.concat(rest), pos: done.length,
+           ratings: Object.fromEntries(Object.entries(ratings).filter(([id]) => DATA.items.some((item) => item.i === id))),
+           history: [] };
+}
+
+let state = load() || migrated() || { rater: Math.random().toString(36).slice(2, 10), order: shuffledOrder(), pos: 0, ratings: {}, history: [] };
+if (!state.rater) state.rater = Math.random().toString(36).slice(2, 10);
+if (!state.drawings) state.drawings = {};
+let shownAt = 0;
+
+function pathOf(flat) {
+  let d = "";
+  for (let k = 0; k < flat.length; k += 2) d += (k ? "L" : "M") + flat[k] + " " + (-flat[k + 1]);
+  return d + "Z";
+}
+
+function firstSection() {
+  return DATA.sections && DATA.sections.length > 1 ? DATA.sections[0] : 0;
+}
+
+// The first section is done once none of its designs is still ahead (ratings carried over
+// from earlier pages sit at the start of the order, so this is not simply pos === first).
+function firstDone() {
+  const first = firstSection();
+  return first > 0 && state.order.slice(state.pos).every((k) => k >= first);
+}
+
+function show() {
+  $("milestone").hidden = !(firstDone() && !state.milestoneSeen);
+  if (state.pos >= state.order.length) {
+    $("rate").hidden = true;
+    $("done").hidden = false;
+    return;
+  }
+  const item = DATA.items[state.order[state.pos]];
+  drawPlate($("view"), item.o, item.f, item.p, [], editLayers(item.o));
+  renderInk();
+  showSide(item);
+  $("size").textContent = `${item.w} × ${item.h} in` + (item.t ? `, ${item.t} in thick` : "");
+  const done = Object.keys(state.ratings).length;
+  $("count").textContent = `${done} rated · ${state.order.length - state.pos} left`;
+  $("bar").style.width = (100 * state.pos / state.order.length) + "%";
+  shownAt = performance.now();
+}
+
+// One plate drawing: outline, holes, through pockets and blind pockets (dashed), in an svg.
+function drawPlate(svg, outline, holes, pockets, blind, extra) {
+  const xs = [], ys = [];
+  for (let k = 0; k < outline.length; k += 2) { xs.push(outline[k]); ys.push(-outline[k + 1]); }
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const pad = Math.max(x1 - x0, y1 - y0) * 0.05;
+  svg.setAttribute("viewBox", `${x0 - pad} ${y0 - pad} ${x1 - x0 + 2 * pad} ${y1 - y0 + 2 * pad}`);
+  let inner = `<path class="plate" d="${pathOf(outline)}"/>`;
+  for (const loop of blind) inner += `<path class="blind" d="${pathOf(loop)}"/>`;
+  for (const loop of holes) inner += `<path class="cut" d="${pathOf(loop)}"/>`;
+  for (const loop of pockets) inner += `<path class="cut" d="${pathOf(loop)}"/>`;
+  svg.innerHTML = inner + (extra || "");
+}
+
+// --- the unpocketed plate and the team's own pocketed design, on request
+const ORIG = DATA.orig || {};
+let sideOpen = false;  // whether the side panel was open at some point while this design was up
+
+function plateOf(id) {
+  const parts = id.split(":");
+  return parts[0] === "sheet" ? parts.slice(2, -1).join(":") : parts.slice(1).join(":");
+}
+
+function showSide(item) {
+  const open = !!state.showOrig;
+  $("side").hidden = !open;
+  $("viewer").classList.toggle("withSide", open);
+  document.querySelector(".wrap").classList.toggle("wide", open);
+  $("origBtn").classList.toggle("on", open);
+  if (!open) return;
+  sideOpen = true;
+  drawPlate($("bare"), item.o, item.f, [], []);
+  // a real design is its own original, so only generated designs get one
+  const orig = item.i.startsWith("sheet:") ? ORIG[plateOf(item.i)] : null;
+  $("noOrig").hidden = !!orig;
+  if (orig) drawPlate($("orig"), orig.o, orig.f, orig.p, orig.b || []);
+  else $("orig").innerHTML = "";
+}
+
+function toggleOrig() {
+  state.showOrig = !state.showOrig;
+  save();
+  if (state.pos < state.order.length) showSide(DATA.items[state.order[state.pos]]);
+}
+
+// --- editing the design. Strokes are paint, applied in the order drawn:
+// "rib" adds material (a straight line, 3/16 in wide), "cut" removes it (the eraser: a
+// round brush, so dragging along a rib the tool made takes that rib out, and it also takes
+// back part of a rib he drew), "mark" is a freehand note on top. Rib and cut paint stays
+// inside the plate outline.
+const RIB_IN = 0.1875;
+const BRUSH_SIZES = [0.125, 0.1875, 0.25, 0.375, 0.5, 0.75, 1.0];  // eraser widths, inches
+let drawOn = false, pen = "rib", stroke = null, brush = 2;
+
+function currentId() {
+  return state.pos < state.order.length ? DATA.items[state.order[state.pos]].i : null;
+}
+
+function strokesOf(id) {
+  state.drawings = state.drawings || {};
+  return state.drawings[id] || [];
+}
+
+function inkPath(s) {
+  let d = "";
+  for (let k = 0; k < s.p.length; k += 2) d += (k ? "L" : "M") + s.p[k] + " " + (-s.p[k + 1]);
+  if (s.p.length === 2) d += "L" + s.p[0] + " " + (-s.p[1]);  // a dab: a dot with round caps
+  if (s.k === "mark") return `<path class="mark" d="${d}"/>`;
+  return `<path class="${s.k === "cut" ? "erased" : "rib"}" stroke-width="${s.w || RIB_IN}" d="${d}"/>`;
+}
+
+function renderInk() {
+  const ink = document.getElementById("ink"), marks = document.getElementById("marks");
+  if (!ink) return;
+  const id = currentId();
+  const strokes = (id ? strokesOf(id) : []).concat(stroke ? [stroke] : []);
+  ink.innerHTML = strokes.filter((s) => s.k !== "mark").map(inkPath).join("");
+  marks.innerHTML = strokes.filter((s) => s.k === "mark").map(inkPath).join("");
+}
+
+// The design's svg layers for editing: paint clipped to the outline, marks, the brush preview.
+function editLayers(outline) {
+  return `<defs><clipPath id="plateClip"><path d="${pathOf(outline)}"/></clipPath></defs>` +
+    `<g id="ink" clip-path="url(#plateClip)"></g><g id="marks"></g><circle id="brushRing" class="brushRing" r="0" cx="0" cy="0"/>`;
+}
+
+function setDraw(on) {
+  drawOn = on;
+  $("drawBtn").classList.toggle("on", on);
+  $("drawTools").hidden = !on;
+  $("stage").classList.toggle("drawing", on);
+  hideBrush();
+}
+
+function setPen(name) {
+  pen = name;
+  $("stage").classList.toggle("erasing", name === "cut");
+  $("brushSize").hidden = name !== "cut";
+  document.querySelectorAll(".pen").forEach((b) => b.classList.toggle("on", b.dataset.pen === name));
+  hideBrush();
+}
+
+function setBrush(step) {
+  brush = Math.max(0, Math.min(BRUSH_SIZES.length - 1, brush + step));
+  $("brushLabel").textContent = BRUSH_SIZES[brush] + " in";
+}
+
+function toPlate(e) {
+  const point = new DOMPoint(e.clientX, e.clientY).matrixTransform($("view").getScreenCTM().inverse());
+  return [Math.round(point.x * 1000) / 1000, Math.round(-point.y * 1000) / 1000];
+}
+
+function viewSpan() {
+  const box = $("view").viewBox.baseVal;
+  return Math.max(box.width, box.height);
+}
+
+function showBrush(e) {
+  const ring = document.getElementById("brushRing");
+  if (!ring) return;
+  if (!drawOn || pen !== "cut" || e.pointerType === "touch") { ring.setAttribute("r", 0); return; }
+  const [x, y] = toPlate(e);
+  ring.setAttribute("cx", x);
+  ring.setAttribute("cy", -y);
+  ring.setAttribute("r", BRUSH_SIZES[brush] / 2);
+}
+
+function hideBrush() {
+  const ring = document.getElementById("brushRing");
+  if (ring) ring.setAttribute("r", 0);
+}
+
+$("view").addEventListener("pointerdown", (e) => {
+  if (!drawOn || !currentId()) return;
+  e.preventDefault();
+  $("view").setPointerCapture(e.pointerId);
+  stroke = { k: pen, p: toPlate(e) };
+  if (pen === "cut") stroke.w = BRUSH_SIZES[brush];
+  renderInk();
+});
+$("view").addEventListener("pointermove", (e) => {
+  showBrush(e);
+  if (!stroke) return;
+  const [x, y] = toPlate(e);
+  if (stroke.k === "rib") {
+    stroke.p = stroke.p.slice(0, 2).concat([x, y]);
+  } else {
+    const n = stroke.p.length;
+    if (Math.hypot(x - stroke.p[n - 2], y - stroke.p[n - 1]) > viewSpan() * 0.004) stroke.p.push(x, y);
+  }
+  renderInk();
+});
+$("view").addEventListener("pointerleave", hideBrush);
+function endStroke() {
+  if (!stroke) return;
+  const s = stroke;
+  stroke = null;
+  const n = s.p.length;
+  const long = n >= 4 && Math.hypot(s.p[n - 2] - s.p[0], s.p[n - 1] - s.p[1]) > viewSpan() * 0.01;
+  // a rib needs a real drag; the eraser also takes a single dab; a mark needs a few points
+  if (long || s.k === "cut" || (s.k === "mark" && n >= 6)) {
+    const id = currentId();
+    state.drawings[id] = strokesOf(id).concat([s]);
+    save();
+  }
+  renderInk();
+}
+$("view").addEventListener("pointerup", endStroke);
+$("view").addEventListener("pointercancel", endStroke);
+
+function undoLine() {
+  const id = currentId();
+  if (!id || !strokesOf(id).length) return;
+  state.drawings[id] = strokesOf(id).slice(0, -1);
+  if (!state.drawings[id].length) delete state.drawings[id];
+  save();
+  renderInk();
+}
+
+function clearLines() {
+  const id = currentId();
+  if (!id || !strokesOf(id).length) return;
+  delete state.drawings[id];
+  save();
+  renderInk();
+}
+
+function flash(text) {
+  const el = $("flash");
+  el.textContent = text;
+  el.classList.add("on");
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove("on")));
+}
+
+function rate(value) {
+  if (state.pos >= state.order.length) return;
+  if (firstDone()) state.milestoneSeen = true;
+  const item = DATA.items[state.order[state.pos]];
+  state.ratings[item.i] = { r: value, ms: Math.round(performance.now() - shownAt) };
+  if (sideOpen || state.showOrig) state.ratings[item.i].o = 1;
+  sideOpen = false;
+  state.history.push(state.pos);
+  state.pos++;
+  flash(value);
+  save();
+  show();
+}
+
+function skip() {
+  if (state.pos >= state.order.length) return;
+  if (firstDone()) state.milestoneSeen = true;
+  state.history.push(state.pos);
+  state.pos++;
+  sideOpen = false;
+  flash("–");
+  save();
+  show();
+}
+
+function undo() {
+  if (!state.history.length) return;
+  state.pos = state.history.pop();
+  const undone = state.ratings[DATA.items[state.order[state.pos]].i];
+  sideOpen = !!(undone && undone.o);  // he has seen the original of this one already
+  delete state.ratings[DATA.items[state.order[state.pos]].i];
+  $("done").hidden = true;
+  $("rate").hidden = false;
+  save();
+  show();
+}
+
+function exportRatings() {
+  const ratings = Object.entries(state.ratings).map(([id, v]) => Object.assign({ id, rating: v.r, ms: v.ms }, v.o ? { sawOriginal: true } : {}));
+  // strokes in plate inches (the designs' own frame): ribs are 2-point lines, marks freehand
+  const drawings = Object.entries(state.drawings || {}).filter(([, strokes]) => strokes.length).map(([id, strokes]) => ({
+    id, strokes: strokes.map((s) => ({ kind: s.k, ...(s.k === "mark" ? {} : { width: s.w || RIB_IN }), points: s.p.reduce((out, v, k) => (k % 2 ? out[out.length - 1].push(v) : out.push([v]), out), []) })) }));
+  const body = JSON.stringify({ rater: state.rater, version: DATA.version, exportedAt: new Date().toISOString(),
+                                count: ratings.length, ratings, drawings }, null, 1);
+  const blob = new Blob([body], { type: "application/json" });
+  const link = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0, 10);
+  link.href = URL.createObjectURL(blob);
+  link.download = `plate-ratings-part${DATA.version.split("-")[0]}-${stamp}-${ratings.length}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 2000);
+}
+
+// keys row
+for (let k = 1; k <= 9; k++) {
+  const b = document.createElement("button");
+  b.textContent = k;
+  b.addEventListener("click", () => rate(k));
+  $("keys").appendChild(b);
+}
+
+if (firstSection()) {
+  const first = firstSection(), rest = DATA.items.length - first;
+  $("priority").innerHTML = `<b>The first ${first} plates help the most</b>, so please get through those first. ` +
+    `The ${rest} after them are still useful but less important: do them if you have time.`;
+  $("priority").hidden = false;
+  $("milestone").innerHTML = `<b>That's the first ${first} done, the ones that matter most. Thank you!</b> ` +
+    `Hit <b>Export ratings</b> now so nothing gets lost. The ${rest} left are optional extras; keep going if you have time ` +
+    `(export again at the end, the new file includes everything).`;
+}
+if (Object.keys(state.ratings).length) {
+  $("resume").textContent = `Welcome back: ${Object.keys(state.ratings).length} already rated, picking up where you left off.`;
+  $("go").textContent = "Continue";
+}
+$("go").addEventListener("click", () => {
+  save();
+  $("start").hidden = true;
+  $("rate").hidden = false;
+  show();
+});
+$("undo").addEventListener("click", undo);
+$("origBtn").addEventListener("click", toggleOrig);
+$("drawBtn").addEventListener("click", () => setDraw(!drawOn));
+document.querySelectorAll(".pen").forEach((b) => b.addEventListener("click", () => setPen(b.dataset.pen)));
+$("undoLine").addEventListener("click", undoLine);
+$("clearLines").addEventListener("click", clearLines);
+$("brushDown").addEventListener("click", () => setBrush(-1));
+$("brushUp").addEventListener("click", () => setBrush(1));
+$("skip").addEventListener("click", skip);
+$("export").addEventListener("click", exportRatings);
+$("export2").addEventListener("click", exportRatings);
+document.addEventListener("keydown", (e) => {
+  if ($("rate").hidden && $("done").hidden) {
+    if (e.key === "Enter") $("go").click();
+    return;
+  }
+  if (e.key >= "1" && e.key <= "9") rate(+e.key);
+  else if (e.key === "s" || e.key === "S" || e.key === "0") skip();
+  else if (e.key === "o" || e.key === "O") toggleOrig();
+  else if (e.key === "d" || e.key === "D") setDraw(!drawOn);
+  else if (drawOn && (e.key === "r" || e.key === "R")) setPen("rib");
+  else if (drawOn && (e.key === "m" || e.key === "M")) setPen("mark");
+  else if (drawOn && (e.key === "e" || e.key === "E")) setPen("cut");
+  else if (drawOn && e.key === "[") setBrush(-1);
+  else if (drawOn && e.key === "]") setBrush(1);
+  else if (e.key === "Backspace" || e.key === "z" || e.key === "Z") { e.preventDefault(); undo(); }
+});
+</script>
+</body>
+</html>

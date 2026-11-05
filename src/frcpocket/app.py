@@ -23,8 +23,8 @@ from frcpocket.pocketer import Pocketer
 
 ratingsPath = Path("data/curation/ratings.jsonl")
 unitDefaults = {
-    "in": {"wall": 0.1875, "rib": 0.125, "corner": 0.0625, "depth": 0.125, "boss": 0.1875},
-    "mm": {"wall": 4.8, "rib": 3.2, "corner": 1.6, "depth": 3.2, "boss": 4.8},
+    "in": {"wall": 0.1875, "rib": 0.1875, "corner": 0.0625, "depth": 0.125, "boss": 0.1875},
+    "mm": {"wall": 4.8, "rib": 4.8, "corner": 1.6, "depth": 3.2, "boss": 4.8},
 }
 pocketer = None
 sessions = {}  # session key -> plate, params, candidates (CAD objects stay server-side)
@@ -60,10 +60,10 @@ def caption(index, result):
     return f"#{index + 1} {result['source']}{warning}: looks {result['aesthetic']:.2f}, {result['removed']:.0%} removed, {structure}"
 
 
-densityFactors = {"Dense (more ribs)": 0.6, "Medium": 1.0, "Open (fewer ribs)": 1.5}
+densityFactors = {"Dense (more ribs)": 0.8, "Medium": 1.25, "Open (fewer ribs)": 1.6}
 
 
-def buildParams(units, wall, rib, corner, depthMode, depth, density="Dense (more ribs)", boss=None):
+def buildParams(units, wall, rib, corner, depthMode, depth, density="Medium", boss=None):
     return PocketParams.fromUnits(units, wall=wall, rib=rib, cornerRadius=corner,
                                   depth=None if depthMode == "Through" else depth, boss=boss,
                                   pocketSizeFactor=densityFactors[density])
@@ -83,6 +83,8 @@ def generate(stepFile, units, wall, rib, corner, boss, depthMode, depth, density
     if params.depthIn is not None and params.depthIn >= plate.thicknessIn:
         raise gr.Error("Blind depth must be less than the plate thickness (use Through instead).")
     results = getPocketer().candidates(plate, params, count=int(count))
+    if results and results[0].get("relaxed"):
+        params = results[0]["params"]
     if not results:
         raise gr.Error("No valid pocketing fits this plate with these settings. Try a smaller wall, rib, or corner radius.")
     gallery = [(previewImage(plate, result, index), caption(index, result)) for index, result in enumerate(results)]
@@ -153,12 +155,12 @@ def buildApp():
                 stepFile = gr.File(label="Plate STEP", file_types=[".step", ".stp"], type="filepath")
                 units = gr.Radio(["in", "mm"], value="in", label="Units")
                 wall = gr.Number(value=0.1875, label="Outer wall thickness")
-                rib = gr.Number(value=0.125, label="Rib thickness")
+                rib = gr.Number(value=0.1875, label="Rib thickness")
                 corner = gr.Number(value=0.0625, label="Pocket corner radius (tool radius)")
                 boss = gr.Number(value=0.1875, label="Boss ring around holes (default: the wall; real plates often use about half)")
                 depthMode = gr.Radio(["Through", "Blind"], value="Through", label="Pocket depth")
                 depth = gr.Number(value=0.125, label="Blind depth (leaves a floor)")
-                density = gr.Radio(list(densityFactors), value="Dense (more ribs)", label="Pocket density")
+                density = gr.Radio(list(densityFactors), value="Medium", label="Pocket density")
                 count = gr.Slider(2, 8, value=6, step=1, label="Candidates")
                 generateButton = gr.Button("Generate candidates", variant="primary")
             with gr.Column(scale=2):

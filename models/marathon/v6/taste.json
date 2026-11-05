@@ -1,0 +1,185 @@
+{
+ "featureNames": [
+  "removedFraction",
+  "logPocketsPerScale",
+  "pocketAreaCV",
+  "smallPocketFraction",
+  "sliverFraction",
+  "meanConvexity",
+  "meanCircularity",
+  "gapCV",
+  "gapOverRib",
+  "wallGapCV",
+  "symmetryShortfall",
+  "holesEngaged",
+  "largestSolidRegion",
+  "triangleFraction",
+  "logMeanPocketArea",
+  "maxPocketFraction",
+  "maxOpenSpan",
+  "pocketSizeVsGold",
+  "pocketWidthVsGold",
+  "maxElongation",
+  "elongatedFraction",
+  "meanFatness",
+  "sharpCornerFraction",
+  "hangingHoleFraction",
+  "looks"
+ ],
+ "mean": [
+  0.46075118053148156,
+  2.4997329546701668,
+  0.34571576365952633,
+  0.15122973989236882,
+  0.002563482994968105,
+  0.9559935691678538,
+  0.7165117495945847,
+  0.08265004707102105,
+  1.047286395174913,
+  0.21661758756621774,
+  0.20842357844803444,
+  0.8857671369040738,
+  0.015496118039809603,
+  0.4510868018183728,
+  -3.209855565460779,
+  0.07163052566977064,
+  0.10215803908279862,
+  0.3753850626325986,
+  0.19959803622131422,
+  0.8803565428017003,
+  0.10518770330566624,
+  0.5161503896277438,
+  0.39848412972126096,
+  0.2753627507467815,
+  0.743891065248167
+ ],
+ "scale": [
+  0.12127701147703634,
+  0.612820336970413,
+  0.16849293711472338,
+  0.25515792322771075,
+  0.018061749763423736,
+  0.032085160260330065,
+  0.07189483937882121,
+  0.2042885085704697,
+  0.5556451698199101,
+  0.19056985582679795,
+  0.12899655989842793,
+  0.1737192283410133,
+  0.016143477134996264,
+  0.24511948180511559,
+  0.5614001655893941,
+  0.03384227211951312,
+  0.02759812509381233,
+  0.2983160481893392,
+  0.16904391618104414,
+  0.2634992098492188,
+  0.1517320625370109,
+  0.06508160554499433,
+  0.22691415700656184,
+  0.23941997585335315,
+  0.179674744965177
+ ],
+ "weights": [
+  1.9752222229664853,
+  1.3988393171533002,
+  -0.3306955224421736,
+  0.278264353577873,
+  -0.03884775759440842,
+  0.9465850965734429,
+  -0.4841437581300302,
+  0.28309578004495917,
+  0.48248793134906337,
+  -0.11020911076837264,
+  -0.46730654469635846,
+  0.3174339741538827,
+  0.0333794684165666,
+  0.29633813391386066,
+  1.2293473064425733,
+  0.003784044341178716,
+  -0.08688580680143443,
+  -0.512990973027132,
+  0.40084401779316053,
+  -0.24515082787174935,
+  0.5074140668685448,
+  0.5582152455738809,
+  -0.15382721622203194,
+  0.3491470006119176,
+  0.1123790581361706
+ ],
+ "scoreSpread": 3.1911086984569956,
+ "looksScorer": "models/aestheticScorer.pt",
+ "report": {
+  "heldOut": {
+   "taste model": {
+    "expert edits": 0.778,
+    "expert live": 0.531,
+    "expert picks": 0.621,
+    "expert ratings": 0.788,
+    "balanced": 0.673
+   },
+   "looks only": {
+    "expert edits": 0.63,
+    "expert live": 0.474,
+    "expert picks": 0.617,
+    "expert ratings": 0.756,
+    "balanced": 0.638
+   },
+   "removed only": {
+    "expert edits": 0.148,
+    "expert live": 0.561,
+    "expert picks": 0.636,
+    "expert ratings": 0.776,
+    "balanced": 0.657
+   },
+   "live ranking": {
+    "expert edits": 0.63,
+    "expert live": 0.459,
+    "expert picks": 0.621,
+    "expert ratings": 0.76,
+    "balanced": 0.637
+   },
+   "live taste (v2)": {
+    "expert edits": 0.704,
+    "expert live": 0.49,
+    "expert picks": 0.689,
+    "expert ratings": 0.795,
+    "balanced": 0.682
+   },
+   "taste v5": {
+    "expert edits": 0.778,
+    "expert live": 0.546,
+    "expert picks": 0.709,
+    "expert ratings": 0.798,
+    "balanced": 0.706
+   }
+  },
+  "ratingOnA": {
+   "plates": 146,
+   "live order (as shown)": 5.21,
+   "lightest": 4.97,
+   "best possible": 6.31,
+   "live taste (v2)": 4.99,
+   "taste v5": 5.09,
+   "taste model (held out)": 5.11
+  },
+  "rules": {
+   "lighter wins": [
+    0.729,
+    450
+   ],
+   "more symmetric wins (symmetric plates)": [
+    0.712,
+    118
+   ]
+  },
+  "penalty": 0.3,
+  "preferences": 741,
+  "designs": 837,
+  "people": [
+   "expert"
+  ],
+  "crossPlate": "none"
+ },
+ "liveShare": 0.0
+}

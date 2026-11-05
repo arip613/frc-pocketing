@@ -18,13 +18,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--scorer-out", default="models/aestheticScorer.pt")
     parser.add_argument("--plates", default="data/processed/plates.jsonl")
+    parser.add_argument("--parallel", type=int, default=scorer.defaultParallel(),
+                        help="processes for building training sets and generator rounds (default leaves 2 cores free)")
     args = parser.parse_args()
     started = time.time()
-    report = scorer.train(args.scorer_out, args.plates, cnnEpochs=20, parallel=scorer.defaultParallel())
+    report = scorer.train(args.scorer_out, args.plates, cnnEpochs=20, parallel=args.parallel)
     scorerSeconds = time.time() - started
     print(f"scorer: {scorerSeconds / 60:.1f} min, graded holdout {report['gradedHoldoutAcc']}, gold holdout {report['goldHoldoutAcc']}",
           flush=True)
-    generatorArgs = trainGenerator.buildParser().parse_args(["--scorer", args.scorer_out, "--plates", args.plates])
+    generatorArgs = trainGenerator.buildParser().parse_args(["--scorer", args.scorer_out, "--plates", args.plates,
+                                                                   "--parallel", str(args.parallel)])
     trainGenerator.train(generatorArgs)
     total = time.time() - started
     print(json.dumps({"scorerMinutes": round(scorerSeconds / 60, 1), "generatorMinutes": round((total - scorerSeconds) / 60, 1),

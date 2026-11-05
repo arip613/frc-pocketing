@@ -1,0 +1,772 @@
+{"id": "sheet:m3b:test_gusset:3", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:c1a1314165_85:3", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:ac703a019a_0:4", "rating": 9, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_fd755c3797_0:1", "rating": 6, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_rectangleBoltPattern:2", "rating": 8, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:52be1c334a_0:5", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_0:6", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:9b5b18d436_0:9", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_c6706fc6d4_0:1", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_irregularArm:5", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_0a03628a16_0:8", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:3f6bda2f97_94:6", "rating": 6, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:9b5b18d436_0:1", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:2d546bad45_21:5", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:d319466cc3_0:4", "rating": 7, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:3f6bda2f97_94:9", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example6:6", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0cf01afbff_1:5", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:0a48ec25fa_1:2", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_fd755c3797_0:6", "rating": 6, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:0a48ec25fa_1:1", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_5516aac922_0:2", "rating": 6, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:9b5b18d436_0:4", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example1:3", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:8251e71e7c_42:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_52:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_0:1", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_9a218da73a_0:4", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_gusset:4", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_fd755c3797_0:5", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_cafe5e0bd5_0:2", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_c6706fc6d4_0:3", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_outsidePlateR:3", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0a48ec25fa_2:5", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:4e4608b20b_126:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example6:1", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e5214b486c_130:1", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e5214b486c_133:3", "rating": 6, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:a0d6ce54b8_3:2", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example1:1", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example4:4", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:b974a2439c_1:3", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example2:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example6:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:8251e71e7c_43:2", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0a48ec25fa_2:1", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:3f6bda2f97_94:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_542f0adabf_0:7", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_52:3", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example6:7", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:2d546bad45_21:6", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example2:3", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example1:8", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example2:6", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_0a03628a16_0:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_0:9", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_cafe5e0bd5_0:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_0a03628a16_0:7", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:c1a1314165_85:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_shooterRightPlate:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_outsidePlateR:6", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_5516aac922_0:1", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example6:9", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:ac703a019a_0:7", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example3:3", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_542f0adabf_0:2", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_fd755c3797_0:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_fd755c3797_0:3", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:a0d6ce54b8_3:5", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_cafe5e0bd5_0:1", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:4e4608b20b_126:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_gusset:7", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:19eb2134b6_330:1", "rating": 6, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_rectangleBoltPattern:3", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:18afc8e7d3_12:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:8251e71e7c_43:4", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_c6706fc6d4_0:2", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_542f0adabf_0:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example2:5", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:9b5b18d436_0:6", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:c8f61214fc_0:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0d9cbb6d3b_0:2", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_9a218da73a_0:3", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:ac703a019a_0:6", "rating": 9, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_52:8", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:9b5b18d436_0:7", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e5214b486c_130:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:8251e71e7c_42:1", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_shooterRightPlate:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:9b5b18d436_0:8", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:52be1c334a_0:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example4:7", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example6:8", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example3:8", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0cf01afbff_1:6", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:c8f61214fc_0:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example4:9", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example3:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e5214b486c_133:2", "rating": 7, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_0:8", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:ac703a019a_0:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e64584a35e_0:5", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:4e4608b20b_126:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_gusset:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:52be1c334a_0:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example2:8", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:b974a2439c_1:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example3:6", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:3f6bda2f97_94:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_0:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:e5214b486c_124:3", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_gusset:6", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_irregularArm:6", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_542f0adabf_0:1", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:d319466cc3_0:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:b974a2439c_1:5", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:a0d6ce54b8_3:1", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:0a48ec25fa_1:7", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_52:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example4:1", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:0a48ec25fa_1:3", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_outsidePlateR:8", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:3f6bda2f97_94:1", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example2:9", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:751ef8bc05_1:2", "rating": 7, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example1:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0a48ec25fa_2:2", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example6:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_cafe5e0bd5_0:5", "rating": 9, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e5214b486c_133:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example1:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example2:7", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:a0d6ce54b8_2:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:d319466cc3_0:1", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:c1a1314165_85:2", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_bearingPlate:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example4:3", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:751ef8bc05_1:1", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:0a48ec25fa_1:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_outsidePlateR:4", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:e5214b486c_124:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:c1a1314165_85:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e64584a35e_0:2", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:2d546bad45_21:1", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:c8f61214fc_0:4", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0cf01afbff_1:2", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_0:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:d319466cc3_0:2", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:9b5b18d436_0:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:a0d6ce54b8_3:4", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example3:5", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0cf01afbff_1:7", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_52:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:18afc8e7d3_12:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example3:9", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example4:8", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:2d546bad45_21:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_0:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:52be1c334a_0:6", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:751ef8bc05_19:1", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:1eb752e3a8_0:2", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_0a03628a16_0:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:8251e71e7c_42:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:8251e71e7c_42:4", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:3f6bda2f97_94:8", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_gusset:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0cf01afbff_1:4", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:8d9957c1bc_0:2", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:0a48ec25fa_1:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example4:2", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_9a218da73a_0:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_0a03628a16_0:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e5214b486c_130:4", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_fd755c3797_0:4", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0a48ec25fa_2:4", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_52:7", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:ac703a019a_0:5", "rating": 9, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:8d9957c1bc_0:4", "rating": 8, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_rectangleBoltPattern:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e64584a35e_0:1", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:f1da8bbfec_90:1", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:b974a2439c_1:2", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:6d2c3dbbf6_63:2", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:e5214b486c_124:1", "rating": 7, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_9a218da73a_0:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e5214b486c_130:3", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_rectangleBoltPattern:4", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_shooterRightPlate:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:e5214b486c_124:5", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_0a03628a16_0:6", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_0a03628a16_0:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:8d9957c1bc_0:3", "rating": 7, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example1:7", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_0a03628a16_0:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:e5214b486c_124:6", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_32fe0ac720_0:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:52be1c334a_0:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:4e4608b20b_126:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:8d9957c1bc_0:7", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:b974a2439c_1:1", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:6d2c3dbbf6_63:1", "rating": 8, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0d9cbb6d3b_0:3", "rating": 6, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:3f6bda2f97_94:7", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_9a218da73a_0:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_outsidePlateR:7", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:37122139c9_0:1", "rating": 7, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:a0d6ce54b8_2:1", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:4e4608b20b_126:4", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_52:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_outsidePlateR:9", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:c8f61214fc_0:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_19c56b1f8f_0:1", "rating": 9, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example6:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_fd755c3797_0:7", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:f1da8bbfec_90:3", "rating": 6, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_rectangleBoltPattern:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:f1da8bbfec_90:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:2d546bad45_21:8", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_0a03628a16_0:9", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example3:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:9b5b18d436_0:3", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:2d546bad45_21:7", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_irregularArm:7", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0a48ec25fa_4:1", "rating": 8, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:8251e71e7c_43:5", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_irregularArm:2", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e64584a35e_0:3", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:a0d6ce54b8_3:3", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_irregularArm:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_outsidePlateR:2", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example3:2", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example1:4", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_irregularArm:3", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_52:6", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:21307574ba_0:1", "rating": 7, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:19eb2134b6_330:2", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_shooterRightPlate:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_gusset:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:a0d6ce54b8_2:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:c1a1314165_85:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:3f6bda2f97_94:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:8251e71e7c_43:1", "rating": 6, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:751ef8bc05_19:3", "rating": 6, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example2:2", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:8d9957c1bc_0:6", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_shooterRightPlate:1", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example3:7", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_cafe5e0bd5_0:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:18afc8e7d3_0:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0cf01afbff_1:1", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_outsidePlateR:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:b974a2439c_1:6", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:c8f61214fc_0:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example6:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_542f0adabf_0:3", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:52be1c334a_0:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_c6706fc6d4_0:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:e64584a35e_0:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_c6706fc6d4_0:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_542f0adabf_0:4", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_bearingPlate:3", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example4:5", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_bearingPlate:1", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:e5214b486c_124:4", "rating": 4, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:2d546bad45_21:4", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:test_irregularArm:1", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example1:6", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:8d9957c1bc_0:1", "rating": 5, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:0a48ec25fa_1:6", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:userImg_example4:6", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:0cf01afbff_1:3", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:a0d6ce54b8_2:4", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:9b5b18d436_0:2", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:dwg2056_542f0adabf_0:6", "rating": 2, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userImg_example2:1", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:ac703a019a_0:2", "rating": 8, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:ac703a019a_0:1", "rating": 7, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:8d9957c1bc_0:5", "rating": 7, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:751ef8bc05_19:2", "rating": 6, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3b:2d546bad45_21:2", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:userPlate_outsidePlateR:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:3f6bda2f97_94:5", "rating": 1, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:19:51+00:00"}
+{"id": "sheet:m3:0a48ec25fa_1:4", "rating": 3, "rater": "expert:20r0qoma", "datasetVersion": "4-1fcca4-202610302338", "ingested": "2026-10-31T00:40:02+00:00", "note": "correction from the user: meant 3, not 1"}
+{"id": "sheet:L1f:d9da2eedc1_590:2", "rating": 8, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1311:1", "rating": 7, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:756d63454b_758:2", "rating": 3, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:2d546bad45_21:1", "rating": 2, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_590:1", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:4e4608b20b_126:1", "rating": 1, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:c88f45e8da_28:3", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_344:3", "rating": 1, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_344:2", "rating": 2, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1399:1", "rating": 7, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:709accf60f_6:1", "rating": 2, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_355:2", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_39:1", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:userImg_example1:2", "rating": 7, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1206:2", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:756d63454b_39:1", "rating": 2, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:dwg2056_059f61d7d3_0:1", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_419:3", "rating": 3, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:70200006aa_0:1", "rating": 1, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:2d546bad45_21:2", "rating": 5, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_220:2", "rating": 3, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_416:1", "rating": 8, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_902:2", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:c88f45e8da_873:3", "rating": 2, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:c1a1314165_85:2", "rating": 3, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:605b291675_333:2", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_726:2", "rating": 3, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1230:1", "rating": 5, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1068:2", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_39:2", "rating": 3, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:32cba94e9e_0:1", "rating": 2, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1478:3", "rating": 2, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:756d63454b_0:2", "rating": 2, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:a0d6ce54b8_2:1", "rating": 5, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_956:1", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:a0d6ce54b8_3:2", "rating": 8, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:dwg2056_19c56b1f8f_0:1", "rating": 2, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1478:1", "rating": 3, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:605b291675_6:3", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:e5214b486c_133:2", "rating": 6, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_781:1", "rating": 6, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1392:3", "rating": 8, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1442:1", "rating": 5, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:dwg2056_9a218da73a_0:1", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:756d63454b_724:2", "rating": 3, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:f4ce281d0a_746:1", "rating": 9, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:2d546bad45_42:2", "rating": 1, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:c88f45e8da_425:1", "rating": 3, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:dwg2056_c6706fc6d4_0:1", "rating": 7, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:dwg2056_62f63ea322_0:2", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:userImg_example1:1", "rating": 7, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:756d63454b_39:3", "rating": 1, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:0a48ec25fa_1:2", "rating": 7, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:dwg2056_681935e290_0:2", "rating": 2, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_841:1", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_1054:1", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:c88f45e8da_343:2", "rating": 3, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_1357:1", "rating": 8, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1399:2", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:756d63454b_6:2", "rating": 1, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:756d63454b_297:3", "rating": 4, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:756d63454b_138:1", "rating": 2, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:userImg_example4:2", "rating": 7, "rater": "expert:tpfhph0y", "datasetVersion": "6-eef56f", "ingested": "2026-11-01T19:27:56+00:00"}
+{"id": "sheet:L1f:5efdfdfde8_132:2", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_220:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:dwg2056_cb1ed96b67_0:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:dwg2056_334afe6a7e_0:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_301:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_325:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_cafe5e0bd5_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_293:2", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_8621e8e497_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_4ff35950db_0:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_230:2", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:userImg_example3:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_423:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:userImg_example4:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_cafe5e0bd5_0:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:e5214b486c_124:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_389:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_816:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_608:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:b974a2439c_1:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1395:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1499:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_1072:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_242:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_32fe0ac720_0:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_d9e07e9951_0:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_39:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_902:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_39:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_5:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c1a1314165_85:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1392:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:c88f45e8da_1499:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_28:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:5efdfdfde8_39:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:756d63454b_297:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:dwg2056_e2213816fc_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_956:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:605b291675_333:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_293:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:e64584a35e_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_28:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:18afc8e7d3_12:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:af54cef1ce_1206:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_608:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:c88f45e8da_1019:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_364:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_0a03628a16_0:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_994:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_801:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:3f6bda2f97_94:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_326:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:userImg_example6:2", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_752:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:0a48ec25fa_2:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_d2df534ca9_0:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:756d63454b_312:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:70200006aa_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_383:2", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_1072:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:f4ce281d0a_378:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_841:3", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:751ef8bc05_19:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:dwg2056_542f0adabf_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:f4ce281d0a_641:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_399:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:cb94452521_38:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_1357:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_69:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:18afc8e7d3_12:2", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:af54cef1ce_1395:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_287:2", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_d9e07e9951_0:3", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_69:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_364:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_343:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:0a48ec25fa_1:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:5efdfdfde8_132:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_681935e290_0:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:a0d6ce54b8_2:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1068:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:dwg2056_8621e8e497_0:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:c88f45e8da_343:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_446f25fc0b_0:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_355:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:751ef8bc05_19:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1392:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_184:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_614:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:756d63454b_326:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_994:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:dwg2056_681935e290_0:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_8b38f392f8_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_419:2", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_410:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_87e1e3ae38_0:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_399:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_185:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_90ea926e71_0:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_185:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:e5214b486c_130:2", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_1054:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_758:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:f4ce281d0a_706:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_389:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:f4ce281d0a_706:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:605b291675_333:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_297:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:3f6bda2f97_94:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_624:2", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_614:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_334afe6a7e_0:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:cb94452521_38:3", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1206:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:e5214b486c_130:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_cb1ed96b67_0:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:userImg_example6:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_90ea926e71_0:2", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_419:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_184:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:605b291675_123:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:0a48ec25fa_2:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:32cba94e9e_0:3", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:f4ce281d0a_641:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_796:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:2d546bad45_42:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_312:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_410:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_87:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:e64584a35e_0:2", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1019:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:dwg2056_d2df534ca9_0:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:a0d6ce54b8_3:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1x:d9da2eedc1_752:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_230:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:af54cef1ce_816:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_801:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:c1a1314165_85:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_87e1e3ae38_0:3", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_9a218da73a_0:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_542f0adabf_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:af54cef1ce_220:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_301:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_87:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_32fe0ac720_0:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:756d63454b_758:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:dwg2056_0a03628a16_0:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_446f25fc0b_0:2", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_383:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:userImg_example3:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_242:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_873:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:f4ce281d0a_746:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:e5214b486c_124:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1x:d9da2eedc1_891:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_873:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_e2213816fc_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:5efdfdfde8_39:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:b974a2439c_1:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:f4ce281d0a_378:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:dwg2056_4ff35950db_0:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_5:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_423:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:d9da2eedc1_891:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1x:756d63454b_244:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_287:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_781:2", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:756d63454b_244:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_8b38f392f8_0:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:af54cef1ce_325:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_590:3", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:605b291675_123:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L2f:af54cef1ce_796:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_624:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1541:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_176:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1058:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_685:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_fd755c3797_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_d49e615a35_0:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:8251e71e7c_43:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1021:2", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1230:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:cb94452521_38:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:2d546bad45_21:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:8c00539321_7:2", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_355:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:605b291675_6:3", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1499:3", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1140:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_383:3", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1399:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_956:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1206:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_4ff35950db_0:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_138:3", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:9b5b18d436_0:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_841:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_419:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_423:3", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_1134:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:3f6bda2f97_94:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:cb94452521_39:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_39:3", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_401:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_fd755c3797_0:3", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_39:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:a28e6bcdd0_0:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_366:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_325:3", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_590:2", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:8c00539321_7:3", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1021:3", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:19eb2134b6_330:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1478:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:32cba94e9e_0:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_1386:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_270:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_637:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_5:3", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_401:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_758:3", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_364:2", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:8d9957c1bc_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_356:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1017:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_49:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:userImg_example3:3", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:userImg_example4:3", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_3660733870_0:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_757:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:8d9957c1bc_0:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_841:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_c6706fc6d4_0:2", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:cb94452521_39:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_28:3", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_343:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_973:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_185:3", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_637:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_6:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1068:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1541:3", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:709accf60f_6:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1478:2", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_347:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_19c56b1f8f_0:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:userImg_example1:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:0cf01afbff_1:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:5efdfdfde8_132:3", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_287:3", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_356:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:605b291675_333:3", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_326:2", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:7248948dfc_0:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_87e1e3ae38_0:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_62f63ea322_0:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_724:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_325:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:5b767d4a60_0:3", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_384:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1478:3", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_402:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_873:3", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1021:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1311:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_971bef639d_0:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:4e4608b20b_126:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:3fa4e0e976_126:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_726:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_858:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_355:3", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_402:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1442:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_8621e8e497_0:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_1136:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_2ac9304978_0:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_681935e290_0:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_416:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_22:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:0d9cbb6d3b_1:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_230:3", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_39:3", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_d9e07e9951_0:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_661:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_757:3", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_902:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_685:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_425:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:0cf01afbff_1:2", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:a0d6ce54b8_3:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_410:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_297:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:751ef8bc05_1:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_973:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_ba70422dde_0:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:5b767d4a60_0:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_112bdb8717_0:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_6:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:a0d6ce54b8_2:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:0d9cbb6d3b_1:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_410:2", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_273:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1217:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_312:3", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_416:3", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:709accf60f_4:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_724:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:5486166b04_73:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:18afc8e7d3_12:3", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c1a1314165_85:2", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_d49e615a35_0:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_590:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_781:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_d2df534ca9_0:3", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_344:3", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_401:3", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:0d9cbb6d3b_0:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:f917254f76_0:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:5486166b04_73:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_138:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_1054:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_956:3", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_39:2", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_758:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:8251e71e7c_42:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:e5214b486c_133:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_608:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:e64584a35e_0:3", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:8c00539321_7:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_386:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:userImg_example4:2", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1499:2", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:8251e71e7c_42:2", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_62f63ea322_0:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:f4ce281d0a_706:3", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_312:2", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1217:3", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_423:2", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_344:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_cb1ed96b67_0:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:5486166b04_73:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_3660733870_0:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1217:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_774:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_384:3", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_2ac9304978_0:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_138:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_5516aac922_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_d2df534ca9_0:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_492:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_0a03628a16_0:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1392:3", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_902:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_297:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:605b291675_6:2", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_979:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_c6706fc6d4_0:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1541:1", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_8621e8e497_0:3", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:4e4608b20b_126:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:e5214b486c_133:3", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_637:3", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_166:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_178:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_446f25fc0b_0:3", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:5b767d4a60_0:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_724:3", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_e2213816fc_0:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1017:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:e5214b486c_133:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_059f61d7d3_0:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:605b291675_6:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_6:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:userImg_example1:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_774:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1399:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_590:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_956:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_344:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_293:3", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:32cba94e9e_0:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_87:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_fd755c3797_0:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:2d546bad45_42:2", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_0:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:cb94452521_39:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:2d546bad45_21:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:a0d6ce54b8_2:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_220:2", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_39:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_789:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_1357:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1019:2", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:0a48ec25fa_1:2", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_574:1", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1017:1", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:605b291675_333:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_774:3", "rating": 9, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_166:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:f4ce281d0a_641:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_1058:1", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_796:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:bc82c0d777_0:1", "rating": 4, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_681935e290_0:3", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:userImg_example6:3", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_970:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_685:3", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_384:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_416:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_356:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_1134:2", "rating": 5, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_1134:3", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_757:2", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:70200006aa_0:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:dwg2056_9a218da73a_0:1", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:d9da2eedc1_386:2", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_1442:1", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_273:2", "rating": 1, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:f4ce281d0a_527:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:c88f45e8da_425:2", "rating": 3, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:f4ce281d0a_746:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_726:1", "rating": 6, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_0:1", "rating": 2, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:756d63454b_301:3", "rating": 7, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}
+{"id": "sheet:L1f:af54cef1ce_781:3", "rating": 8, "rater": "expert:befrf1yi", "datasetVersion": "76-b4c925", "sawOriginal": true, "ingested": "2026-11-05T04:59:17+00:00"}

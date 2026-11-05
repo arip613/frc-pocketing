@@ -212,6 +212,250 @@ What the eye picked up, and what the measurements confirm:
   lattice is centred on the plate, so symmetry is kept. The example and gold plates
   get no junctions at all, so their look is unchanged.
 
+## 10. What the expert's picks say
+
+An experienced FRC designer rated 282 designs 1–9 (rounds m3 and m3b) and made 258
+A-vs-B picks on the Plate Pairs page (round n1 against m3 and m3b). Held-out plates
+were never shown to him.
+- **Claude's grades hurt.** The scorer was retrained with and without Claude's own
+  sheet grades, cross-validated over three fifths of the graded plates. On held-out
+  plates it matched his picks 94 of 144 times without Claude's grades and 81 with
+  them. Leaving them out won in all three folds. The live scorer, trained before he
+  rated anything, matched 93, so his data has not yet produced a scorer that beats it.
+  The runs are in `models/marathon/cv/` (`agreement.log`); `models/marathon/e1` is
+  the fold-0 run without Claude's grades.
+- **Everyone prefers lighter plates with fewer ribs.** Within a plate, the design
+  that removes more material wins 76–79% of graded pairs for the user, the expert and
+  Claude alike, and the one with fewer ribs wins 71–76%. Material removed alone predicts
+  his 1–9 ratings (78%) and his picks (64%) as well as the live scorer does (76%,
+  62%).
+- **Uncapping the mass term barely changes the output.** The ranking stops
+  rewarding removal at 40%, and 74% of designs are past that. Rewarding it linearly
+  (0.70 looks + 0.75 × removed) matched him a little better on every check (picks
+  62% → 68% with the live scorer; held out, his ratings 72% → 73% and the user's grades
+  74% → 77%). But it chose the same design on 6 of 8 look-test plates, and only a
+  slightly lighter one on the other two (`data/eval/marathon/massCap/`). One run's
+  candidates remove about the same amount, so only the generator can make plates
+  lighter. Not adopted.
+- **The training rounds make plates heavier.** With the cap, each generate-and-score
+  round of the e1 generator removed less: 47.1%, 45.8%, 44.8%. On 18 open plates, all
+  ranked by the live scorer, the u1 and e1 generators remove a little less than the live
+  one (46.0% and 47.0% against 47.7%) and use more ribs on 12 of the 18. That is the
+  opposite of what the raters reward, so neither replaced the live generator.
+  `trainGenerator --linear-mass 0.75` scores the rounds without the cap instead. The
+  m1 run (live scorer, no Claude grades) kept removal level in its one round (48.1%
+  to 47.9% on validation) but stopped at the plateau, and on the 18 plates it removes
+  46.9–47.0%, like e1. The live generator is still the lightest. Every generator
+  learns mostly from imitating the gold plates, so the rounds move it very little.
+  The numbers are in `data/eval/marathon/generators/traits.jsonl`.
+- **Density.** Both the user and the expert grade the 1.0 pocket-size factor above
+  0.6. In his picks the more open design won 66 of 89 times. The user grades 1.5 below
+  1.0. The live default, 1.25, sits in that range. Rating sheets now offer 1.0 and
+  1.25.
+
+## 11. v2: built from the user's and the expert's own choices
+
+- **The user's picks.** On a blind page (data/curation/sheets/p1) the user picked their
+  favourite of the live, e1, u1 and m1 designs on 18 of 22 open plates: live 6, u1 5,
+  e1 4, m1 4. No single set wins. The live scorer chose the user's pick on 5 of 18, about
+  chance (4.7), and the lightest design on 10. On 8 fresh plates picked blind afterwards
+  (p2), the lightest was the pick on 6 of 7 and the live ranking's on none (random 1.8).
+  The cards showed each design's share removed, which may have helped. `CombinedPocketer`
+  runs several sets and offers the lightest sound design first.
+- **The taste model** (`taste.py`, `models/marathon/v2/taste.json`) is a linear model on
+  the scorer's design features and its looks score, fitted only to people: 2,012
+  within-plate preferences from the user's sheet grades and picks and the expert's ratings
+  and pair picks, the user and the expert weighted equally, no Claude grades. Held out by
+  plate it agrees with the expert's pair picks 70% (live ranking 62%), his ratings 79%
+  (76%) and the user's model-set picks 77% (59%). On the user's sheet grades it gets 88%,
+  where the live scorer's 93% is in-sample. It rewards looks, material removed, bigger and
+  more even pockets, triangles and symmetry.
+- **v2** proposes with all four generators, ranks with the taste model through the usual
+  structural floor, and polishes, including the hole rule below. A v2 generator trained
+  on the user's and the expert's top designs, with rounds scored by the taste model, is
+  in `models/marathon/v2`.
+- **No hole hangs off one rib** (the user's rule). A hole off the outer wall held by a
+  single rib gets a second in the last polish step. Holes whose bosses overlap count as
+  one, and a hole closer to the wall than a pocket could fit counts as on the wall. On the
+  114 designs of the pick pages no hole was left hanging by one arm.
+
+## 12. Robots the user exported, their style, and what they pick
+
+- **Six Onshape robots, exported by hand** (STEP per robot, `data/processed_manual`). The
+  extractor first found 53 pocketed plates. Three parallel diagnoses found why, and the
+  fixes brought it to 195. Every solid of a file is now scanned, not just the first 400.
+  Bent sheet metal is read from its flat base. Plates with blind or floored pockets pass.
+  Rounded-triangle and kidney pockets are no longer taken for slots. Belts and rings are
+  dropped. The user kept 95 of the 191 shown (`data/curation/plateKeeper.json`). They are
+  gold weighted as the user's taste. The Sim robot's 13 are held out as the style test.
+- **Their style, measured** (kept against not kept, same robots). Pockets are dense:
+  0.67 per in² of material against 0.35. Pocket area is about 0.165 · S^1.05 in², with
+  S = √(material area). Ribs are thin and one width, about 0.156 in, with the wall and boss
+  rings the same. Open junctions are mostly 3-way, the smallest angle about 92°. Every hole
+  is engaged, with about 3 ribs per interior hole. Edge bolts get ribs more often than a
+  plain band. About 50% of the material is removed.
+- **Style test** (`styleTest.py`): rebuild the held-out kept plates from outline and holes.
+  The live tool matches pocket count and weight but not the layout (material IoU 0.55,
+  0.46 for an unpocketed plate).
+- **Truss engine** (`truss.py`, generator "truss", off by default). Its rib junctions are
+  free: relaxed even triangles, a version with sharp junction angles removed, and aligned
+  rails with diagonal or square rungs. It can draw layouts the fixed-point generator
+  cannot. In a blind round against the live tool's design (p5, 18 plates) the user picked
+  live 13 times and the truss engine 5, all of those on bigger plates. They never picked
+  the aligned rows.
+- **Choosers.** A looks scorer retrained with the kept plates as gold (s4) liked truss
+  designs and matched the user's p5 picks 6 of 18 times. The lightest design matched 13.
+  Across all three blind rounds (43 plates), the rule now live matched the user 31 times.
+  It shows the lightest sound design among the taste model's top three. The taste model's
+  own first choice matched 24 and the lightest overall 29.
+
+## 13. The expert's taste only (v5 chooser)
+
+- **The user's call (2026-11-01):** the expert's taste is what matters; the user's does
+  not count. The chooser is judged by his mean rating of design A, the design shown first.
+- **His ratings of the live tool's own output** (round L1f, page part 6, 63 of 378 so far):
+  mean 4.1 of 9. Design A 4.4 (28 rated), B 4.0, C 3.2. Across these designs the v2 taste
+  model's score does not track his rating (Spearman -0.09). His 7-9s have every hole tied
+  into ribs with bosses, ribs running hole to hole, fewer and rounder pockets. His 1-2s
+  have "cracked glass" layouts that ignore the holes, holes left in solid areas, long
+  slivers, over 60% removed, or pockets added to plates that already have dense hole rows.
+- **The rules, checked on his own preferences within a plate:** the lighter design wins
+  78% of 348 pairs (75% of 259 when both remove 35%+), and on symmetric plates the more
+  symmetric one wins 83% of 77.
+- **Design A, simulated** on the 56 plates where he rated 2+ designs, taste scores held
+  out by plate (`taste.py` reports the live-round part of this; all versions choose among
+  the designs he rated): the average design gets 3.10 and the best possible 5.12. The live
+  chooser (v2 taste, lightest of the top 3, symmetry rule) gets 3.82, in-sample, since v2
+  saw these ratings. The expert-only taste model (v5) gets 3.77; with the symmetry rule
+  3.88; with lightest-of-top-3 as well 3.89. So the symmetry rule helps (+0.11, +0.24 on
+  symmetric plates) and lightest-of-top-3 adds nothing once the model is his (+0.01).
+  The model already puts its largest weight on material removed. Comparing his ratings
+  across plates, of the live round or all rounds, lowered the score and the held-out
+  agreement, so they are compared within a plate only.
+- **v5** (`models/marathon/v5/taste.json`): trained on his ratings and pair picks only,
+  within a plate. With the symmetry rule and no lightest-of-top-3, it ties the live
+  chooser on his design-A rating (+0.05, 95% interval -0.30 to +0.39 over 56 plates). The
+  gap to the best possible (1.2 points) is what the features miss. Round L2 runs it on the
+  190 plates of L1 so his ratings can settle it.
+- **Round L2** (v5 + symmetry rule, no lightest-of-top-3, same plates, generators and
+  seed as L1): 189 plates have a design A. It is the live chooser's design A on 91 and
+  differs on 98; there it is live's B or C on 53 and a design live didn't show on 45. Where
+  they differ, v5's A removes more material on only 33 of 98. His ratings of both A designs
+  on those 98 plates settle it: 22 were already rated; the other 174 open his part 7+6 page
+  (`plate-rater-parts76.html`, which carries over his part 6 progress), ahead of the rest
+  of part 6. Round L2f holds v5's new A designs (45) and L1x the live A designs the part 6
+  filter left off (3); both are shown even below the filter, since each is what its
+  chooser would show first.
+
+## 14. Round L2 result: v5 vs live on his design-A ratings (2026-11-05)
+
+He rated all 426 designs on the part 7+6 page in one sitting, from a different browser
+(rater expert:befrf1yi, so part 6 was rated again from scratch), and edited 27 designs by
+hand.
+
+- **Design A, live vs v5**, on the 98 plates where the two choosers show different A
+  designs (his latest session, every one rated): live 5.48, v5 5.82, **+0.34 (95% interval
+  -0.14 to +0.83)**; v5 better on 43, worse on 34, tied on 21 (sign test p = 0.36). Over all
+  184 rated plates: live 5.22, v5 5.40. Where v5 picked live's own B or C design: +0.51 (53
+  plates); where it picked a design live never showed: +0.13 (45).
+- **With the team's original open:** 205 of the 426 ratings were given with that panel
+  open (he left it open from rating 138 on). On the 80 deciding plates where neither A was
+  rated with it open, v5 and live tie (+0.11, 30 better, 31 worse). So v5 is at least as
+  good as live, not clearly better.
+- **His repeatability:** the 63 designs he rated twice (part 6, then again here) agree
+  only loosely: Pearson 0.38, mean gap 1.9 points, the same rating on 15. A real
+  difference of a third of a point needs about 100 plates to show.
+- **Weight:** between the two A designs, the lighter one was rated higher on 36 of 96
+  plates, lower on 39 (mean -0.26); where v5 chose the heavier design it did better (+0.44
+  on 63 plates). Over all his within-plate pairs the lighter design still wins 74% (441),
+  so weight matters between a good and a poor design, not between two good ones. Dropping
+  lightest-of-top-3 holds.
+- **v6** (`models/marathon/v6/taste.json`): retrained on all his data (714 preferences;
+  the live-design pairs grew from 63 ratings to 489). Cross-validation picked a much
+  stronger penalty (10 vs 1), as his ratings are noisy, so the weights are smaller; the
+  strongest terms are removedFraction +0.76, meanConvexity +0.46, logMeanPocketArea +0.40,
+  symmetryShortfall -0.39, elongatedFraction +0.37, pocketSizeVsGold -0.37, holesEngaged
+  +0.36. Simulated design A (held out by plate, choosing among his rated designs): v6
+  5.12, v5 5.09, v2 4.99, the live tool's own order 5.21, the best possible 6.31. With
+  the symmetry rule, v6 is +0.15 over live (-0.17 to +0.46) on 168 plates. Not tested in a
+  live round.
+- **His edits** (27 designs, mostly ones he rated 5-8): ribs added on 24 (44 ribs),
+  material erased on 9, pocket count up on 22, removed share 46% -> 45%. The pockets he
+  split with a rib are long (perimeter²/4πA 1.79 vs 1.40 for the ones he left alone)
+  and large for their plate (1.42x the plate's median pocket area vs 1.00x; 24% of them
+  over 2x vs 3% of the rest), not wide (inscribed width 0.71 vs 0.80 in). So designs
+  he likes often lose points to one or two long, oversized pockets.
+- **Where the room is:** every chooser lands within noise of the others (4.5-5.4) and the
+  best design on each plate averages 6.2-6.3, part of which is noise in his ratings. The
+  rest has to come from the designs: splitting long oversized pockets the way he does.
+
+## 15. Live switched to his taste (2026-11-05)
+
+The user: use his ratings any way we can (they took him two hours). So:
+
+- **Chooser:** live now uses **v6** (`models/marathon/v6/taste.json`), trained only on his
+  ratings, pair picks and hand edits; **lightest-of-top-3 is off** (`lightestOfTop = 1`);
+  the symmetric-plate rule stays. The round L2 test above backs the expert-only chooser
+  (v5 +0.34 over v2 on design A); v6 adds his latest ratings and edits and ties v5 held out.
+- **His edits as data:** round E1 (`expertRater edits`) holds his 27 edited designs rebuilt
+  from his strokes; the taste model counts each as beating the design he edited. Held out,
+  v6 sides with his edit 78% of the time (removed share alone: 15%, since he mostly adds
+  ribs).
+- **Splitting long pockets:** polish now splits long pockets from elongation 2.2 (was 3.0;
+  `polish.splitTriggerElongation`), fitted to the pockets he split by hand. On 12 of his
+  edited plates (v5 chooser, against round L2) design A changed on 6, with fewer long
+  pockets (-0.58 per plate), 0.6% less material removed and every design still sound.
+  Thin truss wedges smaller than a typical pocket are left alone, as before.
+- **Round L3 (the switched setup):** `data/curation/sheets/L3` holds the live setup's
+  designs for 189 of the 190 round-L2 plates. Every design A is sound. Against L2's A:
+  changed on 87 plates, +0.8 pockets and -0.26 long pockets per plate, removed share level.
+  On the 115 plates where L3's A matches a design he has rated: L1 5.30, L2 5.56,
+  L3 5.51 (L3 - L1 +0.20, 95% -0.07 to +0.47; better on 25, worse on 10). The other 74
+  A designs are new (mostly the extra splits) and unrated, so the split change itself
+  has no rating yet.
+- **Revert:** `pocketer.defaultScorerPath` back to `models/marathon/v2/taste.json`,
+  `pocketer.lightestOfTop = 3`, `polish.splitTriggerElongation = 3.0`.
+
+## 16. What his low ratings share: ribs meeting in open plate (2026-11-05)
+
+Half of his 772 ratings are 1-3. What they share, from his data alone:
+
+- **Within a plate the features are weak.** Against his rating centred per plate, no design
+  feature passes |r| 0.17 (strongest: pocket size and width away from gold, the biggest solid
+  region, the looks score). The chooser already uses these.
+- **Most of the spread is between plates** (56% of the variance of his live ratings). Plates
+  with little hole area score lowest (Spearman +0.33 with the plate's hole share; median 4% on
+  plates rated 3 or less against 14% on plates rated 6 or more).
+- **Free junctions:** ribs that meet in open plate, away from any hole or the wall (counted
+  from the Voronoi diagram of the pocket, hole and wall boundaries: a web node whose
+  neighbours are all pockets). His mean rating by count: none 4.82, 1-2 3.71, 3-5 3.48,
+  6 or more 2.76 (r -0.25 over all his ratings). Within a plate it is flat (r +0.01): every
+  design the tool makes for an open plate has them, so the chooser can't avoid them.
+- **The teams' originals** of the plates he rated lowest have half the tool's free junctions
+  (1.2 against 2.4 per design); on his top plates the two match (0.7 against 0.6).
+- **His own hand-drawn ribs** end at a hole 68 times, at the wall 14, on another rib 5 and in
+  open plate once (88 ends, 27 edits).
+- Pocket size is not it: the tool's median pocket is as near the gold size on his low
+  plates as on his high ones, and as near as the teams' originals.
+- The new split trigger (section 15) adds a few: free junctions per design A went 1.62
+  (L2) to 1.84 (L3).
+
+Where they come from: the generator's candidate graph has a lattice of free junctions on
+plates whose holes are far apart (`layout.sparseJunctions`, so the decoder can cut cells of
+the gold size), the truss engine places free junctions by design, and polish splits may end
+a rib on another rib (a T).
+
+What was built (all off by default):
+
+- `polish.anchorJunctions`: a polish step that moves a free junction onto a hole within a
+  typical pocket width, or takes its ribs out and re-splits with ribs that end at holes or
+  the wall (kept only if valid, with fewer free junctions, no new oversized pocket and, for
+  the re-split, no longer or more bent pockets than before). On low-rated plates it changed
+  about 4 designs in 10 and removed 1-3 free junctions where it did: a partial fix. The
+  re-split without the pocket guard left long bent pockets that his taste model scored down.
+- `layout.latticeJunctions = False` and `polish.anchoredSplits = True`, with the truss engine
+  left out: a hole-anchored mode in which every rib runs between holes and wall points.
+
 ## Sources
 
 See `data/sources.jsonl` for the per-item log (URL, timestamp, license, sha256,

@@ -1,51 +1,51 @@
 {
- "bestRound": 0,
+ "bestRound": 1,
  "rounds": [
   {
    "plates": 22,
    "mlGreedyValidRate": 1.0,
    "mlGreedy": {
-    "aesthetic": 0.601945199072361,
-    "removed": 0.4595993937978392,
-    "utility": 0.6384374499320984
+    "aesthetic": 0.6833897910334847,
+    "removed": 0.4750381066832325,
+    "utility": 0.6920502185821533
    },
    "mlBestOfK": {
-    "aesthetic": 0.6946320845322176,
-    "removed": 0.45158717075539845,
-    "utility": 0.7300894260406494
+    "aesthetic": 0.7574750293384899,
+    "removed": 0.4727306473171798,
+    "utility": 0.7717872858047485
    },
    "baseline": {
-    "aesthetic": 0.5132168870833185,
-    "removed": 0.36191553827801626,
-    "utility": 0.5575482845306396
+    "aesthetic": 0.5213709128530402,
+    "removed": 0.3158786720889924,
+    "utility": 0.554827868938446
    },
-   "baselineValidRate": 0.8181818181818182,
+   "baselineValidRate": 0.8636363636363636,
    "round": 0,
-   "seconds": 47.74148511886597
+   "seconds": 63.457966327667236
   },
   {
    "plates": 22,
    "mlGreedyValidRate": 1.0,
    "mlGreedy": {
-    "aesthetic": 0.6399927498264746,
-    "removed": 0.4568228541334753,
-    "utility": 0.6872575283050537
+    "aesthetic": 0.7070693800395186,
+    "removed": 0.4755073881404625,
+    "utility": 0.7108625173568726
    },
    "mlBestOfK": {
-    "aesthetic": 0.6955530873753808,
-    "removed": 0.45202738729505526,
-    "utility": 0.731157660484314
+    "aesthetic": 0.7792484922842546,
+    "removed": 0.4711314764747337,
+    "utility": 0.7861753702163696
    },
    "baseline": {
-    "aesthetic": 0.5132168870833185,
-    "removed": 0.36191553827801626,
-    "utility": 0.5575482845306396
+    "aesthetic": 0.5213709128530402,
+    "removed": 0.3158786720889924,
+    "utility": 0.554827868938446
    },
-   "baselineValidRate": 0.8181818181818182,
+   "baselineValidRate": 0.8636363636363636,
    "round": 1,
-   "trainProposalValidRate": 0.96875,
-   "elites": 62,
-   "seconds": 125.95758509635925
+   "trainProposalValidRate": 0.9821428571428571,
+   "elites": 110,
+   "seconds": 308.34189653396606
   }
  ]
 }

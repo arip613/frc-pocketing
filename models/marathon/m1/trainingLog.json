@@ -1,0 +1,51 @@
+{
+ "bestRound": 0,
+ "rounds": [
+  {
+   "plates": 22,
+   "mlGreedyValidRate": 1.0,
+   "mlGreedy": {
+    "aesthetic": 0.7275285029953177,
+    "removed": 0.47132668876579636,
+    "utility": 0.5856059193611145
+   },
+   "mlBestOfK": {
+    "aesthetic": 0.7781439396468076,
+    "removed": 0.48105371007198855,
+    "utility": 0.6150721907615662
+   },
+   "baseline": {
+    "aesthetic": 0.5108370082943063,
+    "removed": 0.3003626189134831,
+    "utility": 0.4019709527492523
+   },
+   "baselineValidRate": 0.8636363636363636,
+   "round": 0,
+   "seconds": 82.60659432411194
+  },
+  {
+   "plates": 22,
+   "mlGreedyValidRate": 1.0,
+   "mlGreedy": {
+    "aesthetic": 0.7068764472549612,
+    "removed": 0.476267155467721,
+    "utility": 0.578191339969635
+   },
+   "mlBestOfK": {
+    "aesthetic": 0.7882831218567762,
+    "removed": 0.4790389485849424,
+    "utility": 0.6189247965812683
+   },
+   "baseline": {
+    "aesthetic": 0.5108370082943063,
+    "removed": 0.3003626189134831,
+    "utility": 0.4019709527492523
+   },
+   "baselineValidRate": 0.8636363636363636,
+   "round": 1,
+   "trainProposalValidRate": 0.9692307692307692,
+   "elites": 126,
+   "seconds": 534.7607641220093
+  }
+ ]
+}

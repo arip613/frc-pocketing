@@ -1,0 +1,75 @@
+{
+ "bestRound": 1,
+ "rounds": [
+  {
+   "plates": 22,
+   "mlGreedyValidRate": 1.0,
+   "mlGreedy": {
+    "aesthetic": 0.6507685861804269,
+    "removed": 0.4699128578983797,
+    "utility": 0.6811394691467285
+   },
+   "mlBestOfK": {
+    "aesthetic": 0.7085081691091711,
+    "removed": 0.47097771168295405,
+    "utility": 0.7291758060455322
+   },
+   "baseline": {
+    "aesthetic": 0.5574163167100203,
+    "removed": 0.3003626189134831,
+    "utility": 0.5806050300598145
+   },
+   "baselineValidRate": 0.8636363636363636,
+   "round": 0,
+   "seconds": 71.68868851661682
+  },
+  {
+   "plates": 22,
+   "mlGreedyValidRate": 1.0,
+   "mlGreedy": {
+    "aesthetic": 0.6502803320234473,
+    "removed": 0.4526834663601194,
+    "utility": 0.6773919463157654
+   },
+   "mlBestOfK": {
+    "aesthetic": 0.7316444285891273,
+    "removed": 0.45811269022308027,
+    "utility": 0.7604249715805054
+   },
+   "baseline": {
+    "aesthetic": 0.5574163167100203,
+    "removed": 0.3003626189134831,
+    "utility": 0.5806050300598145
+   },
+   "baselineValidRate": 0.8636363636363636,
+   "round": 1,
+   "trainProposalValidRate": 0.9692307692307692,
+   "elites": 126,
+   "seconds": 440.8553810119629
+  },
+  {
+   "plates": 22,
+   "mlGreedyValidRate": 1.0,
+   "mlGreedy": {
+    "aesthetic": 0.6284271912141279,
+    "removed": 0.44500647371108054,
+    "utility": 0.6575819849967957
+   },
+   "mlBestOfK": {
+    "aesthetic": 0.7059058750217612,
+    "removed": 0.4483374929103419,
+    "utility": 0.7374498844146729
+   },
+   "baseline": {
+    "aesthetic": 0.5574163167100203,
+    "removed": 0.3003626189134831,
+    "utility": 0.5806050300598145
+   },
+   "baselineValidRate": 0.8636363636363636,
+   "round": 2,
+   "trainProposalValidRate": 0.9846153846153847,
+   "elites": 128,
+   "seconds": 448.22581481933594
+  }
+ ]
+}

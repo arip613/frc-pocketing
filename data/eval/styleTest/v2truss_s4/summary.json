@@ -1,0 +1,255 @@
+{
+ "modelSet": {
+  "name": "v2+truss, s4 chooser",
+  "generators": [
+   "models/generator.pt",
+   "models/marathon/e1/generator.pt",
+   "models/marathon/u1/generator.pt",
+   "models/marathon/m1/generator.pt",
+   "truss"
+  ],
+  "scorer": "models/marathon/s4/aestheticScorer.pt"
+ },
+ "plates": 15,
+ "designed": 15,
+ "noSoundDesign": [],
+ "errors": {},
+ "relaxed": {
+  "1bb1ce9e48_546": "smaller pockets"
+ },
+ "tastePrefersReal": 6,
+ "metrics": {
+  "materialIoU": {
+   "mean": 0.5231479784112449,
+   "median": 0.43741244101400484,
+   "n": 15
+  },
+  "noPocketsIoU": {
+   "mean": 0.4559030735689156,
+   "median": 0.4213091771028502,
+   "n": 15
+  },
+  "pocketCountRatio": {
+   "mean": 1.299004884004884,
+   "median": 1.2,
+   "n": 15
+  },
+  "removedOurs": {
+   "mean": 0.4225220729806428,
+   "median": 0.49020328583626716,
+   "n": 15
+  },
+  "removedReal": {
+   "mean": 0.4204223096900791,
+   "median": 0.4436962992036446,
+   "n": 15
+  },
+  "removedDiff": {
+   "mean": 0.0020997632905637876,
+   "median": 0.00297933871410222,
+   "n": 15
+  },
+  "medianAreaRatio": {
+   "mean": 1.012041153635251,
+   "median": 0.9465852182206994,
+   "n": 15
+  },
+  "tasteOurs": {
+   "mean": 0.44100627116310126,
+   "median": 0.4533887786443125,
+   "n": 15
+  },
+  "tasteReal": {
+   "mean": 0.4462009184199616,
+   "median": 0.48824476320536675,
+   "n": 15
+  },
+  "tasteDiff": {
+   "mean": -0.005194647256860332,
+   "median": 0.007443228307519423,
+   "n": 15
+  }
+ },
+ "perPlate": {
+  "1bb1ce9e48_390": {
+   "materialIoU": 0.32702704693927287,
+   "noPocketsIoU": 0.30936956085222406,
+   "pocketCountRatio": 1.875,
+   "removedOurs": 0.4989192399866102,
+   "removedReal": 0.572132680969917,
+   "removedDiff": -0.07321344098330679,
+   "medianAreaRatio": 0.43138069222546405,
+   "tasteOurs": 0.332285812616839,
+   "tasteReal": 0.7259178589566615,
+   "tasteDiff": -0.3936320463398225
+  },
+  "1bb1ce9e48_546": {
+   "materialIoU": 0.25943350923434616,
+   "noPocketsIoU": 0.364749256431172,
+   "pocketCountRatio": 3.3333333333333335,
+   "removedOurs": 0.5007742932810276,
+   "removedReal": 0.5888404109144156,
+   "removedDiff": -0.08806611763338801,
+   "medianAreaRatio": 0.23294762843471797,
+   "tasteOurs": 0.39531476674248645,
+   "tasteReal": 0.6921684568857377,
+   "tasteDiff": -0.29685369014325125
+  },
+  "1bb1ce9e48_606": {
+   "materialIoU": 0.4688484722993135,
+   "noPocketsIoU": 0.463329092191266,
+   "pocketCountRatio": 1.0,
+   "removedOurs": 0.572251428577439,
+   "removedReal": 0.4436962992036446,
+   "removedDiff": 0.12855512937379443,
+   "medianAreaRatio": 1.3127168480336568,
+   "tasteOurs": 0.5744592793293066,
+   "tasteReal": 0.2079288324303556,
+   "tasteDiff": 0.36653044689895103
+  },
+  "1bb1ce9e48_624": {
+   "materialIoU": 0.3031614139946127,
+   "noPocketsIoU": 0.37242212543154146,
+   "pocketCountRatio": 1.2,
+   "removedOurs": 0.5244498732435661,
+   "removedReal": 0.5018107081958647,
+   "removedDiff": 0.02263916504770136,
+   "medianAreaRatio": 0.8641041023880556,
+   "tasteOurs": 0.5209566559995301,
+   "tasteReal": 0.5135134276920107,
+   "tasteDiff": 0.007443228307519423
+  },
+  "1bb1ce9e48_672": {
+   "materialIoU": 0.43741244101400484,
+   "noPocketsIoU": 0.41531832359547977,
+   "pocketCountRatio": 1.25,
+   "removedOurs": 0.4067027927782373,
+   "removedReal": 0.38081319242289324,
+   "removedDiff": 0.025889600355344045,
+   "medianAreaRatio": 0.804820357297347,
+   "tasteOurs": 0.6119006417067018,
+   "tasteReal": 0.42819444485354524,
+   "tasteDiff": 0.18370619685315653
+  },
+  "1bb1ce9e48_692": {
+   "materialIoU": 0.9678433311065661,
+   "noPocketsIoU": 0.8175720522704227,
+   "pocketCountRatio": 1.0,
+   "removedOurs": 0.10119832910075136,
+   "removedReal": 0.10636733149434953,
+   "removedDiff": -0.005169002393598174,
+   "medianAreaRatio": 0.9514042298421977,
+   "tasteOurs": 0.08469470252299327,
+   "tasteReal": 0.07787349088274918,
+   "tasteDiff": 0.0068212116402440875
+  },
+  "1bb1ce9e48_837": {
+   "materialIoU": 0.37192419678485883,
+   "noPocketsIoU": 0.37342012650718875,
+   "pocketCountRatio": 1.3846153846153846,
+   "removedOurs": 0.5269392434190595,
+   "removedReal": 0.522467098722459,
+   "removedDiff": 0.004472144696600511,
+   "medianAreaRatio": 0.8285539442943011,
+   "tasteOurs": 0.4027888940733115,
+   "tasteReal": 0.6824423417529366,
+   "tasteDiff": -0.27965344767962513
+  },
+  "1bb1ce9e48_973": {
+   "materialIoU": 0.9458342753161012,
+   "noPocketsIoU": 0.6161025003585123,
+   "pocketCountRatio": 1.0,
+   "removedOurs": 0.193668686768527,
+   "removedReal": 0.20474862321219725,
+   "removedDiff": -0.011079936443670252,
+   "medianAreaRatio": 0.9465852182206994,
+   "tasteOurs": 0.6337588066626852,
+   "tasteReal": 0.48824476320536675,
+   "tasteDiff": 0.1455140434573185
+  },
+  "1bb1ce9e48_1042": {
+   "materialIoU": 0.6618120752470968,
+   "noPocketsIoU": 0.4213091771028502,
+   "pocketCountRatio": 1.0,
+   "removedOurs": 0.49020328583626716,
+   "removedReal": 0.47324898134536325,
+   "removedDiff": 0.016954304490903904,
+   "medianAreaRatio": 1.3770147889130457,
+   "tasteOurs": 0.6776077668271799,
+   "tasteReal": 0.567671705585786,
+   "tasteDiff": 0.10993606124139399
+  },
+  "1bb1ce9e48_1118": {
+   "materialIoU": 0.7200482477544343,
+   "noPocketsIoU": 0.49675668677403834,
+   "pocketCountRatio": 1.2,
+   "removedOurs": 0.3543196590560341,
+   "removedReal": 0.36822720929117037,
+   "removedDiff": -0.01390755023513629,
+   "medianAreaRatio": 1.2930098907500962,
+   "tasteOurs": 0.382663535011372,
+   "tasteReal": 0.22941442428448577,
+   "tasteDiff": 0.15324911072688624
+  },
+  "1bb1ce9e48_1127": {
+   "materialIoU": 0.31793915688146057,
+   "noPocketsIoU": 0.3517609931582495,
+   "pocketCountRatio": 0.6190476190476191,
+   "removedOurs": 0.5159332460861583,
+   "removedReal": 0.5420598620241689,
+   "removedDiff": -0.026126615938010578,
+   "medianAreaRatio": 2.6578490780691593,
+   "tasteOurs": 0.4533887786443125,
+   "tasteReal": 0.6177571307509262,
+   "tasteDiff": -0.1643683521066137
+  },
+  "1bb1ce9e48_1397": {
+   "materialIoU": 0.666728098905036,
+   "noPocketsIoU": 0.4415106452154148,
+   "pocketCountRatio": 1.3333333333333333,
+   "removedOurs": 0.333696245623323,
+   "removedReal": 0.3307169069092208,
+   "removedDiff": 0.00297933871410222,
+   "medianAreaRatio": 0.7247085581698263,
+   "tasteOurs": 0.46202862935944644,
+   "tasteReal": 0.4098409539215618,
+   "tasteDiff": 0.05218767543788466
+  },
+  "1bb1ce9e48_1514": {
+   "materialIoU": 0.32666186171426503,
+   "noPocketsIoU": 0.33812267997552653,
+   "pocketCountRatio": 1.0333333333333334,
+   "removedOurs": 0.6633943561577768,
+   "removedReal": 0.5902149498574302,
+   "removedDiff": 0.07317940630034658,
+   "medianAreaRatio": 1.0861483320881056,
+   "tasteOurs": 0.7654835449589238,
+   "tasteReal": 0.5367129587392243,
+   "tasteDiff": 0.22877058621969948
+  },
+  "userImg_example5": {
+   "materialIoU": 0.6484264793255016,
+   "noPocketsIoU": 0.549701279279005,
+   "pocketCountRatio": 1.3333333333333333,
+   "removedOurs": 0.24579840238599818,
+   "removedReal": 0.28224367058879984,
+   "removedDiff": -0.03644526820280167,
+   "medianAreaRatio": 0.5818374742281031,
+   "tasteOurs": 0.10478033007568002,
+   "tasteReal": 0.23295701095210766,
+   "tasteDiff": -0.12817668087642764
+  },
+  "userImg_example8": {
+   "materialIoU": 0.4241190696518038,
+   "noPocketsIoU": 0.5071016043908415,
+   "pocketCountRatio": 0.9230769230769231,
+   "removedOurs": 0.40958201240886755,
+   "removedReal": 0.398746720199292,
+   "removedDiff": 0.01083529220957552,
+   "medianAreaRatio": 1.0875361615739896,
+   "tasteOurs": 0.21298192291575038,
+   "tasteReal": 0.28237597540596904,
+   "tasteDiff": -0.06939405249021866
+  }
+ }
+}

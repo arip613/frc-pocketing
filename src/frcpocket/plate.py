@@ -16,6 +16,14 @@ from frcpocket import geom2d
 
 mmPerInch = 25.4
 boltMaxDiameterIn = 0.45  # bolts and counterbores; the smallest FRC bearing bores are ~0.5 in and up
+# Big non-round cutouts (windows, slots, notches) are edges of the plate, not holes: their
+# pockets keep the full wall, never just the boss ring. Hex bores (roundness 0.91) stay holes.
+openingMinAreaIn2 = 0.5
+openingMaxRoundness = 0.8
+
+
+def isOpening(feature):
+    return feature.area > openingMinAreaIn2 and 4 * math.pi * feature.area / feature.length**2 < openingMaxRoundness
 
 
 @dataclass
@@ -23,7 +31,7 @@ class PocketParams:
     """User-facing pocketing parameters, always stored in inches."""
 
     wallIn: float = 0.1875
-    ribIn: float = 0.125
+    ribIn: float = 0.1875  # 3/16 in: one width everywhere, so it has to carry the load alone
     cornerRadiusIn: float = 0.0625  # tool radius; every pocket corner gets at least this
     depthIn: float | None = None  # None = through; otherwise blind depth from the top face
     bossIn: float | None = None  # ring around each feature; None = the wall thickness
@@ -34,15 +42,22 @@ class PocketParams:
     # the gold pockets: median 0.32 on the user's examples, 0.38 on the CAD gold plates.
     filletFraction: float = 0.33
     maxFilletIn: float = 0.25
+    # Tight corners: every pocket corner is just the machining minimum (1.3x the tool radius),
+    # so ribs keep one width right up to where they meet instead of flaring into webs. The user
+    # and their CAD experts want uniform ribs; turn off for the soft gold-plate corners above.
+    tightCorners: bool = True
     # Rib layout style for the ML decoder: ribs sharing an end meet at least this wide, and
     # a small hole carries at most this many ribs (0 = no limit), a wall point one fewer.
     # Gold plates: the tightest rib-rib angle at a node is 45 deg at the 10th percentile and
     # 104 at the median; holes carry 2 ribs on average and rarely more than 4.
     minRibAngleDegrees: float = 20.0
     maxHoleRibs: int = 0
+    # One rib width per plate: the user and their CAD experts don't like variable-width ribs.
+    uniformRibs: bool = True
     # Density: multiplies the gold-fitted typical pocket size the ML decodes toward
     # (below 1 = more ribs and smaller pockets, above 1 = fewer, bigger pockets).
-    pocketSizeFactor: float = 1.0
+    # 1.25: the CAD expert rated fewer, bigger, cleaner pockets highest (docs/pocketingResearch.md agrees).
+    pocketSizeFactor: float = 1.25
 
     @classmethod
     def fromUnits(cls, units, wall, rib, cornerRadius, depth=None, boss=None, **extra):
@@ -61,6 +76,15 @@ class PocketParams:
         """Ring width kept around every hole. Its own setting: real FRC plates often use rings
         about half the wall (0.12 in rings with 0.25 in walls on the WCP and Team 221 plates)."""
         return self.bossIn if self.bossIn is not None else self.wallIn
+
+    def ribWidthFor(self, stored):
+        """Width a rib is cut at: the rib setting, or (only with uniformRibs off) its own wider width."""
+        return self.ribIn if self.uniformRibs or stored is None else max(stored, self.ribIn)
+
+    def ringFor(self, feature):
+        """Material kept between a pocket and this feature: the boss ring around holes, and
+        at least the wall along big cutouts, whose edges are walls."""
+        return max(self.boss, self.wallIn) if isOpening(feature) else self.boss
 
     @property
     def minPocketArea(self):

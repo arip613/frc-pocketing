@@ -1,0 +1,373 @@
+"""Expert rating page: a self-contained HTML file that shows one design at a time for a
+person to rate 1-9, and exports the ratings as JSON to send back.
+
+Designs come from the rating-sheet rounds (generated candidates) and from the real
+pocketed plates, shuffled together and never labelled. Held-out plates are never shown.
+
+    python -I -m frcpocket.expertRater build --part 1   # -> data/curation/expert/
+    python -I -m frcpocket.expertRater ingest <ratings.json> [...]
+    python -I -m frcpocket.expertRater edits   # round E1 from his hand edits
+
+Each part holds only designs that no earlier part showed, so a rater can do part 1 now
+and part 2 later; design ids are the same in every part.
+
+Ingested ratings become rater "expert:<id>" entries in data/curation/expertRatings.jsonl,
+which the scorer reads like the user's own grades (see ratingSheets.loadSheetRatings).
+
+On request (O) the page shows the plate unpocketed next to the team's own pocketed design
+(data/processed/plates.jsonl); ratings given with that open carry "sawOriginal". He can
+also edit a design by hand (D): add straight ribs, erase material (the generator's ribs
+included) with a round brush, or leave freehand marks, all in plate inches. Ingest saves
+the strokes to data/curation/expertDrawings.jsonl; editedPockets() rebuilds his version.
+"""
+
+import argparse
+import hashlib
+import json
+import random
+from datetime import datetime, timezone
+from pathlib import Path
+
+from shapely.geometry import Polygon
+
+from frcpocket.splits import isHoldout, loadRecords
+
+outDir = Path("data/curation/expert")
+sheetRoot = Path("data/curation/sheets")
+ratingsPath = Path("data/curation/expertRatings.jsonl")
+drawingsPath = Path("data/curation/expertDrawings.jsonl")  # ribs he drew in, marks he made
+templatePath = Path(__file__).parent / "webui" / "expertRater.html"
+scorerPath = "models/marathon/r0/aestheticScorer.pt"
+# Slop filter: nobody should spend time on these.
+maxSpanIn = 30.0  # bigger is a drawing-sheet trace or a belly pan, not a plate
+minPockets = 3
+minRemoved = 0.15  # share of the plate's material removed
+crumbAreaIn2 = 0.05  # pockets this small are trace scraps (text, arrows) or crumbs
+maxCrumbShare = 0.3
+minGrade = 2.5  # generated designs already graded below this are dropped
+dropScoreShare = 0.3  # and the scorer's bottom share of the ungraded ones
+
+
+def compact(loop, tolerance):
+    """Ring coordinates simplified and rounded for the page (inches, 3 decimals)."""
+    polygon = Polygon(loop)
+    if tolerance > 0 and polygon.is_valid:
+        polygon = polygon.simplify(tolerance, preserve_topology=True)
+    return [round(value, 3) for point in list(polygon.exterior.coords)[:-1] for value in point]
+
+
+def isSlop(item):
+    outline = Polygon(item["outline"])
+    minX, minY, maxX, maxY = outline.bounds
+    if max(maxX - minX, maxY - minY) > maxSpanIn or len(item["pockets"]) < minPockets:
+        return True
+    pockets = [Polygon(loop) for loop in item["pockets"]]
+    material = outline.area - sum(Polygon(loop).area for loop in item["holes"])
+    if material <= 0 or sum(p.area for p in pockets) / material < minRemoved:
+        return True
+    return sum(p.area < crumbAreaIn2 for p in pockets) / len(pockets) > maxCrumbShare
+
+
+def qualityCut(items):
+    """Drop slop, generated designs already graded poorly, and the scorer's worst ungraded ones."""
+    from frcpocket.plate import Plate, PocketParams
+    from frcpocket.ratingSheets import loadSheetRatings
+    from frcpocket.scorer import AestheticScorer
+
+    grades = {}
+    for _, entries in loadSheetRatings().values():
+        for *_, grade, entry in entries:
+            grades[f"sheet:{entry['round']}:{entry['sheet']}:{entry['candidate']}"] = grade
+    kept = [item for item in items if not isSlop(item)]
+    kept = [item for item in kept if grades.get(item["id"], 5) >= minGrade]
+    scorer = AestheticScorer(scorerPath)
+    ungraded = [item for item in kept if item["kind"] == "generated" and item["id"] not in grades]
+    scores = {}
+    for item in ungraded:
+        plate = Plate(outline=Polygon(item["outline"]), features=[Polygon(loop) for loop in item["holes"]],
+                      thicknessIn=item.get("thicknessIn") or 0.25)
+        params = PocketParams(**item["params"]) if item.get("params") else PocketParams()
+        scores[item["id"]] = float(scorer.score(plate, params, [[Polygon(loop) for loop in item["pockets"]]])[0])
+    if scores:
+        cutoff = sorted(scores.values())[int(dropScoreShare * len(scores))]
+        kept = [item for item in kept if scores.get(item["id"], 1.0) >= cutoff]
+    print(f"quality cut: {len(items)} -> {len(kept)}")
+    return kept
+
+
+def collectItems(target, rounds=(), real=True, cut=True):
+    """Generated sheet candidates (every round, or only `rounds`) and real pocketed designs,
+    held-out excluded. real=False leaves out real designs; cut=False shows every design as
+    generated (for rating the live tool exactly as it shows them)."""
+    items = []
+    for path in sorted(sheetRoot.glob("*/candidates.jsonl")):
+        roundName = path.parent.name
+        if rounds and roundName not in rounds:
+            continue
+        for line in path.open():
+            entry = json.loads(line)
+            if isHoldout(entry.get("plateId") or entry["sheet"]):
+                continue
+            if entry.get("source") == "real (kept)":
+                continue  # round k1 repeats a real design next to ours; it is shown once, as real
+            items.append({"id": f"sheet:{roundName}:{entry['sheet']}:{entry['candidate']}", "kind": "generated",
+                          "plateId": entry.get("plateId") or entry["sheet"], "thicknessIn": entry.get("thicknessIn"),
+                          "params": entry.get("params"), "outline": entry["outline"], "holes": entry["holes"],
+                          "pockets": entry["pockets"]})
+    for record in loadRecords("data/processed/plates.jsonl") if real else []:
+        if isHoldout(record["id"]) or not record.get("pockets"):
+            continue
+        items.append({"id": f"real:{record['id']}", "kind": "real", "plateId": record["id"],
+                      "thicknessIn": record.get("thicknessIn"), "params": None, "outline": record["outline"],
+                      "holes": record["holes"], "pockets": record["pockets"]})
+    items = qualityCut(items) if cut else items
+    rng = random.Random(7)
+    generated = [item for item in items if item["kind"] == "generated"]
+    real = [item for item in items if item["kind"] == "real"]
+    if len(generated) + len(real) > target:
+        generated = rng.sample(generated, max(0, target - len(real)))
+    return real + generated
+
+
+def plateOf(itemId):
+    """The plate a page item is a design of: sheet:<round>:<plate>:<k> or real:<plate>."""
+    parts = itemId.split(":")
+    return ":".join(parts[2:-1]) if parts[0] == "sheet" else ":".join(parts[1:])
+
+
+def withOriginals(data):
+    """Add the teams' own pocketed designs (data/processed/plates.jsonl) of the page's plates,
+    which the page shows on request next to the unpocketed plate. Held-out plates never."""
+    plates = {plateOf(item["i"]) for item in data["items"]}
+    orig = {}
+    for record in loadRecords("data/processed/plates.jsonl"):
+        if record["id"] not in plates or isHoldout(record["id"]) or not (record.get("pockets") or record.get("blindPockets")):
+            continue
+        minX, minY, maxX, maxY = Polygon(record["outline"]).bounds
+        tolerance = 0.0015 * max(maxX - minX, maxY - minY)
+        orig[record["id"]] = {"o": compact(record["outline"], tolerance),
+                              "f": [compact(loop, tolerance * 0.5) for loop in record["holes"]],
+                              "p": [compact(loop, tolerance) for loop in record.get("pockets") or []],
+                              "b": [compact(loop, tolerance) for loop in record.get("blindPockets") or []]}
+    return dict(data, orig=orig)
+
+
+def earlierIds(part):
+    ids = set()
+    for k in range(1, part):
+        path = outDir / f"items_part{k}.jsonl"
+        if path.exists():
+            ids |= {json.loads(line)["id"] for line in path.open()}
+    return ids
+
+
+def build(target, part, rounds=(), real=True, cut=True):
+    shown = earlierIds(part)
+    items = [item for item in collectItems(target + len(shown), rounds, real, cut) if item["id"] not in shown][:target]
+    outDir.mkdir(parents=True, exist_ok=True)
+    with open(outDir / f"items_part{part}.jsonl", "w") as handle:
+        for item in items:
+            # ids only: the geometry stays in each round's candidates.jsonl and in plates.jsonl
+            handle.write(json.dumps({key: item[key] for key in ("id", "kind", "plateId")}) + "\n")
+    page = []
+    for item in items:
+        outline = Polygon(item["outline"])
+        minX, minY, maxX, maxY = outline.bounds
+        tolerance = 0.0015 * max(maxX - minX, maxY - minY)
+        page.append({"i": item["id"], "w": round(maxX - minX, 2), "h": round(maxY - minY, 2),
+                     "t": round(item["thicknessIn"], 3) if item.get("thicknessIn") else None,
+                     "o": compact(item["outline"], tolerance),
+                     "f": [compact(loop, tolerance * 0.5) for loop in item["holes"]],
+                     "p": [compact(loop, tolerance) for loop in item["pockets"]]})
+    # The page keys saved progress by version, so a changed design set starts fresh.
+    digest = hashlib.sha1("".join(item["id"] for item in items).encode()).hexdigest()[:6]
+    data = json.dumps(withOriginals({"version": f"{part}-{digest}", "items": page}), separators=(",", ":"))
+    html = templatePath.read_text().replace("/*__DATA__*/null", data).replace("__PART__", str(part))
+    out = outDir / f"plate-rater-part{part}.html"
+    out.write_text(html)
+    kinds = {}
+    for item in items:
+        kinds[item["kind"]] = kinds.get(item["kind"], 0) + 1
+    print(f"{len(items)} designs {kinds}, {out} {out.stat().st_size / 1e6:.1f} MB")
+
+
+def rewrap(part):
+    """Put the current page template around an existing part's design list (same designs,
+    same saved-progress key)."""
+    import re
+    out = outDir / f"plate-rater-part{part}.html"
+    data = json.loads(re.search(r"const DATA = (\{.*?\});\n", out.read_text(), re.S).group(1))
+    data = json.dumps(withOriginals(data), separators=(",", ":"))
+    out.write_text(templatePath.read_text().replace("/*__DATA__*/null", data).replace("__PART__", str(part)))
+    print(f"rewrapped {out}")
+
+
+def combine(parts, fresh=False, outName=None, first=None):
+    """One page with the designs of several parts (shuffled together); it picks up progress
+    the separate part pages saved in the same browser. `first` (design ids) puts those
+    designs in a first section of their own, ahead of everything else."""
+    import re
+    datas = [json.loads(re.search(r"const DATA = (\{.*?\});\n", (outDir / f"plate-rater-part{k}.html").read_text(),
+                                  re.S).group(1)) for k in parts]
+    items = [item for data in datas for item in data["items"]]
+    sections = [len(d["items"]) for d in datas]
+    if first:
+        items = [item for item in items if item["i"] in first] + [item for item in items if item["i"] not in first]
+        sections = [n for n in (sum(item["i"] in first for item in items), sum(item["i"] not in first for item in items)) if n]
+    name = "".join(str(k) for k in parts)
+    digest = hashlib.sha1("".join(item["i"] for item in items).encode()).hexdigest()[:6]
+    # Earlier combined pages of the same parts (any order) hand over their saved progress too.
+    earlier = [m.group(1) for path in outDir.glob("plate-rater-parts*.html")
+               if (m := re.search(r'"version":"([^"]+)"', path.read_text()[:2_000_000]))]
+    migrate = [d["version"] for d in datas] + [v for v in earlier if v != f"{name}-{digest}"]
+    version = f"{name}-{digest}"
+    if fresh:  # its own save slot, and nothing carried over from earlier pages
+        version, migrate = f"{name}-{digest}-{datetime.now(timezone.utc):%Y%m%d%H%M}", []
+    # Parts in the order given, most useful first; the page shuffles within each.
+    data = json.dumps(withOriginals({"version": version, "migrate": migrate, "sections": sections,
+                                     "items": items}), separators=(",", ":"))
+    out = outDir / (outName or f"plate-rater-parts{name}.html")
+    page = templatePath.read_text().replace(", part __PART__", "").replace(' <span class="muted">· part __PART__</span>', "")
+    out.write_text(page.replace("/*__DATA__*/null", data))
+    print(f"{len(items)} designs, {out} {out.stat().st_size / 1e6:.1f} MB")
+
+
+def editedPockets(outline, holes, pockets, strokes):
+    """The design as he left it after drawing on it: strokes are applied in order, a "rib"
+    adds material (inside the plate, holes stay holes), a "cut" (the eraser) removes it,
+    and a "mark" is only a note. Returns the pockets as shapely polygons."""
+    from shapely.geometry import LineString, Point
+    from shapely.ops import unary_union
+
+    plate = Polygon(outline).buffer(0)
+    for loop in holes:
+        plate = plate.difference(Polygon(loop).buffer(0))
+    material = plate.difference(unary_union([Polygon(loop).buffer(0) for loop in pockets]))
+    for stroke in strokes:
+        if stroke["kind"] not in ("rib", "cut"):
+            continue
+        points = [tuple(point) for point in stroke["points"]]
+        line = LineString(points) if len(set(points)) > 1 else Point(points[0])
+        paint = line.buffer(stroke.get("width", 0.1875) / 2)
+        material = material.union(paint.intersection(plate)) if stroke["kind"] == "rib" else material.difference(paint)
+    removed = plate.difference(material)
+    return [part for part in getattr(removed, "geoms", [removed]) if part.area > 1e-4]
+
+
+def buildEdits():
+    """Round E1: his hand-edited designs (rebuilt from his strokes, pocket corners filleted
+    like any pocket), each naming the design it was edited from, so the taste model can
+    learn that his version beats the original."""
+    rows = {}
+    for path in sorted(sheetRoot.glob("*/candidates.jsonl")):
+        if path.parent.name == "E1":
+            continue
+        for line in path.open():
+            entry = json.loads(line)
+            rows[f"sheet:{path.parent.name}:{entry['sheet']}:{entry['candidate']}"] = entry
+    out, perPlate, islands = [], {}, 0
+    for line in drawingsPath.read_text().splitlines() if drawingsPath.exists() else []:
+        drawing = json.loads(line)
+        original = rows.get(drawing["id"])
+        if original is None or not any(stroke["kind"] in ("rib", "cut") for stroke in drawing["strokes"]):
+            continue
+        radius = (original.get("params") or {}).get("cornerRadiusIn", 0.0625)
+        pockets = []
+        for pocket in editedPockets(original["outline"], original["holes"], original["pockets"], drawing["strokes"]):
+            rounded = pocket.buffer(-radius).buffer(radius) if radius > 0 else pocket
+            for part in getattr(rounded, "geoms", [rounded]):
+                if part.area > 1e-3:
+                    islands += len(part.interiors)
+                    pockets.append([[round(x, 4), round(y, 4)] for x, y in part.exterior.coords])
+        outline = Polygon(original["outline"])
+        material = outline.area - sum(Polygon(loop).area for loop in original["holes"])
+        perPlate[original["sheet"]] = perPlate.get(original["sheet"], 0) + 1
+        out.append(dict(original, candidate=perPlate[original["sheet"]], source="expert edit", editOf=drawing["id"],
+                        editedBy=drawing["rater"], pockets=pockets, ribs=None, ribWidths=None,
+                        removed=round(sum(Polygon(loop).area for loop in pockets) / material, 3)))
+    folder = sheetRoot / "E1"
+    folder.mkdir(parents=True, exist_ok=True)
+    with open(folder / "candidates.jsonl", "w") as handle:
+        for entry in out:
+            handle.write(json.dumps(entry) + "\n")
+    print(f"{len(out)} edited designs -> {folder / 'candidates.jsonl'}" + (f" ({islands} islands dropped)" if islands else ""))
+
+
+def ingest(paths):
+    known = set()
+    for path in outDir.glob("items_part*.jsonl"):
+        known |= {json.loads(line)["id"] for line in path.open()}
+    # A combined page exports the ratings it carried over from earlier parts too: those are skipped.
+    have = {(r["id"], r["rater"], r["rating"]) for r in map(json.loads, ratingsPath.read_text().splitlines())} \
+        if ratingsPath.exists() else set()
+    added = skipped = 0
+    with open(ratingsPath, "a") as handle:
+        for path in paths:
+            export = json.loads(Path(path).read_text())
+            # A random id per browser (pages before 2026-10-30 evening sent the rater's name).
+            rater = "expert:" + (export.get("rater") or Path(path).stem).strip().lower().replace(" ", "_")
+            for entry in export["ratings"]:
+                if entry["id"] not in known or not 1 <= int(entry["rating"]) <= 9:
+                    continue
+                if (entry["id"], rater, int(entry["rating"])) in have:
+                    skipped += 1
+                    continue
+                have.add((entry["id"], rater, int(entry["rating"])))
+                handle.write(json.dumps({"id": entry["id"], "rating": int(entry["rating"]), "rater": rater,
+                                         "datasetVersion": export.get("version"),
+                                         # he had the unpocketed plate and the team's original open
+                                         **({"sawOriginal": True} if entry.get("sawOriginal") else {}),
+                                         "ingested": datetime.now(timezone.utc).isoformat(timespec="seconds")}) + "\n")
+                added += 1
+    print(f"added {added} ratings to {ratingsPath}" + (f" ({skipped} already there)" if skipped else ""))
+    # Drawings: strokes in plate inches, in the design's own frame, in the order drawn. "rib" is
+    # a straight line where he'd add a rib, "cut" an eraser stroke (material he'd remove; both
+    # carry their width), "mark" a freehand mark (circling a problem). See editedPockets().
+    have = {(r["id"], r["rater"], json.dumps(r["strokes"])) for r in map(json.loads, drawingsPath.read_text().splitlines())} \
+        if drawingsPath.exists() else set()
+    drawn = 0
+    with open(drawingsPath, "a") as handle:
+        for path in paths:
+            export = json.loads(Path(path).read_text())
+            rater = "expert:" + (export.get("rater") or Path(path).stem).strip().lower().replace(" ", "_")
+            for entry in export.get("drawings") or []:
+                key = (entry["id"], rater, json.dumps(entry["strokes"]))
+                if entry["id"] not in known or not entry["strokes"] or key in have:
+                    continue
+                have.add(key)
+                handle.write(json.dumps({"id": entry["id"], "rater": rater, "strokes": entry["strokes"],
+                                         "datasetVersion": export.get("version"),
+                                         "ingested": datetime.now(timezone.utc).isoformat(timespec="seconds")}) + "\n")
+                drawn += 1
+    if drawn:
+        print(f"added {drawn} drawings to {drawingsPath}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("action", choices=["build", "rewrap", "combine", "ingest", "edits"])
+    parser.add_argument("files", nargs="*")
+    parser.add_argument("--count", type=int, default=1000)
+    parser.add_argument("--part", type=int, default=1)
+    parser.add_argument("--fresh", action="store_true", help="combine: new save slot, nothing carried over")
+    parser.add_argument("--out", default=None, help="combine: output file name")
+    parser.add_argument("--first", default=None, help="combine: file of design ids (one per line) to show first")
+    parser.add_argument("--rounds", default="", help="only generated designs from these sheet rounds, e.g. m1")
+    parser.add_argument("--no-real", action="store_true", help="build: leave out real designs")
+    parser.add_argument("--no-cut", action="store_true", help="build: show every generated design (no quality cut)")
+    args = parser.parse_args()
+    if args.action == "build":
+        build(args.count, args.part, tuple(filter(None, args.rounds.split(","))), real=not args.no_real, cut=not args.no_cut)
+    elif args.action == "rewrap":
+        rewrap(args.part)
+    elif args.action == "combine":
+        first = set(Path(args.first).read_text().split()) if args.first else None
+        combine([int(k) for k in args.files], fresh=args.fresh, outName=args.out, first=first)
+    elif args.action == "edits":
+        buildEdits()
+    else:
+        ingest(args.files)
+
+
+if __name__ == "__main__":
+    main()

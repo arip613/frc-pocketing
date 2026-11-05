@@ -22,11 +22,11 @@ from shapely.ops import unary_union
 
 from frcpocket import geom2d
 
-fileTimeoutSeconds = 240
-maxSolidsPerFile = 400
+fileTimeoutSeconds = 1800  # a whole-robot export takes minutes to load and scan
+maxSolidsPerFile = 20000  # whole-robot exports run to a thousand or more solids (fasteners, bearings, wheels)
 dxfLineMinLengthIn = 0.1
 arcAttachToleranceIn = 0.01
-cacheVersion = 2  # bump when the raw geometry format changes
+cacheVersion = 3  # bump when the raw geometry format changes
 suspectWallIn = 0.03  # a pocket this close to the edge means overlapping DXF parts, not a real plate
 
 
@@ -49,8 +49,14 @@ def rawPlatesFromStep(path):
     scale = 1 / cadio.mmPerInch
     plates = []
     solids = cadio.importStepSolids(path)
+    seen = set()
     for solidIndex, solid in enumerate(solids[:maxSolidsPerFile]):
         try:
+            # Assemblies repeat parts (and mirror them); identical copies give identical plates.
+            key = (round(solid.Volume(), 1), round(solid.Area(), 1), len(solid.Faces()))
+            if key in seen:
+                continue
+            seen.add(key)
             plate = cadio.extractPlate(solid)
         except Exception:
             continue
@@ -111,7 +117,9 @@ def recordFromRaw(raw):
     return {
         "solidIndex": raw["solidIndex"],
         "isGear": geom2d.isGearOutline(outline),
-        "isSuspect": bool(stats["wallIn"]) and min(stats["wallIn"]) < suspectWallIn,
+        # Overlapping parts only happen in DXF drawings (no thickness); a STEP solid is one real part.
+        "isSuspect": raw["thicknessIn"] is None and bool(stats["wallIn"]) and min(stats["wallIn"]) < suspectWallIn,
+        "isBand": geom2d.isBandLike(outline, [polygon for polygon, _ in inner], raw["thicknessIn"]),
         "thicknessIn": raw["thicknessIn"],
         "hasRaisedFeatures": raw["hasRaisedFeatures"],
         "outline": [list(point) for point in outline.exterior.coords],
@@ -152,13 +160,14 @@ def isCached(cachePath):
         return False
 
 
-def loadSourceLog(logPath):
+def loadSourceLog(logPaths):
     sources = {}
-    if Path(logPath).exists():
-        for line in Path(logPath).read_text().splitlines():
-            entry = json.loads(line)
-            if "localPath" in entry:
-                sources[str(Path(entry["localPath"]))] = entry
+    for logPath in [logPaths] if isinstance(logPaths, (str, Path)) else logPaths:
+        if Path(logPath).exists():
+            for line in Path(logPath).read_text().splitlines():
+                entry = json.loads(line)
+                if "localPath" in entry:
+                    sources[str(Path(entry["localPath"]))] = entry
     return sources
 
 
@@ -174,6 +183,7 @@ def runAll(files, cacheDir, nWorkers, timeoutSeconds=fileTimeoutSeconds):
         cachePath = cachePathFor(path, cacheDir)
         if not isCached(cachePath):
             pending.append((path, cachePath))
+    pending.sort(key=lambda item: item[0].stat().st_size)  # small files first: big assemblies can take minutes each
     print(f"{len(files)} files, {len(pending)} to process", flush=True)
     running = []
     while pending or running:
@@ -202,7 +212,7 @@ def main():
     parser.add_argument("--raw", nargs="+", default=["data/raw/github", "data/raw/manual"],
                         help="one or more folders of downloaded CAD (missing folders are skipped)")
     parser.add_argument("--out", default="data/processed")
-    parser.add_argument("--log", default="data/sources.jsonl")
+    parser.add_argument("--log", nargs="+", default=["data/sources.jsonl"], help="one or more source logs")
     parser.add_argument("--workers", type=int, default=3)
     parser.add_argument("--timeout", type=int, default=fileTimeoutSeconds, help="seconds per file")
     args = parser.parse_args()
@@ -230,7 +240,7 @@ def main():
         source = sources.get(str(path), {})
         for raw in result["plates"]:
             record = recordFromRaw(raw)
-            if record["isGear"] or record["isSuspect"]:
+            if record["isGear"] or record["isSuspect"] or record["isBand"]:
                 continue
             key = signature(record)
             if key in seen:
@@ -240,7 +250,8 @@ def main():
                 "id": f"{hashlib.sha1(str(path).encode()).hexdigest()[:10]}_{record['solidIndex']}",
                 "file": str(path),
                 "format": path.suffix.lower().lstrip("."),
-                "origin": "manual" if source.get("source") == "manual-export" else "github",
+                "origin": {"manual-export": "manual", "vendor": "vendor"}.get(source.get("source"), "github"),
+                "vendor": source.get("vendor"),
                 "team": source.get("team"),
                 "repo": source.get("repo"),
                 "url": source.get("url"),
@@ -251,7 +262,7 @@ def main():
     with open(outDir / "plates.jsonl", "w") as handle:
         for record in records:
             handle.write(json.dumps(record) + "\n")
-    nPocketed = sum(record["stats"]["pocketCount"] > 0 for record in records)
+    nPocketed = sum(record["stats"]["pocketCount"] > 0 or bool(record["blindPockets"]) for record in records)
     print(f"{nFiles} files ({nFailed} failed) -> {len(records)} unique plates, {nPocketed} pocketed", flush=True)
 
 

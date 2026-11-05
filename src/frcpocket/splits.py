@@ -29,10 +29,30 @@ goldPlateIds = {
 # geometry extracted by imageExtract.py).
 userImageGold = {f"userImg_example{n}" for n in range(1, 9)}
 goldPlateIds |= userImageGold
+# Gold picked by eye from the second scrape's contact sheets (WCP, REV, Thrifty Bot, SDS
+# vendor CAD and team repos); see data/curation/goldAdded.json for sheet numbers.
+goldAddedPath = Path("data/curation/goldAdded.json")
+if goldAddedPath.exists():
+    goldPlateIds |= {entry["id"] for entry in json.loads(goldAddedPath.read_text())}
+
+# Plates the user kept as good pocketing on the Robot Plate Keeper page (other teams' robots
+# they exported from Onshape by hand; data/processed_manual).
+plateKeeperPath = Path("data/curation/plateKeeper.json")
+keeperIds = {entry["id"] for entry in json.loads(plateKeeperPath.read_text())["kept"]} if plateKeeperPath.exists() else set()
+goldPlateIds |= keeperIds
+
+# The user's own taste: their example screenshots, the three CAD plates they liked, and the
+# plates they kept. Weighted above the other gold so scraped vendor plates don't pull the style away.
+userTasteIds = userImageGold | {"f1da8bbfec_90", "0d9cbb6d3b_0", "76fd2d183d_0"} | keeperIds
+userTasteWeight = 3.0
+# Team 2056's drawing plates are one team's dense style; at full weight they pulled the
+# generator away from the user's examples, so they count for less in imitation.
+drawingGoldWeight = 0.4
 
 holdoutFiles = {
     "76fd2d183d", "f02eefd773",  # CAD gold: by source-file prefix of the plate id
     "userImg_example5", "userImg_example8",  # user examples without a near-twin in the set
+    "1bb1ce9e48",  # the Sim robot export: its 13 kept plates are the style test (rebuild from outline and holes)
 }
 ratingsPath = Path("data/curation/ratings.jsonl")
 extraRecordPaths = [Path("data/processed/userExamples.jsonl")]

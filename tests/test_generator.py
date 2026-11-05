@@ -96,6 +96,8 @@ def test_fill_keeps_big_slots_but_fills_slivers_and_wall_strips():
 def test_big_gaps_get_a_lattice_and_dense_plates_do_not():
     from frcpocket.layout import defaultGraph, isLatticeEdge
 
+    # Fixed at the original density and rib so the node count tests the mechanism, not the defaults.
+    params = PocketParams(ribIn=0.125, pocketSizeFactor=1.0)
     sparse = Plate(outline=box(0, 0, 14, 7), features=[Point(x, y).buffer(0.1005, quad_segs=16) for x in (0.5, 13.5) for y in (0.5, 6.5)],
                    thicknessIn=0.25)
     graph = defaultGraph(sparse, params)
