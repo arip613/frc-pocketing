@@ -455,6 +455,21 @@ What was built (all off by default):
   re-split without the pocket guard left long bent pockets that his taste model scored down.
 - `layout.latticeJunctions = False` and `polish.anchoredSplits = True`, with the truss engine
   left out: a hole-anchored mode in which every rib runs between holes and wall points.
+  Round N1 (`data/curation/sheets/N1`): the live chooser and rules in this mode, with the
+  anchor step on, on the 97 plates whose live design A has a free junction. Design A changed
+  on 92. Where it changed: free junctions 3.57 -> 0.48 per design, pockets 12.5 -> 9.7, long
+  pockets (over 2.2) 1.53 -> 3.25, removed 51.2% -> 52.6%, sound 92 -> 91. On his low plates
+  it draws what the teams did (fans from a hub, ribs from hole clusters to the wall). His
+  taste model scores it a shade lower (-0.015, 95% -0.031 to +0.001; higher on 41, lower on
+  51), most likely the long pockets, which it has learnt he scores down.
+
+Not switched on: the gain is between plates and indirect, the cost (long pockets) is one
+he has shown directly. His ratings decide it: the part 8 page
+(`data/curation/expert/plate-rater-part8-final.html`) opens with 30 plates where he sees the
+live design A and the hole-anchored one in the same sitting (60 designs, about 17 minutes),
+then the other new live designs (round L3f, the split trigger's) and the remaining
+hole-anchored ones. A middle setting worth trying after that: no lattice, but splits allowed
+to end on a rib, so long pockets can still be split.
 
 ## Sources
 
