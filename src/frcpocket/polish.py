@@ -79,7 +79,8 @@ holeTries = 6  # fully check only the few cheapest ribs per missing one
 # and the plates he rated lowest carry twice the team originals' free junctions.
 anchorJunctions = False  # off until checked on real plates (see docs/designNotes.md section 16)
 anchorReachFactor = 1.0  # a free junction moves onto a hole boss within this many typical pocket widths
-anchorTries = 3  # holes tried per junction, nearest first
+anchorTries = 2  # holes tried per junction, nearest first
+anchorBudget = 10  # full builds per design at most (each rebuilds and validates the design)
 
 
 @dataclass
@@ -149,6 +150,7 @@ class Polisher:
         self.strictExport = True  # off only when the input design itself needed gap trimming
         self.orbitCache = {}
         self.linesCache = {}
+        self.blobCache = {}  # id(layout) -> (layout, blob area); the layout is kept so its id stays unique
 
     # ---------- building and checking -------------------------------------------------
 
@@ -400,7 +402,11 @@ class Polisher:
         return [region for region in polygons(opened) if region.area >= blobMinFactor * self.typical]
 
     def blobArea(self, design, layout):
-        return sum(region.area for region in self.blobs(design, layout))
+        cached = self.blobCache.get(id(layout))
+        if cached is None or cached[0] is not layout:
+            cached = (layout, sum(region.area for region in self.blobs(design, layout)))
+            self.blobCache[id(layout)] = cached
+        return cached[1]
 
     def overCap(self, pocket):
         cap = min(0.15 * self.plate.materialArea, splitCapFactor * self.typical)
@@ -596,10 +602,14 @@ class Polisher:
                     found.append((image.coords[0], ("wall", None)))
         return found
 
-    def splitOptions(self, design, pocket, allowCross):
-        """Candidate cuts of one pocket, cheapest first: (cost, [segments], label)."""
+    def splitOptions(self, design, pocket, allowCross, anchoredOnly=False):
+        """Candidate cuts of one pocket, cheapest first: (cost, [segments], label).
+        anchoredOnly: only ribs from a hole or the wall to a hole or the wall."""
         params = self.params
         ports = self.ports(design, pocket)
+        if anchoredOnly:
+            ports = [(point, port) for point, port in ports if port[0] in ("feature", "wall")
+                     or (port[0] == "node" and design.graph.nodes[port[1]].kind == "anchor")]
         singles = []
         for x in range(len(ports)):
             for y in range(x + 1, len(ports)):
@@ -649,7 +659,7 @@ class Polisher:
                     options.append((cost, [first, second], "X", None))
         return sorted(options, key=lambda option: option[0])
 
-    def splitLarge(self, design, layout, allowCross=True, region=None, rounds=maxRounds):
+    def splitLarge(self, design, layout, allowCross=True, region=None, rounds=maxRounds, anchoredOnly=False):
         """Split pockets past the typical-size cap (or very long ones) with ribs."""
         notes = []
         stuck = []
@@ -661,7 +671,7 @@ class Polisher:
                 break
             pocket = max(candidates, key=self.overCap)
             accepted = False
-            for cost, segments, label, _ in self.splitOptions(design, pocket, allowCross)[:4]:
+            for cost, segments, label, _ in self.splitOptions(design, pocket, allowCross, anchoredOnly)[:4]:
                 images = [image for segment in segments for image in self.orbit(segment)]
                 trial = self.addSegments(design.copy(), images, self.params.ribIn)
                 built, _ = self.build(trial)
@@ -1043,52 +1053,103 @@ class Polisher:
     def overCapCount(self, layout):
         return sum(1 for pocket in layout.pockets if self.overCap(pocket) > 1.0)
 
+    def partners(self, design, junction, hole=None):
+        """The junction's mirror images on a symmetric plate (and the matching holes)."""
+        point = Point(design.graph.nodes[junction].point)
+        pairs = [(junction, hole)]
+        for transform in self.transforms:
+            image = self.mirror(point, transform)
+            partner = next((j for j in self.freeJunctions(design) if j != junction
+                            and Point(design.graph.nodes[j].point).distance(image) < self.nodeSnap), None)
+            partnerHole = None
+            if hole is not None:
+                centre = self.plate.features[design.graph.nodes[hole].featureIndex].centroid
+                partnerHole = self.holeFor(design, self.mirror(centre, transform).coords[0])
+            if partner is not None and (hole is None or partnerHole is not None) and all(partner != p for p, _ in pairs):
+                pairs.append((partner, partnerHole))
+        return pairs
+
+    def dissolve(self, design, layout, pairs):
+        """Take out the ribs meeting at free junctions, then split what opened up only with ribs
+        that end at holes or the wall (no T on a rib, no X)."""
+        trial = design.copy()
+        for junction, _ in pairs:
+            for rib in [rib for rib in trial.ribs if junction in rib]:
+                trial.removeRib(rib)
+        built, ok = self.build(trial)
+        if not ok:
+            return None
+        region = unary_union([Point(design.graph.nodes[j].point).buffer(1.5 * self.typicalWidth) for j, _ in pairs])
+        trial, built, _ = self.splitLarge(trial, built, allowCross=False, region=region, rounds=4, anchoredOnly=True)
+        return trial, built
+
     def anchorFree(self, design, layout):
-        """Move free rib junctions onto a nearby hole, so ribs run hole to hole (with their
-        mirror images on a symmetric plate). A move is kept only if it is valid, leaves fewer
-        free junctions and adds no oversized pocket."""
+        """Free rib junctions (ribs meeting in open plate): move each onto a nearby hole, so its
+        ribs leave the hole instead; failing that, take its ribs out and re-split the opened
+        pocket with ribs that end at holes or the wall. Mirror images move together on a
+        symmetric plate. A change is kept only if it is valid, leaves fewer free junctions and
+        adds no oversized pocket."""
         if not anchorJunctions:
             return design, layout, ""
-        moved = 0
+        moved, dissolved, tries = 0, 0, 0
         stuck = set()
-        for _ in range(4 * maxRounds):
-            free = [j for j in self.freeJunctions(design) if j not in stuck]
-            if not free:
-                break
-            junction = free[0]
+        reach = anchorReachFactor * self.typicalWidth
+        holes = [k for k, feature in enumerate(self.plate.features) if not isOpening(feature)]
+
+        def nearby(junction):
             point = Point(design.graph.nodes[junction].point)
-            reach = anchorReachFactor * self.typicalWidth
-            options = sorted((feature.distance(point), k) for k, feature in enumerate(self.plate.features)
-                             if not isOpening(feature) and feature.distance(point) <= reach)
+            return sorted((self.plate.features[k].distance(point), k) for k in holes
+                          if self.plate.features[k].distance(point) <= reach)
+
+        def keep(trial, built):
+            return (self.build(trial)[1] and self.accept(trial, built, (design, layout))
+                    and len(self.freeJunctions(trial)) < len(self.freeJunctions(design))
+                    and self.overCapCount(built) <= self.overCapCount(layout))
+
+        for _ in range(4 * maxRounds):
+            # Junctions closest to a hole first.
+            free = []
+            for j in self.freeJunctions(design):
+                if j not in stuck:
+                    options = nearby(j)
+                    free.append((options[0][0] if options else math.inf, j, options))
+            free.sort(key=lambda item: item[:2])
+            if not free or tries >= anchorBudget:
+                break
+            _, junction, options = free[0]
             done = False
             for _, featureIndex in options[:anchorTries]:
                 hole = self.featureNode(design, featureIndex)
                 if hole is None:
                     continue
                 trial = design.copy()
-                pairs = [(junction, hole)]
-                for transform in self.transforms:
-                    imageJ = self.mirror(point, transform)
-                    partner = next((j for j in self.freeJunctions(trial) if j != junction
-                                    and Point(trial.graph.nodes[j].point).distance(imageJ) < self.nodeSnap), None)
-                    partnerHole = self.holeFor(trial, self.mirror(self.plate.features[featureIndex].centroid, transform).coords[0])
-                    if partner is not None and partnerHole is not None and all(partner != p for p, _ in pairs):
-                        pairs.append((partner, partnerHole))
+                pairs = self.partners(trial, junction, hole)
                 if not all(self.reroute(trial, j, h) for j, h in pairs):
                     continue
-                built, ok = self.build(trial)
-                if not ok or not self.accept(trial, built, (design, layout)):
-                    continue
-                if len(self.freeJunctions(trial)) >= len(self.freeJunctions(design)):
-                    continue
-                if self.overCapCount(built) > self.overCapCount(layout):
-                    continue
-                design, layout, done = trial, built, True
-                moved += len(pairs)
-                break
+                tries += 1
+                built, _ = self.build(trial)
+                if keep(trial, built):
+                    design, layout, done = trial, built, True
+                    moved += len(pairs)
+                    break
+                if tries >= anchorBudget:
+                    break
+            if not done and tries < anchorBudget:
+                tries += 1
+                pairs = self.partners(design, junction)
+                result = self.dissolve(design, layout, pairs)
+                if result is not None and keep(*result):
+                    design, layout = result
+                    done = True
+                    dissolved += len(pairs)
             if not done:
                 stuck.add(junction)
-        return design, layout, f"anchored {moved} free junction{'s' if moved != 1 else ''} at holes" if moved else ""
+        notes = []
+        if moved:
+            notes.append(f"moved {moved} free junction{'s' if moved != 1 else ''} onto holes")
+        if dissolved:
+            notes.append(f"took out {dissolved} free junction{'s' if dissolved != 1 else ''}")
+        return design, layout, "anchor: " + ", ".join(notes) if notes else ""
 
     def holeShortfall(self, design):
         """Islands off the wall still hanging off fewer than minHoleRibs ribs (but some)."""
