@@ -1050,6 +1050,20 @@ class Polisher:
             return None
         return self.featureNode(design, best)
 
+    def noWorsePockets(self, before, after):
+        """The pockets a change made are no longer and no less convex than the ones it replaced
+        (or than the split and merge limits, if those are looser)."""
+        def changed(pockets, others):
+            return [p for p in pockets if not any(p.symmetric_difference(o).area < 0.02 * p.area for o in others)]
+        old, new = changed(before.pockets, after.pockets), changed(after.pockets, before.pockets)
+        if not new:
+            return True
+        def solidity(pocket):
+            return pocket.area / max(pocket.convex_hull.area, 1e-9)
+        longest = max([splitTriggerElongation] + [elongationOf(p) for p in old])
+        leastSolid = min([mergeSolidity] + [solidity(p) for p in old])
+        return all(elongationOf(p) <= longest and solidity(p) >= leastSolid for p in new)
+
     def overCapCount(self, layout):
         return sum(1 for pocket in layout.pockets if self.overCap(pocket) > 1.0)
 
@@ -1101,10 +1115,12 @@ class Polisher:
             return sorted((self.plate.features[k].distance(point), k) for k in holes
                           if self.plate.features[k].distance(point) <= reach)
 
-        def keep(trial, built):
+        def keep(trial, built, strict=False):
+            # strict (taking ribs out): the re-split must not leave long or bent pockets behind
             return (self.build(trial)[1] and self.accept(trial, built, (design, layout))
                     and len(self.freeJunctions(trial)) < len(self.freeJunctions(design))
-                    and self.overCapCount(built) <= self.overCapCount(layout))
+                    and self.overCapCount(built) <= self.overCapCount(layout)
+                    and (not strict or self.noWorsePockets(layout, built)))
 
         for _ in range(4 * maxRounds):
             # Junctions closest to a hole first.
@@ -1138,7 +1154,7 @@ class Polisher:
                 tries += 1
                 pairs = self.partners(design, junction)
                 result = self.dissolve(design, layout, pairs)
-                if result is not None and keep(*result):
+                if result is not None and keep(*result, strict=True):
                     design, layout = result
                     done = True
                     dissolved += len(pairs)
