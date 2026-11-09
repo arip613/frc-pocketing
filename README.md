@@ -8,7 +8,8 @@ compares with the baseline.
 
 ## Setup
 
-Requires macOS/Linux with [uv](https://docs.astral.sh/uv/) (or any Python 3.11–3.12).
+Requires macOS, Linux or Windows with [uv](https://docs.astral.sh/uv/) (or any Python 3.11–3.12).
+On Windows, just to use the pocketer, see "On Windows" under Step 4.
 
 ```bash
 uv venv --python 3.12 .venv
@@ -164,6 +165,23 @@ How it works:
 ```bash
 .venv/bin/python -I -m frcpocket.web
 ```
+
+### On Windows
+
+No terminal needed:
+
+1. Download the project as a ZIP:
+   https://github.com/arip613/frc-pocketing/archive/refs/heads/main-kguole.zip
+   Right-click it, choose **Extract All**, and open the extracted folder.
+2. Open the `windows` folder and double-click **install.bat** (once; a few minutes). It
+   installs [uv](https://docs.astral.sh/uv/), Python 3.12 and the packages into `.venv`
+   inside the project folder. If Windows shows "Windows protected your PC", click
+   **More info**, then **Run anyway**.
+3. Double-click **start.bat**. The pocketer opens in your browser at
+   http://127.0.0.1:7861 after about a minute. Keep its window open while you use it;
+   close the window to stop it.
+
+From a terminal it is `.venv\Scripts\python.exe -X utf8 -I -m frcpocket.web`.
 
 Open http://127.0.0.1:7861 (front end in `src/frcpocket/webui/`). Pick a STEP, set the
 rules (inch values show their fraction), generate, click through designs A–F (arrow

@@ -2,6 +2,7 @@
 rate them, export the pocketed STEP. Same pipeline as the Gradio app.
 
     python -I -m frcpocket.web        then open http://127.0.0.1:7861
+    (Windows: double-click windows/install.bat once, then windows/start.bat.)
 """
 
 import hashlib
@@ -188,10 +189,31 @@ def download(exportId: str):
 app.mount("/", StaticFiles(directory=webDir, html=True), name="ui")
 
 
+def openWhenReady(url, attempts=240):
+    """Open the UI in the default browser once the server answers (windows/start.bat sets
+    FRCPOCKET_OPEN_BROWSER=1)."""
+    import urllib.request
+    import webbrowser
+
+    for _ in range(attempts):
+        try:
+            with urllib.request.urlopen(url, timeout=2):
+                webbrowser.open(url)
+                return
+        except OSError:
+            time.sleep(0.5)
+
+
 def main():
+    import os
+    import threading
+
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=7861)
+    host, port = "127.0.0.1", 7861
+    if os.environ.get("FRCPOCKET_OPEN_BROWSER") == "1":
+        threading.Thread(target=openWhenReady, args=(f"http://{host}:{port}/",), daemon=True).start()
+    uvicorn.run(app, host=host, port=port)
 
 
 if __name__ == "__main__":
